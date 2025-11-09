@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import inherits from '../util/inherits.js';
 import hash from '../util/hash.js';
 import TileSearcher from '../TileSearcher.js';
 import LruMap from '../collections/LruMap.js';
@@ -47,245 +46,247 @@ const neighborOffsets = [
  *
  * A tile in a {@link FlatGeometry}.
  */
-function FlatTile(x, y, z, geometry) {
-  this.x = x;
-  this.y = y;
-  this.z = z;
-  this._geometry = geometry;
-  this._level = geometry.levelList[z];
-}
-
-FlatTile.prototype.rotX = function () {
-  return 0;
-};
-
-FlatTile.prototype.rotY = function () {
-  return 0;
-};
-
-FlatTile.prototype.centerX = function () {
-  const levelWidth = this._level.width();
-  const tileWidth = this._level.tileWidth();
-  return (this.x * tileWidth + 0.5 * this.width()) / levelWidth - 0.5;
-};
-
-FlatTile.prototype.centerY = function () {
-  const levelHeight = this._level.height();
-  const tileHeight = this._level.tileHeight();
-  return 0.5 - (this.y * tileHeight + 0.5 * this.height()) / levelHeight;
-};
-
-FlatTile.prototype.scaleX = function () {
-  const levelWidth = this._level.width();
-  return this.width() / levelWidth;
-};
-
-FlatTile.prototype.scaleY = function () {
-  const levelHeight = this._level.height();
-  return this.height() / levelHeight;
-};
-
-FlatTile.prototype.width = function () {
-  const levelWidth = this._level.width();
-  const tileWidth = this._level.tileWidth();
-  if (this.x === this._level.numHorizontalTiles() - 1) {
-    const widthRemainder = mod(levelWidth, tileWidth);
-    return widthRemainder || tileWidth;
-  } else {
-    return tileWidth;
-  }
-};
-
-FlatTile.prototype.height = function () {
-  const levelHeight = this._level.height();
-  const tileHeight = this._level.tileHeight();
-  if (this.y === this._level.numVerticalTiles() - 1) {
-    const heightRemainder = mod(levelHeight, tileHeight);
-    return heightRemainder || tileHeight;
-  } else {
-    return tileHeight;
-  }
-};
-
-FlatTile.prototype.levelWidth = function () {
-  return this._level.width();
-};
-
-FlatTile.prototype.levelHeight = function () {
-  return this._level.height();
-};
-
-FlatTile.prototype.vertices = function (result) {
-  if (!result) {
-    result = [vec2.create(), vec2.create(), vec2.create(), vec2.create()];
+class FlatTile {
+  constructor(x, y, z, geometry) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
+    this._geometry = geometry;
+    this._level = geometry.levelList[z];
   }
 
-  const left = this.centerX() - this.scaleX() / 2;
-  const right = this.centerX() + this.scaleX() / 2;
-  const bottom = this.centerY() - this.scaleY() / 2;
-  const top = this.centerY() + this.scaleY() / 2;
-
-  vec2.set(result[0], left, top);
-  vec2.set(result[1], right, top);
-  vec2.set(result[2], right, bottom);
-  vec2.set(result[3], left, bottom);
-
-  return result;
-};
-
-FlatTile.prototype.parent = function () {
-  if (this.z === 0) {
-    return null;
+  rotX() {
+    return 0;
   }
 
-  const geometry = this._geometry;
-
-  const z = this.z - 1;
-  // TODO: Currently assuming each level is double the size of previous one.
-  // Fix to support other multiples.
-  const x = Math.floor(this.x / 2);
-  const y = Math.floor(this.y / 2);
-
-  return new FlatTile(x, y, z, geometry);
-};
-
-FlatTile.prototype.children = function (result) {
-  if (this.z === this._geometry.levelList.length - 1) {
-    return null;
+  rotY() {
+    return 0;
   }
 
-  const geometry = this._geometry;
-  const z = this.z + 1;
-
-  result = result || [];
-
-  // TODO: Currently assuming each level is double the size of previous one.
-  // Fix to support other multiples.
-  result.push(new FlatTile(2 * this.x, 2 * this.y, z, geometry));
-  result.push(new FlatTile(2 * this.x, 2 * this.y + 1, z, geometry));
-  result.push(new FlatTile(2 * this.x + 1, 2 * this.y, z, geometry));
-  result.push(new FlatTile(2 * this.x + 1, 2 * this.y + 1, z, geometry));
-
-  return result;
-};
-
-FlatTile.prototype.neighbors = function () {
-  const geometry = this._geometry;
-  const cache = geometry._neighborsCache;
-
-  // Satisfy from cache when available.
-  const cachedResult = cache.get(this);
-  if (cachedResult) {
-    return cachedResult;
+  centerX() {
+    const levelWidth = this._level.width();
+    const tileWidth = this._level.tileWidth();
+    return (this.x * tileWidth + 0.5 * this.width()) / levelWidth - 0.5;
   }
 
-  const x = this.x;
-  const y = this.y;
-  const z = this.z;
-  const level = this._level;
+  centerY() {
+    const levelHeight = this._level.height();
+    const tileHeight = this._level.tileHeight();
+    return 0.5 - (this.y * tileHeight + 0.5 * this.height()) / levelHeight;
+  }
 
-  const numX = level.numHorizontalTiles() - 1;
-  const numY = level.numVerticalTiles() - 1;
+  scaleX() {
+    const levelWidth = this._level.width();
+    return this.width() / levelWidth;
+  }
 
-  const result = [];
+  scaleY() {
+    const levelHeight = this._level.height();
+    return this.height() / levelHeight;
+  }
 
-  for (let i = 0; i < neighborOffsets.length; i++) {
-    const xOffset = neighborOffsets[i][0];
-    const yOffset = neighborOffsets[i][1];
-
-    const newX = x + xOffset;
-    const newY = y + yOffset;
-    const newZ = z;
-
-    if (0 <= newX && newX <= numX && 0 <= newY && newY <= numY) {
-      result.push(new FlatTile(newX, newY, newZ, geometry));
+  width() {
+    const levelWidth = this._level.width();
+    const tileWidth = this._level.tileWidth();
+    if (this.x === this._level.numHorizontalTiles() - 1) {
+      const widthRemainder = mod(levelWidth, tileWidth);
+      return widthRemainder || tileWidth;
+    } else {
+      return tileWidth;
     }
   }
 
-  // Store into cache to satisfy future requests.
-  cache.set(this, result);
+  height() {
+    const levelHeight = this._level.height();
+    const tileHeight = this._level.tileHeight();
+    if (this.y === this._level.numVerticalTiles() - 1) {
+      const heightRemainder = mod(levelHeight, tileHeight);
+      return heightRemainder || tileHeight;
+    } else {
+      return tileHeight;
+    }
+  }
 
-  return result;
-};
+  levelWidth() {
+    return this._level.width();
+  }
 
-FlatTile.prototype.hash = function () {
-  return hash(this.z, this.y, this.x);
-};
+  levelHeight() {
+    return this._level.height();
+  }
 
-FlatTile.prototype.equals = function (that) {
-  return (
-    this._geometry === that._geometry && this.z === that.z && this.y === that.y && this.x === that.x
-  );
-};
+  vertices(result) {
+    if (!result) {
+      result = [vec2.create(), vec2.create(), vec2.create(), vec2.create()];
+    }
 
-FlatTile.prototype.cmp = function (that) {
-  return cmp(this.z, that.z) || cmp(this.y, that.y) || cmp(this.x, that.x);
-};
+    const left = this.centerX() - this.scaleX() / 2;
+    const right = this.centerX() + this.scaleX() / 2;
+    const bottom = this.centerY() - this.scaleY() / 2;
+    const top = this.centerY() + this.scaleY() / 2;
 
-FlatTile.prototype.str = function () {
-  return `FlatTile(${this.x}, ${this.y}, ${this.z})`;
-};
+    vec2.set(result[0], left, top);
+    vec2.set(result[1], right, top);
+    vec2.set(result[2], right, bottom);
+    vec2.set(result[3], left, bottom);
 
-function FlatLevel(levelProperties) {
-  this.constructor.super_.call(this, levelProperties);
+    return result;
+  }
 
-  this._width = levelProperties.width;
-  this._height = levelProperties.height;
-  this._tileWidth = levelProperties.tileWidth;
-  this._tileHeight = levelProperties.tileHeight;
+  parent() {
+    if (this.z === 0) {
+      return null;
+    }
+
+    const geometry = this._geometry;
+
+    const z = this.z - 1;
+    // TODO: Currently assuming each level is double the size of previous one.
+    // Fix to support other multiples.
+    const x = Math.floor(this.x / 2);
+    const y = Math.floor(this.y / 2);
+
+    return new FlatTile(x, y, z, geometry);
+  }
+
+  children(result) {
+    if (this.z === this._geometry.levelList.length - 1) {
+      return null;
+    }
+
+    const geometry = this._geometry;
+    const z = this.z + 1;
+
+    result = result || [];
+
+    // TODO: Currently assuming each level is double the size of previous one.
+    // Fix to support other multiples.
+    result.push(new FlatTile(2 * this.x, 2 * this.y, z, geometry));
+    result.push(new FlatTile(2 * this.x, 2 * this.y + 1, z, geometry));
+    result.push(new FlatTile(2 * this.x + 1, 2 * this.y, z, geometry));
+    result.push(new FlatTile(2 * this.x + 1, 2 * this.y + 1, z, geometry));
+
+    return result;
+  }
+
+  neighbors() {
+    const geometry = this._geometry;
+    const cache = geometry._neighborsCache;
+
+    // Satisfy from cache when available.
+    const cachedResult = cache.get(this);
+    if (cachedResult) {
+      return cachedResult;
+    }
+
+    const x = this.x;
+    const y = this.y;
+    const z = this.z;
+    const level = this._level;
+
+    const numX = level.numHorizontalTiles() - 1;
+    const numY = level.numVerticalTiles() - 1;
+
+    const result = [];
+
+    for (let i = 0; i < neighborOffsets.length; i++) {
+      const xOffset = neighborOffsets[i][0];
+      const yOffset = neighborOffsets[i][1];
+
+      const newX = x + xOffset;
+      const newY = y + yOffset;
+      const newZ = z;
+
+      if (0 <= newX && newX <= numX && 0 <= newY && newY <= numY) {
+        result.push(new FlatTile(newX, newY, newZ, geometry));
+      }
+    }
+
+    // Store into cache to satisfy future requests.
+    cache.set(this, result);
+
+    return result;
+  }
+
+  hash() {
+    return hash(this.z, this.y, this.x);
+  }
+
+  equals(that) {
+    return (
+      this._geometry === that._geometry && this.z === that.z && this.y === that.y && this.x === that.x
+    );
+  }
+
+  cmp(that) {
+    return cmp(this.z, that.z) || cmp(this.y, that.y) || cmp(this.x, that.x);
+  }
+
+  str() {
+    return `FlatTile(${this.x}, ${this.y}, ${this.z})`;
+  }
 }
 
-inherits(FlatLevel, Level);
+class FlatLevel extends Level {
+  constructor(levelProperties) {
+    super(levelProperties);
 
-FlatLevel.prototype.width = function () {
-  return this._width;
-};
-
-FlatLevel.prototype.height = function () {
-  return this._height;
-};
-
-FlatLevel.prototype.tileWidth = function () {
-  return this._tileWidth;
-};
-
-FlatLevel.prototype.tileHeight = function () {
-  return this._tileHeight;
-};
-
-FlatLevel.prototype._validateWithParentLevel = function (parentLevel) {
-  const width = this.width();
-  const height = this.height();
-  const tileWidth = this.tileWidth();
-  const tileHeight = this.tileHeight();
-
-  const parentWidth = parentLevel.width();
-  const parentHeight = parentLevel.height();
-  const parentTileWidth = parentLevel.tileWidth();
-  const parentTileHeight = parentLevel.tileHeight();
-
-  if (width % parentWidth !== 0) {
-    return new Error(`Level width must be multiple of parent level: ${width} vs. ${  parentWidth}`);
+    this._width = levelProperties.width;
+    this._height = levelProperties.height;
+    this._tileWidth = levelProperties.tileWidth;
+    this._tileHeight = levelProperties.tileHeight;
   }
 
-  if (height % parentHeight !== 0) {
-    return new Error(
-      `Level height must be multiple of parent level: ${height} vs. ${  parentHeight}`
-    );
+  width() {
+    return this._width;
   }
 
-  if (tileWidth % parentTileWidth !== 0) {
-    return new Error(
-      `Level tile width must be multiple of parent level: ${tileWidth} vs. ${  parentTileWidth}`
-    );
+  height() {
+    return this._height;
   }
 
-  if (tileHeight % parentTileHeight !== 0) {
-    return new Error(
-      `Level tile height must be multiple of parent level: ${tileHeight} vs. ${  parentTileHeight}`
-    );
+  tileWidth() {
+    return this._tileWidth;
   }
-};
+
+  tileHeight() {
+    return this._tileHeight;
+  }
+
+  _validateWithParentLevel(parentLevel) {
+    const width = this.width();
+    const height = this.height();
+    const tileWidth = this.tileWidth();
+    const tileHeight = this.tileHeight();
+
+    const parentWidth = parentLevel.width();
+    const parentHeight = parentLevel.height();
+    const parentTileWidth = parentLevel.tileWidth();
+    const parentTileHeight = parentLevel.tileHeight();
+
+    if (width % parentWidth !== 0) {
+      throw new Error(`Level width must be multiple of parent level: ${width} vs. ${parentWidth}`);
+    }
+
+    if (height % parentHeight !== 0) {
+      throw new Error(
+        `Level height must be multiple of parent level: ${height} vs. ${parentHeight}`
+      );
+    }
+
+    if (tileWidth % parentTileWidth !== 0) {
+      throw new Error(
+        `Level tile width must be multiple of parent level: ${tileWidth} vs. ${parentTileWidth}`
+      );
+    }
+
+    if (tileHeight % parentTileHeight !== 0) {
+      throw new Error(
+        `Level tile height must be multiple of parent level: ${tileHeight} vs. ${parentTileHeight}`
+      );
+    }
+  }
+}
 
 /**
  * @class FlatGeometry
@@ -309,104 +310,106 @@ FlatLevel.prototype._validateWithParentLevel = function (parentLevel) {
  * @param {number} levelPropertiesList[].tileHeight Tile height in pixels for
  *                 square tiles
  */
-function FlatGeometry(levelPropertiesList) {
-  if (type(levelPropertiesList) !== 'array') {
-    throw new Error('Level list must be an array');
-  }
-
-  this.levelList = makeLevelList(levelPropertiesList, FlatLevel);
-  this.selectableLevelList = makeSelectableLevelList(this.levelList);
-
-  for (let i = 1; i < this.levelList.length; i++) {
-    this.levelList[i]._validateWithParentLevel(this.levelList[i - 1]);
-  }
-
-  this._tileSearcher = new TileSearcher(this);
-
-  this._neighborsCache = new LruMap(neighborsCacheSize);
-
-  this._vec = vec4.create();
-
-  this._viewSize = {};
-}
-
-FlatGeometry.prototype.maxTileSize = function () {
-  let maxTileSize = 0;
-  for (let i = 0; i < this.levelList.length; i++) {
-    const level = this.levelList[i];
-    maxTileSize = Math.max(maxTileSize, level.tileWidth, level.tileHeight);
-  }
-  return maxTileSize;
-};
-
-FlatGeometry.prototype.levelTiles = function (level, result) {
-  const levelIndex = this.levelList.indexOf(level);
-  const maxX = level.numHorizontalTiles() - 1;
-  const maxY = level.numVerticalTiles() - 1;
-
-  if (!result) {
-    result = [];
-  }
-
-  for (let x = 0; x <= maxX; x++) {
-    for (let y = 0; y <= maxY; y++) {
-      result.push(new FlatTile(x, y, levelIndex, this));
+class FlatGeometry {
+  constructor(levelPropertiesList) {
+    if (type(levelPropertiesList) !== 'array') {
+      throw new Error('Level list must be an array');
     }
+
+    this.levelList = makeLevelList(levelPropertiesList, FlatLevel);
+    this.selectableLevelList = makeSelectableLevelList(this.levelList);
+
+    for (let i = 1; i < this.levelList.length; i++) {
+      this.levelList[i]._validateWithParentLevel(this.levelList[i - 1]);
+    }
+
+    this._tileSearcher = new TileSearcher(this);
+
+    this._neighborsCache = new LruMap(neighborsCacheSize);
+
+    this._vec = vec4.create();
+
+    this._viewSize = {};
   }
 
-  return result;
-};
+  maxTileSize() {
+    let maxTileSize = 0;
+    for (let i = 0; i < this.levelList.length; i++) {
+      const level = this.levelList[i];
+      maxTileSize = Math.max(maxTileSize, level.tileWidth, level.tileHeight);
+    }
+    return maxTileSize;
+  }
 
-FlatGeometry.prototype._closestTile = function (view, level) {
-  const ray = this._vec;
+  levelTiles(level, result) {
+    const levelIndex = this.levelList.indexOf(level);
+    const maxX = level.numHorizontalTiles() - 1;
+    const maxY = level.numVerticalTiles() - 1;
 
-  // Compute a view ray into the central screen point.
-  vec4.set(ray, 0, 0, 1, 1);
-  vec4.transformMat4(ray, ray, view.inverseProjection());
+    if (!result) {
+      result = [];
+    }
 
-  // Compute the image coordinates that the view ray points into.
-  const x = 0.5 + ray[0];
-  const y = 0.5 - ray[1];
+    for (let x = 0; x <= maxX; x++) {
+      for (let y = 0; y <= maxY; y++) {
+        result.push(new FlatTile(x, y, levelIndex, this));
+      }
+    }
 
-  // Get the desired zoom level.
-  const tileZ = this.levelList.indexOf(level);
-  const levelWidth = level.width();
-  const levelHeight = level.height();
-  const tileWidth = level.tileWidth();
-  const tileHeight = level.tileHeight();
-  const numX = level.numHorizontalTiles();
-  const numY = level.numVerticalTiles();
-
-  // Find the coordinates of the tile that the view ray points into.
-  const tileX = clamp(Math.floor((x * levelWidth) / tileWidth), 0, numX - 1);
-  const tileY = clamp(Math.floor((y * levelHeight) / tileHeight), 0, numY - 1);
-
-  return new FlatTile(tileX, tileY, tileZ, this);
-};
-
-FlatGeometry.prototype.visibleTiles = function (view, level, result) {
-  const viewSize = this._viewSize;
-  const tileSearcher = this._tileSearcher;
-
-  result = result || [];
-
-  view.size(viewSize);
-  if (viewSize.width === 0 || viewSize.height === 0) {
-    // No tiles are visible if the viewport is empty.
     return result;
   }
 
-  const startingTile = this._closestTile(view, level);
-  const count = tileSearcher.search(view, startingTile, result);
-  if (!count) {
-    throw new Error('Starting tile is not visible');
+  _closestTile(view, level) {
+    const ray = this._vec;
+
+    // Compute a view ray into the central screen point.
+    vec4.set(ray, 0, 0, 1, 1);
+    vec4.transformMat4(ray, ray, view.inverseProjection());
+
+    // Compute the image coordinates that the view ray points into.
+    const x = 0.5 + ray[0];
+    const y = 0.5 - ray[1];
+
+    // Get the desired zoom level.
+    const tileZ = this.levelList.indexOf(level);
+    const levelWidth = level.width();
+    const levelHeight = level.height();
+    const tileWidth = level.tileWidth();
+    const tileHeight = level.tileHeight();
+    const numX = level.numHorizontalTiles();
+    const numY = level.numVerticalTiles();
+
+    // Find the coordinates of the tile that the view ray points into.
+    const tileX = clamp(Math.floor((x * levelWidth) / tileWidth), 0, numX - 1);
+    const tileY = clamp(Math.floor((y * levelHeight) / tileHeight), 0, numY - 1);
+
+    return new FlatTile(tileX, tileY, tileZ, this);
   }
 
-  return result;
-};
+  visibleTiles(view, level, result) {
+    const viewSize = this._viewSize;
+    const tileSearcher = this._tileSearcher;
 
-FlatGeometry.Tile = FlatGeometry.prototype.Tile = FlatTile;
-FlatGeometry.type = FlatGeometry.prototype.type = 'flat';
-FlatTile.type = FlatTile.prototype.type = 'flat';
+    result = result || [];
+
+    view.size(viewSize);
+    if (viewSize.width === 0 || viewSize.height === 0) {
+      // No tiles are visible if the viewport is empty.
+      return result;
+    }
+
+    const startingTile = this._closestTile(view, level);
+    const count = tileSearcher.search(view, startingTile, result);
+    if (!count) {
+      throw new Error('Starting tile is not visible');
+    }
+
+    return result;
+  }
+}
+
+FlatGeometry.Tile = FlatTile;
+FlatGeometry.type = 'flat';
+FlatTile.type = 'flat';
 
 export default FlatGeometry;

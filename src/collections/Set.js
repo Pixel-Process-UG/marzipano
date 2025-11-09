@@ -21,98 +21,100 @@ const defaultCapacity = 64;
 // A set data structure for elements implementing hash() and equals().
 // The capacity, if given, is just a hint; the set is allowed to exceed it, but
 // performance may suffer.
-function Set(capacity) {
-  if (
-    capacity != null &&
-    (!isFinite(capacity) || Math.floor(capacity) !== capacity || capacity < 1)
-  ) {
-    throw new Error('Set: invalid capacity');
-  }
-  this._capacity = this._capacity || defaultCapacity;
-
-  this._buckets = [];
-  for (let i = 0; i < this._capacity; i++) {
-    this._buckets.push([]);
-  }
-  this._size = 0;
-}
-
-// Adds an element, replacing an existing element.
-// Returns the replaced element, or null if no element was replaced.
-Set.prototype.add = function (element) {
-  const h = mod(element.hash(), this._capacity);
-  const bucket = this._buckets[h];
-  for (let i = 0; i < bucket.length; i++) {
-    const existingElement = bucket[i];
-    if (element.equals(existingElement)) {
-      bucket[i] = element;
-      return existingElement;
+class Set {
+  constructor(capacity) {
+    if (
+      capacity != null &&
+      (!isFinite(capacity) || Math.floor(capacity) !== capacity || capacity < 1)
+    ) {
+      throw new Error('Set: invalid capacity');
     }
-  }
-  bucket.push(element);
-  this._size++;
-  return null;
-};
+    this._capacity = capacity || defaultCapacity;
 
-// Removes an element.
-// Returns the removed element, or null if the element was not found.
-Set.prototype.remove = function (element) {
-  const h = mod(element.hash(), this._capacity);
-  const bucket = this._buckets[h];
-  for (let i = 0; i < bucket.length; i++) {
-    const existingElement = bucket[i];
-    if (element.equals(existingElement)) {
-      // Splice manually to avoid Array#splice return value allocation.
-      for (let j = i; j < bucket.length - 1; j++) {
-        bucket[j] = bucket[j + 1];
+    this._buckets = [];
+    for (let i = 0; i < this._capacity; i++) {
+      this._buckets.push([]);
+    }
+    this._size = 0;
+  }
+
+  // Adds an element, replacing an existing element.
+  // Returns the replaced element, or null if no element was replaced.
+  add(element) {
+    const h = mod(element.hash(), this._capacity);
+    const bucket = this._buckets[h];
+    for (let i = 0; i < bucket.length; i++) {
+      const existingElement = bucket[i];
+      if (element.equals(existingElement)) {
+        bucket[i] = element;
+        return existingElement;
       }
-      bucket.length = bucket.length - 1;
-      this._size--;
-      return existingElement;
     }
+    bucket.push(element);
+    this._size++;
+    return null;
   }
-  return null;
-};
 
-// Returns whether an element is in the set.
-Set.prototype.has = function (element) {
-  const h = mod(element.hash(), this._capacity);
-  const bucket = this._buckets[h];
-  for (let i = 0; i < bucket.length; i++) {
-    const existingElement = bucket[i];
-    if (element.equals(existingElement)) {
-      return true;
+  // Removes an element.
+  // Returns the removed element, or null if the element was not found.
+  remove(element) {
+    const h = mod(element.hash(), this._capacity);
+    const bucket = this._buckets[h];
+    for (let i = 0; i < bucket.length; i++) {
+      const existingElement = bucket[i];
+      if (element.equals(existingElement)) {
+        // Splice manually to avoid Array#splice return value allocation.
+        for (let j = i; j < bucket.length - 1; j++) {
+          bucket[j] = bucket[j + 1];
+        }
+        bucket.length = bucket.length - 1;
+        this._size--;
+        return existingElement;
+      }
     }
+    return null;
   }
-  return false;
-};
 
-// Returns the number of elements in the set.
-Set.prototype.size = function () {
-  return this._size;
-};
-
-// Removes all elements from the set.
-Set.prototype.clear = function () {
-  for (let i = 0; i < this._capacity; i++) {
-    this._buckets[i].length = 0;
-  }
-  this._size = 0;
-};
-
-// Calls fn(element) for each element in the set, in an unspecified order.
-// Returns the number of times fn was called.
-// The result is unspecified if the set is mutated during iteration.
-Set.prototype.forEach = function (fn) {
-  let count = 0;
-  for (let i = 0; i < this._capacity; i++) {
-    const bucket = this._buckets[i];
-    for (let j = 0; j < bucket.length; j++) {
-      fn(bucket[j]);
-      count += 1;
+  // Returns whether an element is in the set.
+  has(element) {
+    const h = mod(element.hash(), this._capacity);
+    const bucket = this._buckets[h];
+    for (let i = 0; i < bucket.length; i++) {
+      const existingElement = bucket[i];
+      if (element.equals(existingElement)) {
+        return true;
+      }
     }
+    return false;
   }
-  return count;
-};
+
+  // Returns the number of elements in the set.
+  size() {
+    return this._size;
+  }
+
+  // Removes all elements from the set.
+  clear() {
+    for (let i = 0; i < this._capacity; i++) {
+      this._buckets[i].length = 0;
+    }
+    this._size = 0;
+  }
+
+  // Calls fn(element) for each element in the set, in an unspecified order.
+  // Returns the number of times fn was called.
+  // The result is unspecified if the set is mutated during iteration.
+  forEach(fn) {
+    let count = 0;
+    for (let i = 0; i < this._capacity; i++) {
+      const bucket = this._buckets[i];
+      for (let j = 0; j < bucket.length; j++) {
+        fn(bucket[j]);
+        count += 1;
+      }
+    }
+    return count;
+  }
+}
 
 export default Set;
