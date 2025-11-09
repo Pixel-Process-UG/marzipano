@@ -32,85 +32,89 @@ function getKeyForElementAndType(element, type) {
  * Manages Hammer.js instances. One instance is created for each combination of
  * DOM element and pointer type.
  */
-function HammerGestures() {
-  this._managers = {};
-  this._refCount = {};
-}
-
-HammerGestures.prototype.get = function (element, type) {
-  const key = getKeyForElementAndType(element, type);
-  if (!this._managers[key]) {
-    this._managers[key] = this._createManager(element, type);
-    this._refCount[key] = 0;
-  }
-  this._refCount[key]++;
-  return new HammerGesturesHandle(this, this._managers[key], element, type);
-};
-
-HammerGestures.prototype._createManager = function (element, type) {
-  const manager = new Hammer.Manager(element);
-
-  // Managers are created with different parameters for different pointer
-  // types.
-  if (type === 'mouse') {
-    manager.add(new Hammer.Pan({ direction: Hammer.DIRECTION_ALL, threshold: 0 }));
-  } else if (type === 'touch' || type === 'pen' || type === 'kinect') {
-    // On touch one wants to have both panning and pinching. The panning
-    // recognizer needs a threshold to allow the pinch to be recognized.
-    manager.add(new Hammer.Pan({ direction: Hammer.DIRECTION_ALL, threshold: 20, pointers: 1 }));
-    manager.add(new Hammer.Pinch());
+class HammerGestures {
+  constructor() {
+    this._managers = {};
+    this._refCount = {};
   }
 
-  return manager;
-};
+  get(element, type) {
+    const key = getKeyForElementAndType(element, type);
+    if (!this._managers[key]) {
+      this._managers[key] = this._createManager(element, type);
+      this._refCount[key] = 0;
+    }
+    this._refCount[key]++;
+    return new HammerGesturesHandle(this, this._managers[key], element, type);
+  }
 
-HammerGestures.prototype._releaseHandle = function (element, type) {
-  const key = getKeyForElementAndType(element, type);
-  if (this._refCount[key]) {
-    this._refCount[key]--;
-    if (!this._refCount[key]) {
-      this._managers[key].destroy();
-      delete this._managers[key];
-      delete this._refCount[key];
+  _createManager(element, type) {
+    const manager = new Hammer.Manager(element);
+
+    // Managers are created with different parameters for different pointer
+    // types.
+    if (type === 'mouse') {
+      manager.add(new Hammer.Pan({ direction: Hammer.DIRECTION_ALL, threshold: 0 }));
+    } else if (type === 'touch' || type === 'pen' || type === 'kinect') {
+      // On touch one wants to have both panning and pinching. The panning
+      // recognizer needs a threshold to allow the pinch to be recognized.
+      manager.add(new Hammer.Pan({ direction: Hammer.DIRECTION_ALL, threshold: 20, pointers: 1 }));
+      manager.add(new Hammer.Pinch());
+    }
+
+    return manager;
+  }
+
+  _releaseHandle(element, type) {
+    const key = getKeyForElementAndType(element, type);
+    if (this._refCount[key]) {
+      this._refCount[key]--;
+      if (!this._refCount[key]) {
+        this._managers[key].destroy();
+        delete this._managers[key];
+        delete this._refCount[key];
+      }
     }
   }
-};
-
-function HammerGesturesHandle(hammerGestures, manager, element, type) {
-  this._manager = manager;
-  this._element = element;
-  this._type = type;
-  this._hammerGestures = hammerGestures;
-  this._eventHandlers = [];
 }
 
-HammerGesturesHandle.prototype.on = function (events, handler) {
-  const type = this._type;
-  const handlerFilteredEvents = function (e) {
-    if (type === e.pointerType) {
-      handler(e);
-    }
-  };
-
-  this._eventHandlers.push({ events, handler: handlerFilteredEvents });
-  this._manager.on(events, handlerFilteredEvents);
-};
-
-HammerGesturesHandle.prototype.release = function () {
-  for (let i = 0; i < this._eventHandlers.length; i++) {
-    const eventHandler = this._eventHandlers[i];
-    this._manager.off(eventHandler.events, eventHandler.handler);
+class HammerGesturesHandle {
+  constructor(hammerGestures, manager, element, type) {
+    this._manager = manager;
+    this._element = element;
+    this._type = type;
+    this._hammerGestures = hammerGestures;
+    this._eventHandlers = [];
   }
 
-  this._hammerGestures._releaseHandle(this._element, this._type);
-  this._manager = null;
-  this._element = null;
-  this._type = null;
-  this._hammerGestures = null;
-};
+  on(events, handler) {
+    const type = this._type;
+    const handlerFilteredEvents = (e) => {
+      if (type === e.pointerType) {
+        handler(e);
+      }
+    };
 
-HammerGesturesHandle.prototype.manager = function () {
-  return this._manager;
-};
+    this._eventHandlers.push({ events, handler: handlerFilteredEvents });
+    this._manager.on(events, handlerFilteredEvents);
+  }
+
+  release() {
+    for (let i = 0; i < this._eventHandlers.length; i++) {
+      const eventHandler = this._eventHandlers[i];
+      this._manager.off(eventHandler.events, eventHandler.handler);
+    }
+
+    this._hammerGestures._releaseHandle(this._element, this._type);
+    this._manager = null;
+    this._element = null;
+    this._type = null;
+    this._hammerGestures = null;
+  }
+
+  manager() {
+    return this._manager;
+  }
+}
 
 export default new HammerGestures();

@@ -36,67 +36,69 @@ const defaultOptions = {
  * @param {number} [opts.frictionTime=0.2]
  * @param {number} [opts.zoomDelta=0.001]
  */
-function ScrollZoomControlMethod(element, opts) {
-  this._element = element;
-  this._opts = defaults(opts || {}, defaultOptions);
-  this._dynamics = new Dynamics();
-  this._eventList = [];
+class ScrollZoomControlMethod {
+  constructor(element, opts) {
+    this._element = element;
+    this._opts = defaults(opts || {}, defaultOptions);
+    this._dynamics = new Dynamics();
+    this._eventList = [];
 
-  const fn = this._opts.frictionTime ? this.withSmoothing : this.withoutSmoothing;
-  this._wheelListener = fn.bind(this);
+    const fn = this._opts.frictionTime ? this.withSmoothing : this.withoutSmoothing;
+    this._wheelListener = fn.bind(this);
 
-  element.addEventListener('wheel', this._wheelListener);
+    element.addEventListener('wheel', this._wheelListener);
+  }
+
+  /**
+   * Destructor.
+   */
+  destroy() {
+    this._element.removeEventListener('wheel', this._wheelListener);
+    clearOwnProperties(this);
+  }
+
+  withoutSmoothing(e) {
+    this._dynamics.offset = wheelEventDelta(e) * this._opts.zoomDelta;
+    this.emit('parameterDynamics', 'zoom', this._dynamics);
+
+    e.preventDefault();
+
+    this.emit('active');
+    this.emit('inactive');
+  }
+
+  withSmoothing(e) {
+    const currentTime = e.timeStamp;
+
+    // Record event.
+    this._eventList.push(e);
+
+    // Remove events whose smoothing has already expired.
+    while (this._eventList[0].timeStamp < currentTime - this._opts.frictionTime * 1000) {
+      this._eventList.shift(0);
+    }
+
+    // Get the current velocity from the recorded events.
+    // Each wheel movement causes a velocity of change/frictionTime during frictionTime.
+    let velocity = 0;
+    for (let i = 0; i < this._eventList.length; i++) {
+      const zoomChangeFromEvent = wheelEventDelta(this._eventList[i]) * this._opts.zoomDelta;
+      velocity += zoomChangeFromEvent / this._opts.frictionTime;
+    }
+
+    this._dynamics.velocity = velocity;
+    this._dynamics.friction = Math.abs(velocity) / this._opts.frictionTime;
+
+    this.emit('parameterDynamics', 'zoom', this._dynamics);
+
+    e.preventDefault();
+
+    this.emit('active');
+    this.emit('inactive');
+  }
 }
 
 eventEmitter(ScrollZoomControlMethod);
-
-/**
- * Destructor.
- */
-ScrollZoomControlMethod.prototype.destroy = function () {
-  this._element.removeEventListener('wheel', this._wheelListener);
-  clearOwnProperties(this);
-};
-
-ScrollZoomControlMethod.prototype.withoutSmoothing = function (e) {
-  this._dynamics.offset = wheelEventDelta(e) * this._opts.zoomDelta;
-  this.emit('parameterDynamics', 'zoom', this._dynamics);
-
-  e.preventDefault();
-
-  this.emit('active');
-  this.emit('inactive');
-};
-
-ScrollZoomControlMethod.prototype.withSmoothing = function (e) {
-  const currentTime = e.timeStamp;
-
-  // Record event.
-  this._eventList.push(e);
-
-  // Remove events whose smoothing has already expired.
-  while (this._eventList[0].timeStamp < currentTime - this._opts.frictionTime * 1000) {
-    this._eventList.shift(0);
-  }
-
-  // Get the current velocity from the recorded events.
-  // Each wheel movement causes a velocity of change/frictionTime during frictionTime.
-  let velocity = 0;
-  for (let i = 0; i < this._eventList.length; i++) {
-    const zoomChangeFromEvent = wheelEventDelta(this._eventList[i]) * this._opts.zoomDelta;
-    velocity += zoomChangeFromEvent / this._opts.frictionTime;
-  }
-
-  this._dynamics.velocity = velocity;
-  this._dynamics.friction = Math.abs(velocity) / this._opts.frictionTime;
-
-  this.emit('parameterDynamics', 'zoom', this._dynamics);
-
-  e.preventDefault();
-
-  this.emit('active');
-  this.emit('inactive');
-};
 
 function wheelEventDelta(e) {
   const multiplier = e.deltaMode === 1 ? 20 : 1;

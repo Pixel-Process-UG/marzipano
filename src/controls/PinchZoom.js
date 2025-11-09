@@ -30,58 +30,60 @@ import clearOwnProperties from '../util/clearOwnProperties.js';
  * @param {string} pointerType Which Hammer.js pointer type to use
  * @param {Object} opts
  */
-function PinchZoomControlMethod(element, pointerType, _opts) {
-  this._hammer = HammerGestures.get(element, pointerType);
+class PinchZoomControlMethod {
+  constructor(element, pointerType, _opts) {
+    this._hammer = HammerGestures.get(element, pointerType);
 
-  this._lastEvent = null;
+    this._lastEvent = null;
 
-  this._active = false;
+    this._active = false;
 
-  this._dynamics = new Dynamics();
+    this._dynamics = new Dynamics();
 
-  this._hammer.on('pinchstart', this._handleStart.bind(this));
-  this._hammer.on('pinch', this._handleEvent.bind(this));
-  this._hammer.on('pinchend', this._handleEnd.bind(this));
-  this._hammer.on('pinchcancel', this._handleEnd.bind(this));
+    this._hammer.on('pinchstart', this._handleStart.bind(this));
+    this._hammer.on('pinch', this._handleEvent.bind(this));
+    this._hammer.on('pinchend', this._handleEnd.bind(this));
+    this._hammer.on('pinchcancel', this._handleEnd.bind(this));
+  }
+
+  /**
+   * Destructor.
+   */
+  destroy() {
+    this._hammer.release();
+    clearOwnProperties(this);
+  }
+
+  _handleStart() {
+    if (!this._active) {
+      this._active = true;
+      this.emit('active');
+    }
+  }
+
+  _handleEnd() {
+    this._lastEvent = null;
+
+    if (this._active) {
+      this._active = false;
+      this.emit('inactive');
+    }
+  }
+
+  _handleEvent(e) {
+    let scale = e.scale;
+
+    if (this._lastEvent) {
+      scale /= this._lastEvent.scale;
+    }
+
+    this._dynamics.offset = (scale - 1) * -1;
+    this.emit('parameterDynamics', 'zoom', this._dynamics);
+
+    this._lastEvent = e;
+  }
 }
 
 eventEmitter(PinchZoomControlMethod);
-
-/**
- * Destructor.
- */
-PinchZoomControlMethod.prototype.destroy = function () {
-  this._hammer.release();
-  clearOwnProperties(this);
-};
-
-PinchZoomControlMethod.prototype._handleStart = function () {
-  if (!this._active) {
-    this._active = true;
-    this.emit('active');
-  }
-};
-
-PinchZoomControlMethod.prototype._handleEnd = function () {
-  this._lastEvent = null;
-
-  if (this._active) {
-    this._active = false;
-    this.emit('inactive');
-  }
-};
-
-PinchZoomControlMethod.prototype._handleEvent = function (e) {
-  let scale = e.scale;
-
-  if (this._lastEvent) {
-    scale /= this._lastEvent.scale;
-  }
-
-  this._dynamics.offset = (scale - 1) * -1;
-  this.emit('parameterDynamics', 'zoom', this._dynamics);
-
-  this._lastEvent = e;
-};
 
 export default PinchZoomControlMethod;

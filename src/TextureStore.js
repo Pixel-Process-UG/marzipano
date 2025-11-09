@@ -21,7 +21,6 @@ import eventEmitter from 'minimal-event-emitter';
 import defaults from './util/defaults.js';
 import retry from './util/retry.js';
 import chain from './util/chain.js';
-import inherits from './util/inherits.js';
 import clearOwnProperties from './util/clearOwnProperties.js';
 
 const debug = typeof MARZIPANODEBUG !== 'undefined' && MARZIPANODEBUG.textureStore;
