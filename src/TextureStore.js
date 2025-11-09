@@ -48,6 +48,10 @@ const State = {
 const defaultOptions = {
   // Maximum number of cached textures for previously visible tiles.
   previouslyVisibleCacheSize: 512,
+  // NEW: Maximum GPU memory budget in bytes (256 MB default)
+  maxGpuMemory: 256 * 1024 * 1024,
+  // NEW: Enable memory-based eviction
+  enforceMemoryBudget: true,
 };
 
 // Assign an id to each operation so we can track its state.
@@ -313,6 +317,15 @@ class TextureStore {
     // A tile may be pinned more than once; map each tile into a reference count.
     this._pinMap = new Map();
 
+    // NEW: Memory budget tracking
+    this._maxGpuMemory = opts.maxGpuMemory;
+    this._enforceMemoryBudget = opts.enforceMemoryBudget;
+    this._currentGpuMemory = 0;
+    this._tileMemoryMap = new Map(); // Track memory per tile
+    this._tileAccessMap = new Map(); // Track last access time per tile
+    this._tileHitCount = 0; // Telemetry: cache hits
+    this._tileMissCount = 0; // Telemetry: cache misses
+
     // Temporary variables.
     this._newVisible = new Set();
     this._noLongerVisible = [];
@@ -342,6 +355,76 @@ class TextureStore {
    */
   source() {
     return this._source;
+  }
+
+  /**
+   * NEW: Get current GPU memory usage in bytes
+   * @return {number}
+   */
+  gpuMemoryUsage() {
+    return this._currentGpuMemory;
+  }
+
+  /**
+   * NEW: Get GPU memory usage in megabytes
+   * @return {number}
+   */
+  gpuMemoryUsageMB() {
+    return this._currentGpuMemory / (1024 * 1024);
+  }
+
+  /**
+   * NEW: Get maximum GPU memory budget in bytes
+   * @return {number}
+   */
+  maxGpuMemory() {
+    return this._maxGpuMemory;
+  }
+
+  /**
+   * NEW: Set maximum GPU memory budget in bytes
+   * @param {number} bytes
+   */
+  setMaxGpuMemory(bytes) {
+    this._maxGpuMemory = bytes;
+  }
+
+  /**
+   * NEW: Get number of resident textures
+   * @return {number}
+   */
+  residentTextureCount() {
+    return this._itemMap.size;
+  }
+
+  /**
+   * NEW: Get telemetry data
+   * @return {Object}
+   */
+  telemetryData() {
+    return {
+      gpuMemoryUsage: this._currentGpuMemory,
+      gpuMemoryUsageMB: this.gpuMemoryUsageMB(),
+      maxGpuMemory: this._maxGpuMemory,
+      residentTextures: this.residentTextureCount(),
+      cacheHits: this._tileHitCount,
+      cacheMisses: this._tileMissCount
+    };
+  }
+
+  /**
+   * NEW: Estimate texture memory size in bytes
+   * @private
+   * @param {Tile} tile
+   * @return {number}
+   */
+  _estimateTextureMemory(tile) {
+    // Estimate based on tile dimensions and pixel format
+    // Assuming RGBA (4 bytes per pixel) and no compression
+    const width = tile.width || 512;
+    const height = tile.height || 512;
+    // Include mipmaps (adds ~33% more memory)
+    return width * height * 4 * 1.33;
   }
 
   /**
@@ -424,8 +507,18 @@ class TextureStore {
     // Enter the MARK state, if not already there.
     this._state = State.MARK;
 
-    // Refresh texture for dynamic assets.
+    // NEW: Update access time for LRU tracking
+    this._tileAccessMap.set(tile, Date.now());
+
+    // NEW: Track cache hit/miss for telemetry
     const item = this._itemMap.get(tile);
+    if (item && item.texture()) {
+      this._tileHitCount++;
+    } else {
+      this._tileMissCount++;
+    }
+
+    // Refresh texture for dynamic assets.
     const texture = item && item.texture();
     const asset = item && item.asset();
     if (texture && asset) {
@@ -499,6 +592,11 @@ class TextureStore {
       }
     });
 
+    // NEW: Memory-based eviction if over budget
+    if (this._enforceMemoryBudget && this._currentGpuMemory > this._maxGpuMemory) {
+      this._evictToMeetBudget();
+    }
+
     // Unload evicted tiles, unless they are pinned.
     this._evicted.forEach((tile) => {
       if (!this._pinMap.has(tile)) {
@@ -529,12 +627,62 @@ class TextureStore {
     this._evicted.length = 0;
   }
 
+  /**
+   * NEW: Evict tiles to meet memory budget
+   * @private
+   */
+  _evictToMeetBudget() {
+    // Collect candidates for eviction (unpinned, not visible)
+    const candidates = [];
+    const currentTime = Date.now();
+
+    this._itemMap.forEach((item, tile) => {
+      // Don't evict pinned or currently visible tiles
+      if (this._pinMap.has(tile) || this._visible.has(tile)) {
+        return;
+      }
+
+      const texture = item.texture();
+      if (!texture) {
+        return; // Skip tiles without loaded textures
+      }
+
+      const lastAccess = this._tileAccessMap.get(tile) || 0;
+      const timeSinceAccess = currentTime - lastAccess;
+
+      candidates.push({
+        tile: tile,
+        lastAccess: lastAccess,
+        timeSinceAccess: timeSinceAccess,
+        memorySize: this._tileMemoryMap.get(tile) || 0
+      });
+    });
+
+    // Sort by LRU (oldest access first)
+    candidates.sort((a, b) => a.lastAccess - b.lastAccess);
+
+    // Evict tiles until under budget
+    for (const candidate of candidates) {
+      if (this._currentGpuMemory <= this._maxGpuMemory) {
+        break;
+      }
+
+      this._evicted.push(candidate.tile);
+      this._previouslyVisible.remove(candidate.tile);
+    }
+  }
+
   _loadTile(tile) {
     if (this._itemMap.has(tile)) {
       throw new Error('TextureStore: loading texture already in cache');
     }
     const item = new TextureStoreItem(this, tile);
     this._itemMap.set(tile, item);
+
+    // NEW: Track memory usage
+    const estimatedMemory = this._estimateTextureMemory(tile);
+    this._tileMemoryMap.set(tile, estimatedMemory);
+    this._currentGpuMemory += estimatedMemory;
   }
 
   _unloadTile(tile) {
@@ -542,6 +690,13 @@ class TextureStore {
     if (!item) {
       throw new Error('TextureStore: unloading texture not in cache');
     }
+
+    // NEW: Update memory tracking
+    const tileMemory = this._tileMemoryMap.get(tile) || 0;
+    this._currentGpuMemory -= tileMemory;
+    this._tileMemoryMap.del(tile);
+    this._tileAccessMap.del(tile);
+
     item.destroy();
   }
 

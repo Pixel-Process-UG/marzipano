@@ -16,6 +16,7 @@
 
 // Stages
 export { default as WebGlStage } from './stages/WebGl.js';
+export { default as WebGpuStage } from './stages/WebGpu.js';
 
 // Renderers
 export { default as WebGlCubeRenderer } from './renderers/WebGlCube.js';
@@ -35,10 +36,13 @@ export { default as FlatView } from './views/Flat.js';
 // Sources
 export { default as ImageUrlSource } from './sources/ImageUrl.js';
 export { default as SingleAssetSource } from './sources/SingleAsset.js';
+export { default as VideoSource } from './sources/VideoSource.js';
+export { IIIFTileSourceAdapter, DeepZoomTileSourceAdapter, GoogleMapsTileSourceAdapter } from './sources/TileSourceAdapter.js';
 
 // Assets
 export { default as StaticAsset } from './assets/Static.js';
 export { default as DynamicAsset } from './assets/Dynamic.js';
+export { default as VideoAsset } from './assets/VideoAsset.js';
 
 // Texture store
 export { default as TextureStore } from './TextureStore.js';
@@ -75,6 +79,17 @@ export { default as colorEffects } from './colorEffects.js';
 export { default as registerDefaultControls } from './controls/registerDefaultControls.js';
 export { default as autorotate } from './autorotate.js';
 
+// Audio
+export { default as AudioAnchor } from './audio/AudioAnchor.js';
+export { default as audioManager } from './audio/AudioManager.js';
+
+// XR
+export { default as XRSessionHandle } from './xr/XRSession.js';
+export { default as XRControls } from './xr/XRControls.js';
+
+// Transitions
+export { crossfade, zoomMorph, orbitToTarget, getTransition } from './transitions/Transitions.js';
+
 // Utility functions
 import async from './util/async.js';
 import cancelize from './util/cancelize.js';
@@ -103,6 +118,13 @@ import real from './util/real.js';
 import retry from './util/retry.js';
 import tween from './util/tween.js';
 import type from './util/type.js';
+import animation from './util/animation.js';
+import LODPolicy from './util/LODPolicy.js';
+import PrefetchStrategy from './util/PrefetchStrategy.js';
+import Telemetry from './util/Telemetry.js';
+import RayPicker from './util/RayPicker.js';
+import Accessibility from './util/Accessibility.js';
+import HDR from './util/HDR.js';
 
 export const util = {
   async,
@@ -132,6 +154,13 @@ export const util = {
   retry,
   tween,
   type,
+  animation,
+  LODPolicy,
+  PrefetchStrategy,
+  Telemetry,
+  RayPicker,
+  Accessibility,
+  HDR,
 };
 
 // Expose dependencies for clients to use

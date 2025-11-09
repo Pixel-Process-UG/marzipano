@@ -611,9 +611,7 @@ class Stage {
    * @param {Function} done
    */
   createTexture(tile, asset, done) {
-    const makeTexture = () => {
-      return new this.TextureClass(this, tile, asset);
-    };
+    const makeTexture = () => new this.TextureClass(this, tile, asset);
 
     const fn = cancelize(async(makeTexture));
 

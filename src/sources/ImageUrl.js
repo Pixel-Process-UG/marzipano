@@ -80,11 +80,11 @@ class ImageUrlSource {
 
     const loadImage = stage.loadImage.bind(stage, url, rect);
 
-    const loadFn = (done) => {
+    const loadFn = (done) => 
       // TODO: Deduplicate load requests for the same URL. Although the browser
       // might be smart enough to avoid duplicate requests, they are still unduly
       // impacted by the concurrency parameter.
-      return this._loadPool.push(loadImage, (err, asset) => {
+       this._loadPool.push(loadImage, (err, asset) => {
         if (err) {
           if (err instanceof NetworkError) {
             // If a network error occurred, wait before retrying.
@@ -97,8 +97,8 @@ class ImageUrlSource {
           delete retryMap[url];
           done(null, tile, asset);
         }
-      });
-    };
+      })
+    ;
 
     // Check whether we are retrying a failed request.
     let delayAmount;
@@ -177,6 +177,45 @@ class ImageUrlSource {
         rect: { x: 0, y, width: 1, height: 1 / 6 },
       };
     }
+  }
+
+  /**
+   * NEW M1.5: Creates an ImageUrlSource from a TileSourceAdapter.
+   * 
+   * This enables support for custom tiling schemes like IIIF, Deep Zoom,
+   * and other tile-based image formats.
+   *
+   * @param {Object} adapter - A TileSourceAdapter instance with a urlFor() method
+   * @param {Object} opts - Options to pass to ImageUrlSource constructor
+   * @return {ImageUrlSource}
+   * 
+   * @example
+   * const adapter = {
+   *   urlFor: (level, face, x, y) => {
+   *     return `https://tiles.example.com/${level}/${x}/${y}.jpg`;
+   *   }
+   * };
+   * const source = ImageUrlSource.fromTiles(adapter);
+   */
+  static fromTiles(adapter, opts) {
+    if (!adapter || typeof adapter.urlFor !== 'function') {
+      throw new Error('TileSourceAdapter must have a urlFor(level, face, x, y) method');
+    }
+
+    opts = opts || {};
+
+    const urlFn = (tile) => {
+      const level = tile.z !== undefined ? tile.z : 0;
+      const face = tile.face !== undefined ? tile.face : 0;
+      const x = tile.x !== undefined ? tile.x : 0;
+      const y = tile.y !== undefined ? tile.y : 0;
+
+      const url = adapter.urlFor(level, face, x, y);
+      
+      return { url };
+    };
+
+    return new ImageUrlSource(urlFn, opts);
   }
 }
 

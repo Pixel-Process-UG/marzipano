@@ -17,6 +17,7 @@
 import eventEmitter from 'minimal-event-emitter';
 import positionAbsolutely from './util/positionAbsolutely.js';
 import clearOwnProperties from './util/clearOwnProperties.js';
+import RayPicker from './util/RayPicker.js';
 
 import { setTransform } from './util/dom.js';
 
@@ -69,12 +70,36 @@ class Hotspot {
     this._coords = {};
     this._perspective = {};
 
+    // NEW M2.3: Hotspot Engine v2 options
+    this._kind = opts.kind || 'dom'; // 'dom' or 'embedded'
+    this._zIndex = opts.zIndex !== undefined ? opts.zIndex : 0;
+    this._occlusion = opts.occlusion || 'none'; // 'none', 'hide', 'dim'
+    this._ariaLabel = opts.ariaLabel || null;
+    this._tabbable = opts.tabbable !== undefined ? opts.tabbable : false;
+
     this.setPosition(coords);
 
     // Add hotspot into the DOM.
     this._parentDomElement.appendChild(this._domElement);
 
     this.setPerspective(opts.perspective);
+
+    // NEW M2.3: Apply z-index
+    if (this._zIndex !== 0) {
+      this._domElement.style.zIndex = this._zIndex.toString();
+    }
+
+    // NEW M2.3: Apply ARIA attributes
+    if (this._ariaLabel) {
+      this._domElement.setAttribute('aria-label', this._ariaLabel);
+    }
+
+    // NEW M2.3: Set tabindex for keyboard navigation
+    if (this._tabbable) {
+      this._domElement.setAttribute('tabindex', '0');
+    } else {
+      this._domElement.setAttribute('tabindex', '-1');
+    }
 
     // Whether the hotspot is visible.
     // The hotspot may still be hidden if it's inside a hidden HotspotContainer.
@@ -168,7 +193,10 @@ class Hotspot {
     if (this._visible) {
       const view = this._view;
 
-      if (this._perspective.radius) {
+      // NEW M2.3: Use kind to determine positioning mode
+      const isEmbedded = this._kind === 'embedded' || this._perspective.radius;
+
+      if (isEmbedded) {
         // Hotspots that are embedded in the panorama may be visible even when
         // positioned behind the camera.
         isVisible = true;
@@ -184,6 +212,21 @@ class Hotspot {
         if (x != null && y != null) {
           isVisible = true;
           this._setPosition(x, y);
+        }
+      }
+
+      // NEW M2.3: Apply occlusion
+      if (isVisible && this._occlusion !== 'none') {
+        const occluded = !RayPicker.isVisible(params.yaw || 0, params.pitch || 0, view);
+        
+        if (occluded) {
+          if (this._occlusion === 'hide') {
+            isVisible = false;
+          } else if (this._occlusion === 'dim') {
+            element.style.opacity = '0.3';
+          }
+        } else {
+          element.style.opacity = '1';
         }
       }
     }
@@ -209,6 +252,99 @@ class Hotspot {
 
   _setPosition(x, y) {
     positionAbsolutely(this._domElement, x, y, this._perspective.extraTransforms);
+  }
+
+  /**
+   * NEW M2.3: Set z-index for layering
+   * @param {number} zIndex
+   */
+  setZIndex(zIndex) {
+    this._zIndex = zIndex;
+    this._domElement.style.zIndex = zIndex.toString();
+  }
+
+  /**
+   * NEW M2.3: Get z-index
+   * @return {number}
+   */
+  getZIndex() {
+    return this._zIndex;
+  }
+
+  /**
+   * NEW M2.3: Set occlusion mode
+   * @param {'none'|'hide'|'dim'} mode
+   */
+  setOcclusion(mode) {
+    this._occlusion = mode;
+    this._update();
+  }
+
+  /**
+   * NEW M2.3: Get occlusion mode
+   * @return {string}
+   */
+  getOcclusion() {
+    return this._occlusion;
+  }
+
+  /**
+   * NEW M2.3: Set hotspot kind
+   * @param {'dom'|'embedded'} kind
+   */
+  setKind(kind) {
+    this._kind = kind;
+    this._update();
+  }
+
+  /**
+   * NEW M2.3: Get hotspot kind
+   * @return {string}
+   */
+  getKind() {
+    return this._kind;
+  }
+
+  /**
+   * NEW M2.3: Set ARIA label
+   * @param {string} label
+   */
+  setAriaLabel(label) {
+    this._ariaLabel = label;
+    if (label) {
+      this._domElement.setAttribute('aria-label', label);
+    } else {
+      this._domElement.removeAttribute('aria-label');
+    }
+  }
+
+  /**
+   * NEW M2.3: Get ARIA label
+   * @return {string|null}
+   */
+  getAriaLabel() {
+    return this._ariaLabel;
+  }
+
+  /**
+   * NEW M2.3: Set tabbable (keyboard focusable)
+   * @param {boolean} tabbable
+   */
+  setTabbable(tabbable) {
+    this._tabbable = tabbable;
+    if (tabbable) {
+      this._domElement.setAttribute('tabindex', '0');
+    } else {
+      this._domElement.setAttribute('tabindex', '-1');
+    }
+  }
+
+  /**
+   * NEW M2.3: Get tabbable
+   * @return {boolean}
+   */
+  getTabbable() {
+    return this._tabbable;
   }
 }
 

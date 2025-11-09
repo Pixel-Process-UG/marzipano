@@ -36,6 +36,13 @@ const browserQuirks = {
   videoUseTexImage2D: browserParser?.browser.name === 'Chrome',
 };
 
+/**
+ * NEW M4.1: Initialize WebGL context with WebGL2 support and fallback
+ * Tries WebGL2 first, falls back to WebGL1 if not available
+ * @param {HTMLCanvasElement} canvas
+ * @param {Object} opts
+ * @return {Object} {gl, version} where version is 'webgl2' or 'webgl1'
+ */
 function initWebGlContext(canvas, opts) {
   const options = {
     alpha: true,
@@ -44,19 +51,38 @@ function initWebGlContext(canvas, opts) {
     preserveDrawingBuffer: !!(opts && opts.preserveDrawingBuffer),
   };
 
-  let gl =
-    canvas.getContext &&
-    (canvas.getContext('webgl', options) || canvas.getContext('experimental-webgl', options));
+  let gl = null;
+  let version = null;
+
+  // NEW M4.1: Try WebGL2 first (unless explicitly disabled)
+  if (opts && opts.preferWebGL1) {
+    // Skip WebGL2 if explicitly requested
+  } else {
+    gl = canvas.getContext && canvas.getContext('webgl2', options);
+    if (gl) {
+      version = 'webgl2';
+    }
+  }
+
+  // Fallback to WebGL1
+  if (!gl) {
+    gl = canvas.getContext &&
+      (canvas.getContext('webgl', options) || canvas.getContext('experimental-webgl', options));
+    
+    if (gl) {
+      version = 'webgl1';
+    }
+  }
 
   if (!gl) {
     throw new Error('Could not get WebGL context');
   }
 
-  if (opts.wrapContext) {
+  if (opts && opts.wrapContext) {
     gl = opts.wrapContext(gl);
   }
 
-  return gl;
+  return { gl, version };
 }
 
 /**
@@ -107,7 +133,10 @@ class WebGlStage extends Stage {
     setAbsolute(this._domElement);
     setFullSize(this._domElement);
 
-    this._gl = initWebGlContext(this._domElement, opts);
+    // NEW M4.1: Initialize WebGL context with version detection
+    const contextInfo = initWebGlContext(this._domElement, opts);
+    this._gl = contextInfo.gl;
+    this._glVersion = contextInfo.version;
 
     this._handleContextLoss = () => {
       this.emit('webglcontextlost');
@@ -144,10 +173,26 @@ class WebGlStage extends Stage {
   /**
    * Returns the underlying WebGL rendering context.
    *
-   * @return {WebGLRenderingContext }
+   * @return {WebGLRenderingContext|WebGL2RenderingContext}
    */
   webGlContext() {
     return this._gl;
+  }
+
+  /**
+   * NEW M4.1: Get WebGL version
+   * @return {string} 'webgl2' or 'webgl1'
+   */
+  glVersion() {
+    return this._glVersion;
+  }
+
+  /**
+   * NEW M4.1: Check if using WebGL2
+   * @return {boolean}
+   */
+  isWebGL2() {
+    return this._glVersion === 'webgl2';
   }
 
   setSizeForType() {

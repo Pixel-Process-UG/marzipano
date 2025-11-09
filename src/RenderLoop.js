@@ -16,6 +16,7 @@
 
 import eventEmitter from 'minimal-event-emitter';
 import clearOwnProperties from './util/clearOwnProperties.js';
+import Telemetry from './util/Telemetry.js';
 
 /**
  * Signals that {@link Stage#render} is about to be called.
@@ -68,6 +69,11 @@ class RenderLoop {
 
     // Handle renderInvalid events emitted by the stage.
     this._stage.addEventListener('renderInvalid', this._renderInvalidHandler);
+
+    // NEW M1.4: Telemetry tracking
+    this._telemetry = new Telemetry();
+    this._perfEmitInterval = 500; // Emit perf events every 500ms
+    this._lastPerfEmit = 0;
   }
 
   /**
@@ -116,16 +122,61 @@ class RenderLoop {
     }
   }
 
-  _loop() {
+  _loop(timestamp) {
     if (!this._running) {
       throw new Error('Render loop running while in stopped state');
     }
+
+    // NEW M1.4: Record frame for telemetry
+    if (timestamp) {
+      this._telemetry.recordFrame(timestamp);
+    }
+
     this._requestHandle = null;
     this._rendering = true;
     this.emit('beforeRender');
     this._rendering = false;
     this._stage.render();
     this.emit('afterRender');
+
+    // NEW M1.4: Emit performance data periodically
+    if (timestamp && (timestamp - this._lastPerfEmit) >= this._perfEmitInterval) {
+      this._emitPerformanceData();
+      this._lastPerfEmit = timestamp;
+    }
+  }
+
+  /**
+   * NEW M1.4: Emit performance data
+   * @private
+   */
+  _emitPerformanceData() {
+    const sample = this._telemetry.getSample();
+    this.emit('performance', sample);
+  }
+
+  /**
+   * NEW M1.4: Get telemetry instance
+   * @return {Telemetry}
+   */
+  telemetry() {
+    return this._telemetry;
+  }
+
+  /**
+   * NEW M1.4: Get current FPS
+   * @return {number}
+   */
+  getFPS() {
+    return this._telemetry.getFPS();
+  }
+
+  /**
+   * NEW M1.4: Get dropped frame count
+   * @return {number}
+   */
+  getDroppedFrames() {
+    return this._telemetry.getDroppedFrames();
   }
 }
 

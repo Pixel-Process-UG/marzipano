@@ -23,6 +23,7 @@ import noop from './util/noop.js';
 import type from './util/type.js';
 import defaults from './util/defaults.js';
 import clearOwnProperties from './util/clearOwnProperties.js';
+import AudioAnchor from './audio/AudioAnchor.js';
 
 /**
  * Signals that the scene's view has changed. See {@link View#event:change}.
@@ -81,6 +82,14 @@ class Scene {
     this._viewChangeHandler = this.emit.bind(this, 'viewChange');
     this._view.addEventListener('change', this._viewChangeHandler);
 
+    // NEW M2.1: Video source tracking
+    this._videoSource = null;
+    this._mediaTimeHandler = this._emitMediaTime.bind(this);
+
+    // NEW M2.2: Audio anchors
+    this._audioAnchors = [];
+    this._updateAudioAnchorsHandler = this._updateAudioAnchors.bind(this);
+
     // Update the hotspot container.
     this._updateHotspotContainer();
   }
@@ -91,6 +100,19 @@ class Scene {
   destroy() {
     this._view.removeEventListener('change', this._viewChangeHandler);
     this._viewer.removeEventListener('sceneChange', this._updateHotspotContainerHandler);
+
+    // NEW M2.1: Clean up video source
+    if (this._videoSource) {
+      const renderLoop = this._viewer.renderLoop();
+      renderLoop.removeEventListener('beforeRender', this._mediaTimeHandler);
+    }
+
+    // NEW M2.2: Clean up audio anchors
+    this._view.removeEventListener('change', this._updateAudioAnchorsHandler);
+    while (this._audioAnchors.length > 0) {
+      this._audioAnchors[0].destroy();
+      this._audioAnchors.shift();
+    }
 
     if (this._movement) {
       this.stopMovement();
@@ -417,6 +439,136 @@ class Scene {
     } else {
       this._hotspotContainer.hide();
     }
+  }
+
+  /**
+   * NEW M2.1: Bind a video source to this scene
+   * @param {VideoSource} videoSource - The video source to bind
+   */
+  bindVideo(videoSource) {
+    // Clean up previous video source
+    if (this._videoSource) {
+      const renderLoop = this._viewer.renderLoop();
+      renderLoop.removeEventListener('beforeRender', this._mediaTimeHandler);
+    }
+
+    this._videoSource = videoSource;
+
+    // Emit mediaTime events on every frame when video is bound
+    if (videoSource) {
+      const renderLoop = this._viewer.renderLoop();
+      renderLoop.addEventListener('beforeRender', this._mediaTimeHandler);
+    }
+  }
+
+  /**
+   * NEW M2.1: Emit media time event
+   * @private
+   */
+  _emitMediaTime() {
+    if (this._videoSource && this.visible()) {
+      const currentTime = this._videoSource.currentTime();
+      this.emit('mediaTime', { currentTime: currentTime });
+    }
+  }
+
+  /**
+   * NEW M2.1: Get the bound video source
+   * @return {VideoSource|null}
+   */
+  videoSource() {
+    return this._videoSource;
+  }
+
+  /**
+   * NEW M2.2: Create an audio anchor at the specified position
+   * @param {AudioContext} context - The Web Audio API context
+   * @param {Object} position - Position {yaw, pitch} in radians
+   * @param {Object} opts - Audio anchor options
+   * @return {AudioAnchor}
+   */
+  createAudioAnchor(context, position, opts) {
+    const anchor = new AudioAnchor(context, position, opts);
+    
+    this._audioAnchors.push(anchor);
+
+    // Update audio anchor when view changes
+    if (this._audioAnchors.length === 1) {
+      // Only add listener once
+      this._view.addEventListener('change', this._updateAudioAnchorsHandler);
+    }
+
+    // Initialize with current view
+    this._updateAudioAnchors();
+
+    return anchor;
+  }
+
+  /**
+   * NEW M2.2: Destroy an audio anchor
+   * @param {AudioAnchor} anchor - The anchor to destroy
+   */
+  destroyAudioAnchor(anchor) {
+    const index = this._audioAnchors.indexOf(anchor);
+    if (index >= 0) {
+      this._audioAnchors.splice(index, 1);
+      anchor.destroy();
+
+      // Remove listener if no more audio anchors
+      if (this._audioAnchors.length === 0) {
+        this._view.removeEventListener('change', this._updateAudioAnchorsHandler);
+      }
+    }
+  }
+
+  /**
+   * NEW M2.2: Get all audio anchors
+   * @return {AudioAnchor[]}
+   */
+  listAudioAnchors() {
+    return [].concat(this._audioAnchors);
+  }
+
+  /**
+   * NEW M2.2: Update audio anchor positions based on current view
+   * @private
+   */
+  _updateAudioAnchors() {
+    if (this._audioAnchors.length === 0) {
+      return;
+    }
+
+    const viewParams = this._view.parameters();
+    
+    // Update each audio anchor's listener position
+    for (let i = 0; i < this._audioAnchors.length; i++) {
+      this._audioAnchors[i].updateListener(viewParams);
+    }
+  }
+
+  /**
+   * NEW M2.3: Add a hotspot with simplified API
+   * @param {HTMLElement} element - The DOM element for the hotspot
+   * @param {Object} position - Position {yaw, pitch} in radians
+   * @param {Object} opts - Hotspot options (kind, zIndex, ariaLabel, tabbable, occlusion)
+   * @return {Object} HotspotHandle with setPosition() and destroy() methods
+   */
+  addHotspot(element, position, opts) {
+    opts = opts || {};
+    
+    // Create hotspot using the hotspot container
+    const hotspot = this._hotspotContainer.createHotspot(element, position, opts);
+    
+    // Return a handle with simplified API
+    return {
+      setPosition: (yaw, pitch) => {
+        hotspot.setPosition({ yaw, pitch });
+      },
+      destroy: () => {
+        this._hotspotContainer.destroyHotspot(hotspot);
+      },
+      hotspot: hotspot // Allow access to full hotspot API
+    };
   }
 }
 

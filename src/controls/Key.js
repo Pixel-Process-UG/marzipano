@@ -24,9 +24,10 @@ import clearOwnProperties from '../util/clearOwnProperties.js';
  * @classdesc
  *
  * Sets the velocity and friction of a single parameter by pressing and
- * unpressing a key.
+ * unpressing a key. Supports both legacy keyCodes and modern KeyboardEvent.key.
  *
- * @param {number} keyCode Key which activates the method when pressed
+ * @param {number|string} keyCode Key which activates the method when pressed
+ *     Can be a numeric keyCode (legacy) or KeyboardEvent.key string (modern)
  * @param {string} parameter The parameter to be controlled (e.g. `x`, `y` or `zoom`)
  * @param {number} velocity Velocity at which the parameter changes. Use a
  * negative number for opposite direction
@@ -51,6 +52,7 @@ class KeyControlMethod {
     element = element || document;
 
     this._keyCode = keyCode;
+    this._keyString = typeof keyCode === 'string' ? keyCode : null; // NEW M2.4: Support modern key strings
     this._parameter = parameter;
     this._velocity = velocity;
     this._friction = friction;
@@ -79,7 +81,11 @@ class KeyControlMethod {
   }
 
   _handlePress(e) {
-    if (e.keyCode !== this._keyCode) {
+    // NEW M2.4: Support both keyCode and modern key string
+    const matches = (this._keyString && e.key === this._keyString) || 
+                    (e.keyCode === this._keyCode);
+    
+    if (!matches) {
       return;
     }
 
@@ -92,7 +98,11 @@ class KeyControlMethod {
   }
 
   _handleRelease(e) {
-    if (e.keyCode !== this._keyCode) {
+    // NEW M2.4: Support both keyCode and modern key string
+    const matches = (this._keyString && e.key === this._keyString) || 
+                    (e.keyCode === this._keyCode);
+    
+    if (!matches) {
       return;
     }
 

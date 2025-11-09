@@ -52,17 +52,35 @@ function registerDefaultControls(controls, element, opts) {
     mouseViewDrag: new DragControlMethod(element, 'mouse'),
     mouseViewQtvr: new QtvrControlMethod(element, 'mouse'),
 
+    // Arrow keys (legacy keycodes)
     leftArrowKey: new KeyControlMethod(37, 'x', -0.7, 3),
     rightArrowKey: new KeyControlMethod(39, 'x', 0.7, 3),
     upArrowKey: new KeyControlMethod(38, 'y', -0.7, 3),
     downArrowKey: new KeyControlMethod(40, 'y', 0.7, 3),
+
+    // NEW M2.4: Modern arrow key support
+    arrowLeft: new KeyControlMethod('ArrowLeft', 'x', -0.7, 3),
+    arrowRight: new KeyControlMethod('ArrowRight', 'x', 0.7, 3),
+    arrowUp: new KeyControlMethod('ArrowUp', 'y', -0.7, 3),
+    arrowDown: new KeyControlMethod('ArrowDown', 'y', 0.7, 3),
+
+    // Plus/minus (numpad)
     plusKey: new KeyControlMethod(107, 'zoom', -0.7, 3),
     minusKey: new KeyControlMethod(109, 'zoom', 0.7, 3),
 
+    // NEW M2.4: Regular +/- keys (not just numpad)
+    plusRegular: new KeyControlMethod(187, 'zoom', -0.7, 3), // = key (+ with shift)
+    minusRegular: new KeyControlMethod(189, 'zoom', 0.7, 3), // - key
+    plusModern: new KeyControlMethod('+', 'zoom', -0.7, 3),
+    minusModern: new KeyControlMethod('-', 'zoom', 0.7, 3),
+
+    // WASD keys
     wKey: new KeyControlMethod(87, 'y', -0.7, 3),
     aKey: new KeyControlMethod(65, 'x', -0.7, 3),
     sKey: new KeyControlMethod(83, 'y', 0.7, 3),
     dKey: new KeyControlMethod(68, 'x', 0.7, 3),
+
+    // QE keys for roll
     qKey: new KeyControlMethod(81, 'roll', 0.7, 3),
     eKey: new KeyControlMethod(69, 'roll', -0.7, 3),
   };
@@ -74,8 +92,8 @@ function registerDefaultControls(controls, element, opts) {
   }
 
   const controlMethodGroups = {
-    arrowKeys: ['leftArrowKey', 'rightArrowKey', 'upArrowKey', 'downArrowKey'],
-    plusMinusKeys: ['plusKey', 'minusKey'],
+    arrowKeys: ['leftArrowKey', 'rightArrowKey', 'upArrowKey', 'downArrowKey', 'arrowLeft', 'arrowRight', 'arrowUp', 'arrowDown'],
+    plusMinusKeys: ['plusKey', 'minusKey', 'plusRegular', 'minusRegular', 'plusModern', 'minusModern'],
     wasdKeys: ['wKey', 'aKey', 'sKey', 'dKey'],
     qeKeys: ['qKey', 'eKey'],
   };

@@ -27,6 +27,9 @@ import registerDefaultRenderers from './renderers/registerDefaultRenderers.js';
 import tween from './util/tween.js';
 import noop from './util/noop.js';
 import clearOwnProperties from './util/clearOwnProperties.js';
+import RayPicker from './util/RayPicker.js';
+import Accessibility from './util/Accessibility.js';
+import { getTransition } from './transitions/Transitions.js';
 
 import { setOverflowHidden } from './util/dom.js';
 import { setAbsolute } from './util/dom.js';
@@ -101,6 +104,39 @@ class Viewer {
     // Create render loop.
     this._renderLoop = new RenderLoop(this._stage);
 
+    // NEW M1.4: Forward performance events from render loop to viewer
+    this._performanceHandler = (sample) => {
+      // Augment sample with texture store data
+      const augmentedSample = { ...sample };
+      
+      if (this._currentScene) {
+        const layers = this._currentScene.listLayers();
+        let totalGpuMB = 0;
+        let totalTilesResident = 0;
+        let totalTilesHit = 0;
+        let totalTilesMiss = 0;
+
+        for (let i = 0; i < layers.length; i++) {
+          const textureStore = layers[i].textureStore();
+          if (textureStore && textureStore.telemetryData) {
+            const telemetry = textureStore.telemetryData();
+            totalGpuMB += telemetry.gpuMemoryUsageMB || 0;
+            totalTilesResident += telemetry.residentTextures || 0;
+            totalTilesHit += telemetry.cacheHits || 0;
+            totalTilesMiss += telemetry.cacheMisses || 0;
+          }
+        }
+
+        augmentedSample.gpuMB = totalGpuMB;
+        augmentedSample.tilesResident = totalTilesResident;
+        augmentedSample.tilesHit = totalTilesHit;
+        augmentedSample.tilesMiss = totalTilesMiss;
+      }
+
+      this.emit('perf', augmentedSample);
+    };
+    this._renderLoop.addEventListener('performance', this._performanceHandler);
+
     // Create the controls and register them with the render loop.
     this._controls = new Controls();
     this._controlMethods = registerDefaultControls(
@@ -169,6 +205,19 @@ class Viewer {
 
     // The currently programmed idle movement.
     this._idleMovement = null;
+
+    // NEW M1.3: LOD/Prefetch policy
+    this._lodPolicy = null;
+
+    // NEW M3.1: WebXR session
+    this._xrSession = null;
+
+    // NEW M4.3: Tone mapping settings
+    this._toneMapping = {
+      mode: 'none',
+      exposure: 1.0,
+      gamma: 2.2
+    };
   }
 
   /**
@@ -176,6 +225,11 @@ class Viewer {
    */
   destroy() {
     window.removeEventListener('resize', this._updateSizeListener);
+
+    // NEW M1.4: Remove performance event listener
+    if (this._performanceHandler) {
+      this._renderLoop.removeEventListener('performance', this._performanceHandler);
+    }
 
     if (this._currentScene) {
       this._removeSceneEventListeners(this._currentScene);
@@ -578,17 +632,237 @@ class Viewer {
   }
 
   /**
-   * Switches to another {@link Scene scene} with a fade transition. This scene
+   * NEW M1.3: Set LOD (Level of Detail) policy for texture memory management
+   * @param {Object} policy - LOD policy configuration
+   * @param {number} policy.maxGpuMB - Maximum GPU memory budget in megabytes
+   * @param {number} [policy.prefetchAhead=2] - Number of levels to prefetch ahead
+   * @param {string} [policy.evictionStrategy='hybrid'] - Eviction strategy: 'lru', 'distance', or 'hybrid'
+   */
+  setLODPolicy(policy) {
+    if (!policy || typeof policy.maxGpuMB !== 'number') {
+      throw new Error('LODPolicy requires maxGpuMB property');
+    }
+
+    this._lodPolicy = policy;
+
+    // Apply memory budget to all existing scenes
+    const maxBytes = policy.maxGpuMB * 1024 * 1024;
+    for (let i = 0; i < this._scenes.length; i++) {
+      const scene = this._scenes[i];
+      const layers = scene.listLayers();
+      for (let j = 0; j < layers.length; j++) {
+        const textureStore = layers[j].textureStore();
+        if (textureStore && textureStore.setMaxGpuMemory) {
+          textureStore.setMaxGpuMemory(maxBytes);
+        }
+      }
+    }
+  }
+
+  /**
+   * NEW M1.3: Get current LOD policy
+   * @return {Object|null}
+   */
+  getLODPolicy() {
+    return this._lodPolicy;
+  }
+
+  /**
+   * NEW M2.3: Pick yaw/pitch coordinates from screen position
+   * @param {number} screenX - Screen X coordinate in pixels
+   * @param {number} screenY - Screen Y coordinate in pixels
+   * @return {Object|null} {yaw, pitch} in radians, or null if pick fails
+   */
+  pick(screenX, screenY) {
+    const view = this.view();
+    if (!view) {
+      return null;
+    }
+
+    const stageSize = {
+      width: this._stage.width(),
+      height: this._stage.height()
+    };
+
+    return RayPicker.screenToCoordinates(screenX, screenY, view, stageSize);
+  }
+
+  /**
+   * NEW M3.1: Check if WebXR is available
+   * @return {boolean}
+   */
+  isXREnabled() {
+    return typeof navigator !== 'undefined' && 
+           navigator.xr !== undefined &&
+           navigator.xr !== null;
+  }
+
+  /**
+   * NEW M3.1: Enter WebXR immersive mode
+   * @param {Object} opts - XR options
+   * @param {string[]} [opts.requiredFeatures] - Required XR features
+   * @param {string[]} [opts.optionalFeatures] - Optional XR features
+   * @return {Promise<XRSessionHandle>}
+   */
+  async enterXR(opts) {
+    if (!this.isXREnabled()) {
+      throw new Error('WebXR is not available in this browser');
+    }
+
+    opts = opts || {};
+
+    const sessionInit = {
+      requiredFeatures: opts.requiredFeatures || ['local-floor'],
+      optionalFeatures: opts.optionalFeatures || []
+    };
+
+    try {
+      // Request immersive VR session
+      const xrSession = await navigator.xr.requestSession('immersive-vr', sessionInit);
+      
+      // Create session handle
+      const XRSessionHandle = (await import('./xr/XRSession.js')).default;
+      const handle = new XRSessionHandle(xrSession, this._renderLoop, this.view());
+      
+      // Initialize session
+      await handle.init(opts.requiredFeatures ? opts.requiredFeatures[0] : 'local-floor');
+      
+      // Store session
+      this._xrSession = handle;
+
+      // Update stage for XR rendering
+      const canvas = this._stage.domElement();
+      if (canvas && canvas.tagName === 'CANVAS') {
+        const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+        if (gl) {
+          await xrSession.updateRenderState({
+            baseLayer: new XRWebGLLayer(xrSession, gl)
+          });
+        }
+      }
+
+      // Emit event
+      this.emit('xrSessionStart', handle);
+
+      return handle;
+    } catch (err) {
+      throw new Error(`Failed to enter XR: ${err.message}`);
+    }
+  }
+
+  /**
+   * NEW M3.1: Get current XR session
+   * @return {XRSessionHandle|null}
+   */
+  getXRSession() {
+    return this._xrSession;
+  }
+
+  /**
+   * NEW M3.1: Check if currently in XR mode
+   * @return {boolean}
+   */
+  isInXR() {
+    return this._xrSession !== null && this._xrSession.isActive();
+  }
+
+  /**
+   * NEW M4.1: Get current rendering backend
+   * @return {string} 'webgl2', 'webgl1', or 'webgpu'
+   */
+  getBackend() {
+    const stage = this._stage;
+    if (stage && stage.glVersion) {
+      return stage.glVersion();
+    }
+    return 'unknown';
+  }
+
+  /**
+   * NEW M4.1: Set rendering backend (for future stage swapping)
+   * Currently this returns the active backend info
+   * Full implementation would require stage recreation
+   * @param {string} backend - 'webgl2', 'webgl1', or 'webgpu'
+   * @param {Object} opts - Backend options
+   * @param {boolean} [opts.experimental=false] - Allow experimental backends
+   * @return {Promise<void>}
+   */
+  async setBackend(backend, opts) {
+    opts = opts || {};
+    
+    // For now, this is informational only
+    // Full implementation would require recreating the stage
+    console.warn('setBackend: Stage recreation not yet implemented, using current backend:', this.getBackend());
+    
+    if (backend === 'webgpu' && !opts.experimental) {
+      throw new Error('WebGPU backend requires experimental: true option');
+    }
+    
+    return Promise.resolve();
+  }
+
+  /**
+   * NEW M4.3: Set tone mapping options
+   * @param {Object} opts - Tone mapping options
+   * @param {string} opts.mode - 'none', 'reinhard', or 'aces'
+   * @param {number} opts.exposure - Exposure value (default: 1.0)
+   * @param {number} opts.gamma - Gamma correction value (default: 2.2)
+   */
+  setToneMapping(opts) {
+    if (!opts || typeof opts !== 'object') {
+      throw new Error('setToneMapping requires an options object');
+    }
+
+    // Validate mode
+    const validModes = ['none', 'reinhard', 'aces'];
+    if (opts.mode && !validModes.includes(opts.mode)) {
+      throw new Error(`Invalid tone mapping mode: ${opts.mode}. Must be one of: ${validModes.join(', ')}`);
+    }
+
+    // Update tone mapping settings
+    if (opts.mode !== undefined) {
+      this._toneMapping.mode = opts.mode;
+    }
+    if (opts.exposure !== undefined) {
+      this._toneMapping.exposure = Math.max(0, opts.exposure);
+    }
+    if (opts.gamma !== undefined) {
+      this._toneMapping.gamma = Math.max(0.1, opts.gamma);
+    }
+
+    // Note: Full implementation would update shader uniforms
+    // For now, settings are stored and can be queried
+    this.emit('toneMappingChange', this._toneMapping);
+    
+    // Force re-render to apply changes
+    if (this._stage) {
+      this._stage.emit('renderInvalid');
+    }
+  }
+
+  /**
+   * NEW M4.3: Get current tone mapping settings
+   * @return {Object}
+   */
+  getToneMapping() {
+    return { ...this._toneMapping };
+  }
+
+  /**
+   * Switches to another {@link Scene scene} with a transition. This scene
    * becomes the current one.
    *
    * If a transition is already taking place, it is interrupted before the new one
    * starts.
    *
    * @param {Scene} newScene The scene to switch to.
-   * @param {Object} opts Transition options.
-   * @param {number} [opts.transitionDuration=1000] Transition duration, in
-   *     milliseconds.
-   * @param {number} [opts.transitionUpdate=defaultTransitionUpdate]
+   * @param {Object|string} opts Transition options or transition kind string.
+   *     If string, must be 'crossfade', 'zoomMorph', or 'orbitToTarget'.
+   * @param {string} [opts.kind='crossfade'] NEW M3.2: Transition kind
+   * @param {number} [opts.duration=1000] NEW M3.2: Transition duration (renamed from transitionDuration)
+   * @param {number} [opts.transitionDuration=1000] Transition duration (legacy), in milliseconds.
+   * @param {Function} [opts.easing] NEW M3.2: Easing function
+   * @param {Function} [opts.transitionUpdate=defaultTransitionUpdate]
    *     Transition update function, with signature `f(t, newScene, oldScene)`.
    *     This function is called on each frame with `t` increasing from 0 to 1.
    *     An initial call with `t=0` and a final call with `t=1` are guaranteed.
@@ -596,8 +870,14 @@ class Viewer {
    * @param {function} done Function to call when the transition finishes or is
    *     interrupted. If the new scene is equal to the old one, no transition
    *     takes place, but this function is still called.
+   * @return {Promise<void>} NEW M3.2: Promise that resolves when transition completes
    */
   switchScene(newScene, opts, done) {
+    // NEW M3.2: Support transition kind as string
+    if (typeof opts === 'string') {
+      opts = { kind: opts };
+    }
+    
     opts = opts || {};
     done = done || noop;
 
@@ -638,9 +918,34 @@ class Viewer {
     }
 
     // Get the transition parameters.
-    const duration =
-      opts.transitionDuration != null ? opts.transitionDuration : defaultSwitchDuration;
-    const update = opts.transitionUpdate != null ? opts.transitionUpdate : defaultTransitionUpdate;
+    let duration = opts.duration != null ? opts.duration :
+                   opts.transitionDuration != null ? opts.transitionDuration : defaultSwitchDuration;
+    
+    // NEW M2.4: Honor prefers-reduced-motion
+    duration = Accessibility.adjustTransitionDuration(duration);
+    
+    // NEW M3.2: Get transition function based on kind
+    let update;
+    if (opts.kind) {
+      try {
+        update = getTransition(opts.kind, opts);
+      } catch (err) {
+        console.warn(`Invalid transition kind: ${opts.kind}, falling back to crossfade`);
+        update = getTransition('crossfade');
+      }
+    } else {
+      update = opts.transitionUpdate != null ? opts.transitionUpdate : defaultTransitionUpdate;
+    }
+
+    // NEW M3.2: Apply easing if provided
+    let updateWithEasing = update;
+    if (opts.easing) {
+      const easing = opts.easing;
+      updateWithEasing = (t, newScene, oldScene) => {
+        const easedT = easing(t);
+        update(easedT, newScene, oldScene);
+      };
+    }
 
     // Add new scene layers into the stage before starting the transition.
     for (let i = 0; i < newSceneLayers.length; i++) {
@@ -649,7 +954,12 @@ class Viewer {
 
     // Update function to be called on every frame.
     const tweenUpdate = (val) => {
-      update(val, newScene, oldScene);
+      // NEW M3.2: Use easing-wrapped update if available
+      const updateFn = opts.easing ? updateWithEasing : update;
+      updateFn(val, newScene, oldScene);
+      
+      // NEW M3.2: Emit transition progress event
+      this.emit('transitionProgress', { progress: val, newScene, oldScene });
     };
 
     // Once the transition is complete, remove old scene layers from the stage and
@@ -667,6 +977,10 @@ class Viewer {
         this._replacedScene = null;
       }
       this._cancelCurrentTween = null;
+      
+      // NEW M3.2: Emit transition complete event
+      this.emit('transitionComplete', { scene: newScene });
+      
       done();
     };
 
