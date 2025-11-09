@@ -18,3 +18,20 @@ coverage/
 *.log
 .husky/_
 .husky/pre-commit
+
+# Temporary development files
+convert-*.js
+convert-*.py
+fix-*.js
+fix-*.sh
+modernize-*.js
+*_STATUS.md
+*_REPORT.md
+*_SUMMARY.md
+*_PLAN.md
+*_COMPLETE.md
+*_FEATURES.md
+test-results.txt
+GITHUB_READY.md
+
+.claude
