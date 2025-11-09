@@ -35,7 +35,7 @@ MockStage.prototype.loadImage = function (url, rect, done) {
 
 describe('ImageUrlSource', function () {
   it('template url', function (done) {
-    var source = new ImageUrlSource.fromString('http://localhost/img?f={f}&z={z}&x={x}&y={y}');
+    const source = ImageUrlSource.fromString('http://localhost/img?f={f}&z={z}&x={x}&y={y}');
 
     var spy = sinon.stub().returns(function () {});
     var stage = { loadImage: spy };
@@ -60,7 +60,7 @@ describe('ImageUrlSource', function () {
   it('template url with preview', function (done) {
     var defaultOrder = 'bdflru';
 
-    var source = new ImageUrlSource.fromString('http://localhost/img?f={f}&z={z}&x={x}&y={y}', {
+    const source = ImageUrlSource.fromString('http://localhost/img?f={f}&z={z}&x={x}&y={y}', {
       cubeMapPreviewUrl: 'http://localhost/preview',
       concurrency: 10,
     });
@@ -92,7 +92,7 @@ describe('ImageUrlSource', function () {
   it('template url with preview in custom order', function (done) {
     var customOrder = 'udtblr';
 
-    var source = new ImageUrlSource.fromString('http://localhost/img?f={f}&z={z}&x={x}&y={y}', {
+    const source = ImageUrlSource.fromString('http://localhost/img?f={f}&z={z}&x={x}&y={y}', {
       cubeMapPreviewUrl: 'http://localhost/preview',
       cubeMapPreviewFaceOrder: customOrder,
       concurrency: 10,

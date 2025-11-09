@@ -170,9 +170,6 @@ class Viewer {
     // The currently programmed idle movement.
     this._idleMovement = null;
   }
-}
-
-eventEmitter(Viewer);
 
   /**
    * Destructor.
@@ -580,17 +577,6 @@ eventEmitter(Viewer);
     this.startMovement(idleMovement);
   }
 
-const defaultSwitchDuration = 1000;
-
-function defaultTransitionUpdate(val, newScene, oldScene) {
-  const layers = newScene.listLayers();
-  layers.forEach((layer) => {
-    layer.mergeEffects({ opacity: val });
-  });
-
-  newScene._hotspotContainer.domElement().style.opacity = val;
-}
-
   /**
    * Switches to another {@link Scene scene} with a fade transition. This scene
    * becomes the current one.
@@ -701,6 +687,19 @@ function defaultTransitionUpdate(val, newScene, oldScene) {
     // interim.
     this._addSceneEventListeners(newScene);
   }
+}
+
+eventEmitter(Viewer);
+
+const defaultSwitchDuration = 1000;
+
+function defaultTransitionUpdate(val, newScene, oldScene) {
+  const layers = newScene.listLayers();
+  layers.forEach((layer) => {
+    layer.mergeEffects({ opacity: val });
+  });
+
+  newScene._hotspotContainer.domElement().style.opacity = val;
 }
 
 export default Viewer;

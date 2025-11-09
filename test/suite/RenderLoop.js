@@ -63,12 +63,12 @@ describe('RenderLoop', function () {
     runMap = {};
   };
 
-  setup(function () {
+  beforeEach(function () {
     window.requestAnimationFrame = fakeRequestAnimationFrame;
     window.cancelAnimationFrame = fakeCancelAnimationFrame;
   });
 
-  teardown(function () {
+  afterEach(function () {
     window.requestAnimationFrame = realRequestAnimationFrame;
     window.cancelAnimationFrame = realCancelAnimationFrame;
   });

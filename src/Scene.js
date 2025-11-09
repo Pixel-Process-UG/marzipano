@@ -84,9 +84,6 @@ class Scene {
     // Update the hotspot container.
     this._updateHotspotContainer();
   }
-}
-
-eventEmitter(Scene);
 
   /**
    * Destructor. Clients should call {@link Viewer#destroyScene} instead.
@@ -422,5 +419,7 @@ eventEmitter(Scene);
     }
   }
 }
+
+eventEmitter(Scene);
 
 export default Scene;

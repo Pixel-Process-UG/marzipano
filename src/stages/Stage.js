@@ -107,9 +107,6 @@ class Stage {
     // Renderer class.
     this._rendererRegistry = new RendererRegistry();
   }
-}
-
-eventEmitter(Stage);
 
   /**
    * Destructor.
@@ -625,6 +622,8 @@ eventEmitter(Stage);
     });
   }
 }
+
+eventEmitter(Stage);
 
 /**
  * The stage type, used to determine the appropriate renderer for a given

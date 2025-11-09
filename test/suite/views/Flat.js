@@ -17,7 +17,7 @@ import { assert } from 'chai';
 
 import FlatView from '../../../src/views/Flat.js';
 import FlatGeometry from '../../../src/geometries/Flat.js';
-var mat4 = require('gl-matrix').mat4;
+import { mat4 } from 'gl-matrix';
 import pixelRatio from '../../../src/util/pixelRatio.js';
 
 describe('FlatView', function () {

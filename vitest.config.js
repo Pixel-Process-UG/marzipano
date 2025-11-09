@@ -37,6 +37,7 @@ export default defineConfig({
 
     // Test file patterns
     include: ['test/suite/**/*.js'],
+    exclude: ['test/suite/**/WorkCommon.js', 'node_modules/**', 'dist/**'],
 
     // Setup files
     setupFiles: [],

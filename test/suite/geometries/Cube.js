@@ -69,7 +69,7 @@ describe('CubeGeometry', function () {
   describe('levels with constant tile size', function () {
     var cube = null;
 
-    setup(function () {
+    beforeEach(function () {
       var levels = [
         { tileSize: 512, size: 512 },
         { tileSize: 512, size: 1024 },
@@ -119,7 +119,7 @@ describe('CubeGeometry', function () {
   describe('levels with doubling tile size', function () {
     var cube = null;
 
-    setup(function () {
+    beforeEach(function () {
       var levels = [
         { tileSize: 256, size: 512 },
         { tileSize: 512, size: 1024 },
@@ -147,7 +147,7 @@ describe('CubeGeometry', function () {
   describe('levels with halving tile size', function () {
     var cube = null;
 
-    setup(function () {
+    beforeEach(function () {
       var levels = [
         { tileSize: 128, size: 256 },
         { tileSize: 64, size: 512 },
@@ -178,7 +178,7 @@ describe('CubeGeometry', function () {
   describe('levels with tripling tile size', function () {
     var cube = null;
 
-    setup(function () {
+    beforeEach(function () {
       var levels = [
         { tileSize: 256, size: 512 },
         { tileSize: 256, size: 1536 },

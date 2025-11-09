@@ -138,4 +138,4 @@ function runTests(name, cls) {
   });
 }
 
-module.exports = runTests;
+export default runTests;

@@ -17,8 +17,9 @@ import { assert } from 'chai';
 
 import RectilinearView from '../../../src/views/Rectilinear.js';
 import CubeGeometry from '../../../src/geometries/Cube.js';
-var mat4 = require('gl-matrix').mat4;
-var htov = require('../../../src/util/convertFov').htov;
+import { mat4 } from 'gl-matrix';
+import convertFov from '../../../src/util/convertFov.js';
+const htov = convertFov.htov;
 import pixelRatio from '../../../src/util/pixelRatio.js';
 
 describe('RectilinearView', function () {

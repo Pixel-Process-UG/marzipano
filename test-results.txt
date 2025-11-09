@@ -1,0 +1,444 @@
+
+> marzipano@0.10.2 test
+> vitest run
+
+
+ RUN  v2.1.9 /Users/fwartner/Development/Projects/marzipano
+      API started at http://localhost:7357/
+
+ ✓ test/suite/collections/LruSet.js > LruSet > add > nonexisting element
+ ✓ test/suite/collections/LruSet.js > LruSet > add > nonexisting element with same hash as existing element
+ ✓ test/suite/collections/LruSet.js > LruSet > add > nonexisting element with different hash than existing element
+ ✓ test/suite/collections/LruSet.js > LruSet > add > existing element
+ ✓ test/suite/collections/LruSet.js > LruSet > add > existing element on a full set
+ ✓ test/suite/collections/LruSet.js > LruSet > add > nonexisting element on a full set
+ ✓ test/suite/collections/LruSet.js > LruSet > add > on a set with zero capacity
+ ✓ test/suite/collections/LruSet.js > LruSet > remove > existing element
+ ✓ test/suite/collections/LruSet.js > LruSet > remove > nonexisting element
+ ✓ test/suite/collections/LruSet.js > LruSet > remove > existing element with same hash as existing element
+ ✓ test/suite/collections/LruSet.js > LruSet > remove > before reaching capacity
+ ✓ test/suite/collections/LruSet.js > LruSet > remove > after reaching capacity
+ ✓ test/suite/collections/LruSet.js > LruSet > has > nonexisting element
+ ✓ test/suite/collections/LruSet.js > LruSet > has > nonexisting element with same hash as existing element
+ ✓ test/suite/collections/LruSet.js > LruSet > size > empty
+ ✓ test/suite/collections/LruSet.js > LruSet > size > full
+ ✓ test/suite/collections/LruSet.js > LruSet > clear > clear
+ ✓ test/suite/collections/LruSet.js > LruSet > forEach > empty
+ ✓ test/suite/collections/LruSet.js > LruSet > forEach > nonempty
+ ✓ test/suite/collections/Map.js > Map > set > nonexisting key
+ ✓ test/suite/collections/Map.js > Map > set > existing key
+ ✓ test/suite/collections/Map.js > Map > set > nonexisting key with same hash as existing key
+ ✓ test/suite/collections/Map.js > Map > set > nonexisting key with different hash than existing key
+ ✓ test/suite/collections/Map.js > Map > get > nonexisting key
+ ✓ test/suite/collections/Map.js > Map > get > nonexisting key with same hash as existing key
+ ✓ test/suite/collections/Map.js > Map > has > nonexisting key
+ ✓ test/suite/collections/Map.js > Map > has > nonexisting key with same hash as existing key
+ ✓ test/suite/collections/Map.js > Map > del > existing key
+ ✓ test/suite/collections/Map.js > Map > del > nonexisting key
+ ✓ test/suite/collections/Map.js > Map > del > existing key with same hash as existing key
+ ✓ test/suite/collections/Map.js > Map > del > nonexisting key with same hash as existing key
+ ✓ test/suite/collections/Map.js > Map > size > empty
+ ✓ test/suite/collections/Map.js > Map > size > more elements than buckets
+ ✓ test/suite/collections/Map.js > Map > clear > clear
+ ✓ test/suite/collections/Map.js > Map > forEach > empty
+ ✓ test/suite/collections/Map.js > Map > forEach > nonempty
+ ✓ test/suite/collections/LruMap.js > LruMap > set > nonexisting key
+ ✓ test/suite/collections/LruMap.js > LruMap > set > nonexisting key with same hash as existing key
+ ✓ test/suite/collections/LruMap.js > LruMap > set > nonexisting key with different hash than existing key
+ ✓ test/suite/collections/LruMap.js > LruMap > set > existing key
+ ✓ test/suite/collections/LruMap.js > LruMap > set > existing key on a full map
+ ✓ test/suite/collections/LruMap.js > LruMap > set > nonexisting key on a full map
+ ✓ test/suite/collections/LruMap.js > LruMap > set > on a map with zero capacity
+ ✓ test/suite/collections/LruMap.js > LruMap > get > nonexisting key
+ ✓ test/suite/collections/LruMap.js > LruMap > get > nonexisting key with same hash as existing key
+ ✓ test/suite/collections/LruMap.js > LruMap > has > nonexisting key
+ ✓ test/suite/collections/LruMap.js > LruMap > has > nonexisting key with same hash as existing key
+ ✓ test/suite/collections/LruMap.js > LruMap > del > existing key
+ ✓ test/suite/collections/LruMap.js > LruMap > del > nonexisting key
+ ✓ test/suite/collections/LruMap.js > LruMap > del > existing key with same hash as existing key
+ ✓ test/suite/collections/LruMap.js > LruMap > del > nonexisting key with same hash as existing key
+ ✓ test/suite/collections/LruMap.js > LruMap > del > first key on a full map
+ ✓ test/suite/collections/LruMap.js > LruMap > size > empty
+ ✓ test/suite/collections/LruMap.js > LruMap > size > one element
+ ✓ test/suite/collections/LruMap.js > LruMap > size > two elements with different hash
+ ✓ test/suite/collections/LruMap.js > LruMap > size > two elements with same hash
+ ✓ test/suite/collections/LruMap.js > LruMap > size > full
+ ✓ test/suite/collections/LruMap.js > LruMap > clear > clear
+ ✓ test/suite/collections/LruMap.js > LruMap > forEach > empty
+ ✓ test/suite/collections/LruMap.js > LruMap > forEach > nonempty
+ ✓ test/suite/controls/Composer.js > ControlComposer > offset
+ ✓ test/suite/controls/Composer.js > ControlComposer > offsets on multiple parameters
+ ✓ test/suite/controls/Composer.js > ControlComposer > offset from multiple methods
+ ✓ test/suite/controls/Composer.js > ControlComposer > offsets on same parameter from single method
+ ✓ test/suite/controls/Composer.js > ControlComposer > equal offsets on same parameter from single method
+ ✓ test/suite/controls/Composer.js > ControlComposer > throw with unknown parameter
+ ✓ test/suite/controls/Composer.js > ControlComposer > velocity
+ ✓ test/suite/controls/Composer.js > ControlComposer > offset overrides existing velocity
+ ✓ test/suite/controls/Composer.js > ControlComposer > velocity is added to existing offset
+ ✓ test/suite/controls/Composer.js > ControlComposer > velocity after velocity with friction
+ ✓ test/suite/controls/Composer.js > ControlComposer > velocity change between compose() calls
+ ✓ test/suite/controls/Composer.js > ControlComposer > friction
+ ✓ test/suite/controls/Composer.js > ControlComposer > friction with negative velocity
+ ✓ test/suite/controls/Composer.js > ControlComposer > friction after velocity
+ ✓ test/suite/controls/Composer.js > ControlComposer > velocity becomes 0 between offset calls
+ ✓ test/suite/controls/Composer.js > ControlComposer > offset after velocity from other method
+ ✓ test/suite/geometries/Cube.js > CubeGeometry > malformed levels > level size must not be smaller than parent level
+ ✓ test/suite/geometries/Cube.js > CubeGeometry > malformed levels > level size must be multiple of parent level
+ ✓ test/suite/geometries/Cube.js > CubeGeometry > malformed levels > number of tiles in level must not be smaller than parent level
+ ✓ test/suite/geometries/Cube.js > CubeGeometry > malformed levels > number of tiles in level must be multiple of parent level
+ ✓ test/suite/geometries/Cube.js > CubeGeometry > levels with constant tile size > top tile does not have parent
+ ✓ test/suite/geometries/Cube.js > CubeGeometry > levels with constant tile size > parent of level 1
+ ✓ test/suite/geometries/Cube.js > CubeGeometry > levels with constant tile size > parent of level 2
+ ✓ test/suite/geometries/Cube.js > CubeGeometry > levels with constant tile size > children of level 0
+ ✓ test/suite/geometries/Cube.js > CubeGeometry > levels with constant tile size > children of level 1 top right
+ ✓ test/suite/geometries/Cube.js > CubeGeometry > levels with doubling tile size > parent top left tile
+ ✓ test/suite/geometries/Cube.js > CubeGeometry > levels with doubling tile size > parent top right tile
+ ✓ test/suite/geometries/Cube.js > CubeGeometry > levels with doubling tile size > children of level 0 top right
+ ✓ test/suite/geometries/Cube.js > CubeGeometry > levels with halving tile size > parent of top left tile
+ ✓ test/suite/geometries/Cube.js > CubeGeometry > levels with halving tile size > parent of top right tile
+ ✓ test/suite/geometries/Cube.js > CubeGeometry > levels with halving tile size > children of level 0 top right
+ ✓ test/suite/geometries/Cube.js > CubeGeometry > levels with tripling tile size > top right tile parent
+ ✓ test/suite/geometries/Cube.js > CubeGeometry > levels with tripling tile size > top right tile children
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > constructor > sets default parameters
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > getters/setters > yaw
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > getters/setters > pitch
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > getters/setters > fov
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > getters/setters > size
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > parameter normalization > yaw
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > parameter normalization > pitch
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > view limiting > yaw
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > view limiting > pitch
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > view limiting > hfov
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > view limiting > vfov
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > view limiting > resolution
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > view limiting > enforced on initial parameters
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > view limiting > replace existing limiter
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > projection > compute initial
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > projection > update on yaw change
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > projection > update on pitch change
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > projection > update on fov change
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > projection > update on viewport change
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > selectLevel > returns level
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > square viewport > fully visible
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > square viewport > partially visible extending to top right
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > square viewport > partially visible extending to bottom right
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > square viewport > partially visible extending to bottom left
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > square viewport > partially visible extending to top left
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > square viewport > partially visible and larger than viewport
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > square viewport > invisible above viewport
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > square viewport > invisible below viewport
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > square viewport > invisible to the left of viewport
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > square viewport > invisible to the right of viewport
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > square viewport > behind camera
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > square viewport > partially behind camera
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > wide viewport > fully visible
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > wide viewport > partially visible extending to top right
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > wide viewport > partially visible extending to bottom right
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > wide viewport > partially visible extending to bottom left
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > wide viewport > partially visible extending to top left
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > wide viewport > partially visible and larger than viewport
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > wide viewport > invisible above viewport
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > wide viewport > invisible below viewport
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > wide viewport > invisible to the left of viewport
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > wide viewport > invisible to the right of viewport
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > wide viewport > behind camera
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > wide viewport > partially behind camera
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > narrow viewport > fully visible
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > narrow viewport > partially visible extending to top right
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > narrow viewport > partially visible extending to bottom right
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > narrow viewport > partially visible extending to bottom left
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > narrow viewport > partially visible extending to top left
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > narrow viewport > partially visible and larger than viewport
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > narrow viewport > invisible above viewport
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > narrow viewport > invisible below viewport
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > narrow viewport > invisible to the left of viewport
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > narrow viewport > invisible to the right of viewport
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > narrow viewport > behind camera
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > intersects > narrow viewport > partially behind camera
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > coordinatesToScreen > in general > writes to result argument
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > coordinatesToScreen > view looking ahead > center
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > coordinatesToScreen > view looking ahead > top left
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > coordinatesToScreen > view looking ahead > bottom right
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > coordinatesToScreen > view looking ahead > offscreen
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > coordinatesToScreen > view looking ahead > behind camera
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > coordinatesToScreen > view looking behind > center
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > coordinatesToScreen > view looking behind > top left
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > coordinatesToScreen > view looking behind > bottom right
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > coordinatesToScreen > view looking behind > offscreen
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > coordinatesToScreen > view looking behind > behind camera
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > screenToCoordinates > in general > writes to result argument
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > screenToCoordinates > view looking ahead > center
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > screenToCoordinates > view looking ahead > top left
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > screenToCoordinates > view looking ahead > bottom right
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > screenToCoordinates > view looking ahead > offscreen
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > screenToCoordinates > view looking behind > center
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > screenToCoordinates > view looking behind > top left
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > screenToCoordinates > view looking behind > bottom right
+ ✓ test/suite/views/Rectilinear.js > RectilinearView > screenToCoordinates > view looking behind > offscreen
+ ✓ test/suite/views/Flat.js > FlatView > constructor > sets default parameters
+ ✓ test/suite/views/Flat.js > FlatView > getters/setters > x
+ ✓ test/suite/views/Flat.js > FlatView > getters/setters > y
+ ✓ test/suite/views/Flat.js > FlatView > getters/setters > zoom
+ ✓ test/suite/views/Flat.js > FlatView > getters/setters > size
+ ✓ test/suite/views/Flat.js > FlatView > view limiting > x
+ ✓ test/suite/views/Flat.js > FlatView > view limiting > y
+ ✓ test/suite/views/Flat.js > FlatView > view limiting > zoom
+ ✓ test/suite/views/Flat.js > FlatView > view limiting > resolution
+ ✓ test/suite/views/Flat.js > FlatView > view limiting > visibleX
+ ✓ test/suite/views/Flat.js > FlatView > view limiting > visibleY
+ ✓ test/suite/views/Flat.js > FlatView > view limiting > letterbox > square image square viewport
+ ✓ test/suite/views/Flat.js > FlatView > view limiting > letterbox > square image on narrow viewport
+ ✓ test/suite/views/Flat.js > FlatView > view limiting > letterbox > square image on wide viewport
+ ✓ test/suite/views/Flat.js > FlatView > view limiting > letterbox > non-square image narrower than viewport
+ ✓ test/suite/views/Flat.js > FlatView > view limiting > letterbox > non-square image wider than viewport
+ ✓ test/suite/views/Flat.js > FlatView > view limiting > enforced on initial parameters
+ ✓ test/suite/views/Flat.js > FlatView > view limiting > replace existing limiter
+ ✓ test/suite/views/Flat.js > FlatView > projection > compute initial
+ ✓ test/suite/views/Flat.js > FlatView > projection > update on x change
+ ✓ test/suite/views/Flat.js > FlatView > projection > update on y change
+ ✓ test/suite/views/Flat.js > FlatView > projection > update on zoom change
+ ✓ test/suite/views/Flat.js > FlatView > projection > update on media aspect ratio change
+ ✓ test/suite/views/Flat.js > FlatView > projection > update on viewport change
+ ✓ test/suite/views/Flat.js > FlatView > selectLevel > returns level
+ ✓ test/suite/views/Flat.js > FlatView > intersects > square viewport > fully visible
+ ✓ test/suite/views/Flat.js > FlatView > intersects > square viewport > partially visible extending to top right
+ ✓ test/suite/views/Flat.js > FlatView > intersects > square viewport > partially visible extending to bottom right
+ ✓ test/suite/views/Flat.js > FlatView > intersects > square viewport > partially visible extending to bottom left
+ ✓ test/suite/views/Flat.js > FlatView > intersects > square viewport > partially visible extending to top left
+ ✓ test/suite/views/Flat.js > FlatView > intersects > square viewport > above viewport
+ ✓ test/suite/views/Flat.js > FlatView > intersects > square viewport > below viewport
+ ✓ test/suite/views/Flat.js > FlatView > intersects > square viewport > to the left of viewport
+ ✓ test/suite/views/Flat.js > FlatView > intersects > square viewport > to the right of viewport
+ ✓ test/suite/views/Flat.js > FlatView > intersects > wide viewport > fully visible
+ ✓ test/suite/views/Flat.js > FlatView > intersects > wide viewport > partially visible extending to top right
+ ✓ test/suite/views/Flat.js > FlatView > intersects > wide viewport > partially visible extending to bottom right
+ ✓ test/suite/views/Flat.js > FlatView > intersects > wide viewport > partially visible extending to bottom left
+ ✓ test/suite/views/Flat.js > FlatView > intersects > wide viewport > partially visible extending to top left
+ ✓ test/suite/views/Flat.js > FlatView > intersects > wide viewport > above viewport
+ ✓ test/suite/views/Flat.js > FlatView > intersects > wide viewport > below viewport
+ ✓ test/suite/views/Flat.js > FlatView > intersects > wide viewport > to the left of viewport
+ ✓ test/suite/views/Flat.js > FlatView > intersects > wide viewport > to the right of viewport
+ ✓ test/suite/views/Flat.js > FlatView > intersects > narrow viewport > fully visible
+ ✓ test/suite/views/Flat.js > FlatView > intersects > narrow viewport > partially visible extending to top right
+ ✓ test/suite/views/Flat.js > FlatView > intersects > narrow viewport > partially visible extending to bottom right
+ ✓ test/suite/views/Flat.js > FlatView > intersects > narrow viewport > partially visible extending to bottom left
+ ✓ test/suite/views/Flat.js > FlatView > intersects > narrow viewport > partially visible extending to top left
+ ✓ test/suite/views/Flat.js > FlatView > intersects > narrow viewport > above viewport
+ ✓ test/suite/views/Flat.js > FlatView > intersects > narrow viewport > below viewport
+ ✓ test/suite/views/Flat.js > FlatView > intersects > narrow viewport > to the left of viewport
+ ✓ test/suite/views/Flat.js > FlatView > intersects > narrow viewport > to the right of viewport
+ ✓ test/suite/views/Flat.js > FlatView > coordinatesToScreen > in general > writes to result argument
+ ✓ test/suite/views/Flat.js > FlatView > coordinatesToScreen > view centered on center > center
+ ✓ test/suite/views/Flat.js > FlatView > coordinatesToScreen > view centered on center > top left
+ ✓ test/suite/views/Flat.js > FlatView > coordinatesToScreen > view centered on center > bottom right
+ ✓ test/suite/views/Flat.js > FlatView > coordinatesToScreen > view centered on top left corner > center
+ ✓ test/suite/views/Flat.js > FlatView > coordinatesToScreen > view centered on top left corner > top left
+ ✓ test/suite/views/Flat.js > FlatView > coordinatesToScreen > view centered on top left corner > bottom right
+ ✓ test/suite/views/Flat.js > FlatView > coordinatesToScreen > view centered on bottom right corner > center
+ ✓ test/suite/views/Flat.js > FlatView > coordinatesToScreen > view centered on bottom right corner > top left
+ ✓ test/suite/views/Flat.js > FlatView > coordinatesToScreen > view centered on bottom right corner > bottom right
+ ✓ test/suite/views/Flat.js > FlatView > screenToCoordinates > in general > writes to result argument
+ ✓ test/suite/views/Flat.js > FlatView > screenToCoordinates > view centered on center > center
+ ✓ test/suite/views/Flat.js > FlatView > screenToCoordinates > view centered on center > top left
+ ✓ test/suite/views/Flat.js > FlatView > screenToCoordinates > view centered on center > bottom right
+ ✓ test/suite/views/Flat.js > FlatView > screenToCoordinates > view centered on top left corner > center
+ ✓ test/suite/views/Flat.js > FlatView > screenToCoordinates > view centered on top left corner > top left
+ ✓ test/suite/views/Flat.js > FlatView > screenToCoordinates > view centered on top left corner > bottom right
+ ✓ test/suite/views/Flat.js > FlatView > screenToCoordinates > view centered on bottom right corner > center
+ ✓ test/suite/views/Flat.js > FlatView > screenToCoordinates > view centered on bottom right corner > top left
+ ✓ test/suite/views/Flat.js > FlatView > screenToCoordinates > view centered on bottom right corner > bottom right
+ ✓ test/suite/TextureStore.js > TextureStore > visibility > mark tile as visible
+ ✓ test/suite/TextureStore.js > TextureStore > visibility > mark tile as not visible
+ ✓ test/suite/TextureStore.js > TextureStore > state machine > nested frames
+ ✓ test/suite/TextureStore.js > TextureStore > state machine > start frame out of order
+ ✓ test/suite/TextureStore.js > TextureStore > state machine > mark tile out of order
+ ✓ test/suite/TextureStore.js > TextureStore > state machine > end frame out of order
+ ✓ test/suite/TextureStore.js > TextureStore > textures > load texture for static asset
+ ✓ test/suite/TextureStore.js > TextureStore > textures > load texture for dynamic asset
+ ✓ test/suite/TextureStore.js > TextureStore > textures > retry on loadAsset failure
+ ✓ test/suite/TextureStore.js > TextureStore > textures > error on createTexture failure
+ × test/suite/TextureStore.js > TextureStore > textures > cancel load
+   → done() callback is deprecated, use promise instead
+ ✓ test/suite/TextureStore.js > TextureStore > textures > unload texture
+ ✓ test/suite/TextureStore.js > TextureStore > textures > return asset for a tile
+ ✓ test/suite/TextureStore.js > TextureStore > textures > return texture for a tile
+ ✓ test/suite/TextureStore.js > TextureStore > textures > refresh texture for dynamic assets
+ ✓ test/suite/TextureStore.js > TextureStore > textures > do not refresh texture for static assets
+ ✓ test/suite/TextureStore.js > TextureStore > textures > notify on texture invalidation by dynamic asset
+ ✓ test/suite/TextureStore.js > TextureStore > LRU > previously visible tile without a texture is not kept
+ ✓ test/suite/TextureStore.js > TextureStore > LRU > previously visible tile with a texture is kept
+ ✓ test/suite/TextureStore.js > TextureStore > LRU > older tile is displaced by newer tile
+ ✓ test/suite/TextureStore.js > TextureStore > pinning > pinning is reference-counted
+ ✓ test/suite/TextureStore.js > TextureStore > pinning > pinning tile causes load
+ ✓ test/suite/TextureStore.js > TextureStore > pinning > unpinning tile causes unload
+ ✓ test/suite/TextureStore.js > TextureStore > pinning > pinned tile is not evicted when it becomes invisible
+ ✓ test/suite/TextureStore.js > TextureStore > pinning > unpinned tile is evicted when it becomes invisible
+ ✓ test/suite/Stage.js > Stage > manages the layer stack correctly
+ ✓ test/suite/Stage.js > Stage > throws if layer validation fails
+ ✓ test/suite/Stage.js > Stage > emits invalidation event
+ ✓ test/suite/Stage.js > Stage > gets and sets size
+ ✓ test/suite/Stage.js > Stage > general rendering > renders a single layer
+ ✓ test/suite/Stage.js > Stage > general rendering > renders multiple layers
+ ✓ test/suite/Stage.js > Stage > general rendering > renders multiple layers with the same renderer
+ ✓ test/suite/Stage.js > Stage > general rendering > renders multiple layers with the same texture store
+ ✓ test/suite/Stage.js > Stage > non-progressive rendering > falls back to a parent tile
+ ✓ test/suite/Stage.js > Stage > non-progressive rendering > falls back to a grandparent tile
+ ✓ test/suite/Stage.js > Stage > non-progressive rendering > falls back to children tiles
+ ✓ test/suite/Stage.js > Stage > non-progressive rendering > falls back to both children and parent tiles
+ ✓ test/suite/Stage.js > Stage > non-progressive rendering > falls back to grandchildren tiles on trivial geometries
+ ✓ test/suite/Stage.js > Stage > non-progressive rendering > does not fall back to grandchildren tiles on nontrivial geometries
+ ✓ test/suite/Stage.js > Stage > non-progressive rendering > does not render a fallback tile more than once
+ ✓ test/suite/Stage.js > Stage > non-progressive rendering > does not fall back when unnecessary
+ ✓ test/suite/Stage.js > Stage > non-progressive rendering > renders and loads tiles in the right order
+ ✓ test/suite/Stage.js > Stage > progressive rendering > falls back to a parent tile
+ ✓ test/suite/Stage.js > Stage > progressive rendering > falls back to a grandparent tile
+ ✓ test/suite/Stage.js > Stage > progressive rendering > falls back to children tiles
+ ✓ test/suite/Stage.js > Stage > progressive rendering > falls back to both children and parent tiles
+ ✓ test/suite/Stage.js > Stage > progressive rendering > falls back to grandchildren tiles on trivial geometries
+ ✓ test/suite/Stage.js > Stage > progressive rendering > does not fall back to grandchildren tiles on nontrivial geometries
+ ✓ test/suite/Stage.js > Stage > progressive rendering > does not render a fallback tile more than once
+ ✓ test/suite/Stage.js > Stage > progressive rendering > does not fall back when unnecessary
+ ✓ test/suite/Stage.js > Stage > progressive rendering > renders and loads tiles in the right order
+ ✓ test/suite/collections/Set.js > Set > add > single element
+ ✓ test/suite/collections/Set.js > Set > add > nonexisting element with same hash as existing element
+ ✓ test/suite/collections/Set.js > Set > add > nonexisting element with different hash than existing element
+ ✓ test/suite/collections/Set.js > Set > add > existing element
+ ✓ test/suite/collections/Set.js > Set > remove > existing element
+ ✓ test/suite/collections/Set.js > Set > remove > nonexisting element
+ ✓ test/suite/collections/Set.js > Set > remove > existing element with same hash as existing element
+ ✓ test/suite/collections/Set.js > Set > remove > nonexisting element with same hash as existing element
+ ✓ test/suite/collections/Set.js > Set > has > nonexisting element
+ ✓ test/suite/collections/Set.js > Set > has > nonexisting element with same hash as existing element
+ ✓ test/suite/collections/Set.js > Set > size > empty
+ ✓ test/suite/collections/Set.js > Set > size > more elements than buckets
+ ✓ test/suite/collections/Set.js > Set > clear > clear
+ ✓ test/suite/collections/Set.js > Set > forEach > empty
+ ✓ test/suite/collections/Set.js > Set > forEach > nonempty
+ ✓ test/suite/sources/ImageUrl.js > ImageUrlSource > template url
+ ✓ test/suite/sources/ImageUrl.js > ImageUrlSource > template url with preview
+ ✓ test/suite/sources/ImageUrl.js > ImageUrlSource > template url with preview in custom order
+ ✓ test/suite/sources/ImageUrl.js > ImageUrlSource > full rect
+ ✓ test/suite/sources/ImageUrl.js > ImageUrlSource > partial rect
+ ✓ test/suite/sources/ImageUrl.js > ImageUrlSource > error
+ ✓ test/suite/Layer.js > Layer > getters
+ ✓ test/suite/Layer.js > Layer > visible tiles
+ ✓ test/suite/Layer.js > Layer > fixed level
+ ✓ test/suite/Layer.js > Layer > pin level
+ ✓ test/suite/Layer.js > Layer > pin first level
+ ✓ test/suite/Layer.js > Layer > view events
+ ✓ test/suite/Layer.js > Layer > texture store events
+ ✓ test/suite/util/convertFov.js > convertFov > htov
+ ✓ test/suite/util/convertFov.js > convertFov > htod
+ ✓ test/suite/util/convertFov.js > convertFov > vtoh
+ ✓ test/suite/util/convertFov.js > convertFov > vtod
+ ✓ test/suite/util/convertFov.js > convertFov > dtoh
+ ✓ test/suite/util/convertFov.js > convertFov > dtov
+ ✓ test/suite/TileSearcher.js > TileSearcher > none visible
+ ✓ test/suite/TileSearcher.js > TileSearcher > one visible
+ ✓ test/suite/TileSearcher.js > TileSearcher > many visible
+ ✓ test/suite/TileSearcher.js > TileSearcher > preserves existing array members
+ ✓ test/suite/TileSearcher.js > TileSearcher > consecutive searches work correctly
+ ✓ test/suite/Timer.js > Timer > start
+ ✓ test/suite/Timer.js > Timer > stop
+ ✓ test/suite/Timer.js > Timer > reset
+ ✓ test/suite/Timer.js > Timer > set duration after start with infinity
+ ✓ test/suite/Timer.js > Timer > set duration when stopped
+ ✓ test/suite/Timer.js > Timer > increase duration when started
+ ✓ test/suite/Timer.js > Timer > decrease duration when started
+ ✓ test/suite/util/chain.js > chain > zero
+ ✓ test/suite/util/chain.js > chain > one async
+ ✓ test/suite/util/chain.js > chain > two async
+ ✓ test/suite/util/chain.js > chain > one sync
+ ✓ test/suite/util/chain.js > chain > two sync
+ ✓ test/suite/util/chain.js > chain > one sync, one async
+ ✓ test/suite/util/chain.js > chain > one async, one sync
+ ✓ test/suite/util/chain.js > chain > error aborts chain
+ ✓ test/suite/util/chain.js > chain > cancel aborts chain
+ ✓ test/suite/RenderLoop.js > RenderLoop > initial state
+ ✓ test/suite/RenderLoop.js > RenderLoop > start
+ ✓ test/suite/RenderLoop.js > RenderLoop > stop
+ ✓ test/suite/RenderLoop.js > RenderLoop > renderOnNextFrame
+ ✓ test/suite/util/calcRect.js > calcRect > null
+ ✓ test/suite/util/calcRect.js > calcRect > relative offset
+ ✓ test/suite/util/calcRect.js > calcRect > relative size
+ ✓ test/suite/util/calcRect.js > calcRect > relative offset and size
+ ✓ test/suite/util/calcRect.js > calcRect > absolute offset
+ ✓ test/suite/util/calcRect.js > calcRect > absolute size
+ ✓ test/suite/util/calcRect.js > calcRect > absolute offset and size
+ ✓ test/suite/util/calcRect.js > calcRect > relative offset absolute size
+ ✓ test/suite/util/calcRect.js > calcRect > absolute offset relative size
+ ✓ test/suite/util/calcRect.js > calcRect > absolute overrides relative
+ ✓ test/suite/util/retry.js > retry > zero failures
+ ✓ test/suite/util/retry.js > retry > one failure
+ ✓ test/suite/util/retry.js > retry > two failures
+ ✓ test/suite/util/retry.js > retry > cancel
+ ✓ test/suite/assets/Static.js > StaticAsset > element
+ ✓ test/suite/assets/Static.js > StaticAsset > image width and height
+ ✓ test/suite/assets/Static.js > StaticAsset > canvas width and height
+ ✓ test/suite/assets/Static.js > StaticAsset > isDynamic
+ ✓ test/suite/assets/Static.js > StaticAsset > timestamp
+ ✓ test/suite/assets/Dynamic.js > DynamicAsset > element
+ ✓ test/suite/assets/Dynamic.js > DynamicAsset > image width and height
+ ✓ test/suite/assets/Dynamic.js > DynamicAsset > canvas width and height
+ ✓ test/suite/assets/Dynamic.js > DynamicAsset > isDynamic
+ ✓ test/suite/assets/Dynamic.js > DynamicAsset > mark dirty
+ ✓ test/suite/util/cancelize.js > cancelize > cancel
+ ✓ test/suite/util/cancelize.js > cancelize > no cancel
+ ✓ test/suite/util/type.js > type > undefined
+ ✓ test/suite/util/type.js > type > null
+ ✓ test/suite/util/type.js > type > number
+ ✓ test/suite/util/type.js > type > boolean
+ ✓ test/suite/util/type.js > type > array
+ ✓ test/suite/util/type.js > type > object
+ ✓ test/suite/util/type.js > type > function
+ ✓ test/suite/util/type.js > type > regexp
+ ✓ test/suite/util/async.js > async > success
+ ✓ test/suite/util/async.js > async > failure
+ ✓ test/suite/util/defer.js > defer > without arguments
+ ✓ test/suite/util/defer.js > defer > with arguments
+ ✓ test/suite/util/delay.js > delay > cancel
+ ✓ test/suite/util/delay.js > delay > no cancel
+ ✓ test/suite/util/compose.js > compose > zero
+ ✓ test/suite/util/compose.js > compose > one
+ ✓ test/suite/util/compose.js > compose > two
+ ✓ test/suite/util/ispot.js > ispot > ispot
+ ✓ test/suite/util/degToRad.js > degToRad > degToRad
+ ✓ test/suite/util/decimal.js > decimal > decimal
+ ✓ test/suite/util/radToDeg.js > radToDeg > radToDeg
+ ✓ test/suite/util/defaults.js > defaults > defaults
+ ✓ test/suite/util/mod.js > mod > mod
+ ✓ test/suite/util/real.js > real > real
+ ✓ test/suite/util/once.js > once > does not call a second time
+ ✓ test/suite/util/cmp.js > cmp > less than
+ ✓ test/suite/util/cmp.js > cmp > equal
+ ✓ test/suite/util/cmp.js > cmp > greater than
+ ✓ test/suite/util/clamp.js > clamp > below
+ ✓ test/suite/util/clamp.js > clamp > above
+ ✓ test/suite/collections/WorkQueue.js > WorkQueue > one sync
+ ✓ test/suite/collections/WorkQueue.js > WorkQueue > one async
+ ✓ test/suite/collections/WorkQueue.js > WorkQueue > two sync
+ ✓ test/suite/collections/WorkQueue.js > WorkQueue > two async
+ ✓ test/suite/collections/WorkQueue.js > WorkQueue > one sync, one async
+ ✓ test/suite/collections/WorkQueue.js > WorkQueue > one async, one sync
+ ✓ test/suite/collections/WorkQueue.js > WorkQueue > cancel
+ ✓ test/suite/collections/WorkQueue.js > WorkQueue > pause and resume
+ ✓ test/suite/collections/WorkPool.js > WorkPool > one sync
+ ✓ test/suite/collections/WorkPool.js > WorkPool > one async
+ ✓ test/suite/collections/WorkPool.js > WorkPool > two sync
+ ✓ test/suite/collections/WorkPool.js > WorkPool > two async
+ ✓ test/suite/collections/WorkPool.js > WorkPool > one sync, one async
+ ✓ test/suite/collections/WorkPool.js > WorkPool > one async, one sync
+ ✓ test/suite/collections/WorkPool.js > WorkPool > cancel
+ ✓ test/suite/collections/WorkPool.js > WorkPool > pause and resume
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 25 unhandled errors during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+ Test Files  2 failed | 38 passed (40)
+      Tests  1 failed | 422 passed (423)
+     Errors  25 errors
+   Start at  16:40:29
+   Duration  4.24s (transform 934ms, setup 0ms, collect 2.91s, tests 405ms, environment 20.04s, prepare 2.88s)
+

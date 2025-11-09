@@ -58,7 +58,7 @@ describe('Layer', function () {
   var selectedLevel = levelList[2];
   var tileList = [new MockTile(), new MockTile()];
 
-  setup(function () {
+  beforeEach(function () {
     stage = new MockStage();
     source = new MockSource();
     geometry = new MockGeometry(levelList);
@@ -66,7 +66,7 @@ describe('Layer', function () {
     textureStore = new MockTextureStore();
   });
 
-  teardown(function () {
+  afterEach(function () {
     stage = source = geometry = view = textureStore = null;
   });
 

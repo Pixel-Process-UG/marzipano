@@ -37,7 +37,7 @@ describe('ControlComposer', function () {
   };
 
   // Initialize instances
-  setup(function () {
+  beforeEach(function () {
     nowValue = 0;
 
     composer = new ControlComposer({ nowForTesting: now });
