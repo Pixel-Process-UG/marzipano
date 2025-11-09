@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 function getNow() {
   if (typeof performance !== 'undefined' && performance.now) {
     return function performanceNow() {

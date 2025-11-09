@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import eventEmitter from 'minimal-event-emitter';
 import Dynamics from './Dynamics.js';
 import HammerGestures from './HammerGestures.js';
@@ -26,7 +25,7 @@ import { maxFriction } from './util.js';
 const defaultOptions = {
   speed: 8,
   friction: 6,
-  maxFrictionTime: 0.3
+  maxFrictionTime: 0.3,
 };
 
 /**
@@ -58,7 +57,7 @@ function QtvrControlMethod(element, pointerType, opts) {
 
   this._dynamics = {
     x: new Dynamics(),
-    y: new Dynamics()
+    y: new Dynamics(),
   };
 
   this._hammer.on('panstart', this._handleStart.bind(this));
@@ -72,12 +71,12 @@ eventEmitter(QtvrControlMethod);
 /**
  * Destructor.
  */
-QtvrControlMethod.prototype.destroy = function() {
+QtvrControlMethod.prototype.destroy = function () {
   this._hammer.release();
   clearOwnProperties(this);
 };
 
-QtvrControlMethod.prototype._handleStart = function(e) {
+QtvrControlMethod.prototype._handleStart = function (e) {
   // Prevent event dragging other DOM elements and causing strange behavior on Chrome
   e.preventDefault();
 
@@ -87,14 +86,14 @@ QtvrControlMethod.prototype._handleStart = function(e) {
   }
 };
 
-QtvrControlMethod.prototype._handleMove = function(e) {
+QtvrControlMethod.prototype._handleMove = function (e) {
   // Prevent event dragging other DOM elements and causing strange behavior on Chrome
   e.preventDefault();
 
   this._updateDynamics(e, false);
 };
 
-QtvrControlMethod.prototype._handleRelease = function(e) {
+QtvrControlMethod.prototype._handleRelease = function (e) {
   // Prevent event dragging other DOM elements and causing strange behavior on Chrome
   e.preventDefault();
 
@@ -106,15 +105,15 @@ QtvrControlMethod.prototype._handleRelease = function(e) {
   }
 };
 
-const tmpReleaseFriction = [ null, null ];
-QtvrControlMethod.prototype._updateDynamics = function(e, release) {
+const tmpReleaseFriction = [null, null];
+QtvrControlMethod.prototype._updateDynamics = function (e, release) {
   const elementRect = this._element.getBoundingClientRect();
   const width = elementRect.right - elementRect.left;
   const height = elementRect.bottom - elementRect.top;
   const maxDim = Math.max(width, height);
 
-  const x = e.deltaX / maxDim * this._opts.speed;
-  const y = e.deltaY / maxDim * this._opts.speed;
+  const x = (e.deltaX / maxDim) * this._opts.speed;
+  const y = (e.deltaY / maxDim) * this._opts.speed;
 
   this._dynamics.x.reset();
   this._dynamics.y.reset();
@@ -122,7 +121,13 @@ QtvrControlMethod.prototype._updateDynamics = function(e, release) {
   this._dynamics.y.velocity = y;
 
   if (release) {
-    maxFriction(this._opts.friction, this._dynamics.x.velocity, this._dynamics.y.velocity, this._opts.maxFrictionTime, tmpReleaseFriction);
+    maxFriction(
+      this._opts.friction,
+      this._dynamics.x.velocity,
+      this._dynamics.y.velocity,
+      this._opts.maxFrictionTime,
+      tmpReleaseFriction
+    );
     this._dynamics.x.friction = tmpReleaseFriction[0];
     this._dynamics.y.friction = tmpReleaseFriction[1];
   }

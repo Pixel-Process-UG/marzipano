@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import eventEmitter from 'minimal-event-emitter';
 import WorkQueue from '../collections/WorkQueue.js';
 import calcRect from '../util/calcRect.js';
@@ -113,7 +112,7 @@ eventEmitter(Stage);
 /**
  * Destructor.
  */
-Stage.prototype.destroy = function() {
+Stage.prototype.destroy = function () {
   this.removeAllLayers();
   clearOwnProperties(this);
 };
@@ -131,7 +130,7 @@ Stage.prototype.destroy = function() {
  * @param {string} viewType The view type, as given by {@link View#type}.
  * @param {*} Renderer The renderer class.
  */
-Stage.prototype.registerRenderer = function(geometryType, viewType, Renderer) {
+Stage.prototype.registerRenderer = function (geometryType, viewType, Renderer) {
   return this._rendererRegistry.set(geometryType, viewType, Renderer);
 };
 
@@ -142,7 +141,7 @@ Stage.prototype.registerRenderer = function(geometryType, viewType, Renderer) {
  *
  * @return {Element}
  */
-Stage.prototype.domElement = function() {
+Stage.prototype.domElement = function () {
   throw new Error('Stage implementation must override domElement');
 };
 
@@ -150,7 +149,7 @@ Stage.prototype.domElement = function() {
  * Get the stage width.
  * @return {number}
  */
-Stage.prototype.width = function() {
+Stage.prototype.width = function () {
   return this._width;
 };
 
@@ -158,7 +157,7 @@ Stage.prototype.width = function() {
  * Get the stage height.
  * @return {number}
  */
-Stage.prototype.height = function() {
+Stage.prototype.height = function () {
   return this._height;
 };
 
@@ -168,7 +167,7 @@ Stage.prototype.height = function() {
  *
  * @param {Size=} size
  */
-Stage.prototype.size = function(size) {
+Stage.prototype.size = function (size) {
   size = size || {};
   size.width = this._width;
   size.height = this._height;
@@ -184,7 +183,7 @@ Stage.prototype.size = function(size) {
  *
  * @param {Size} size
  */
-Stage.prototype.setSize = function(size) {
+Stage.prototype.setSize = function (size) {
   this._width = size.width;
   this._height = size.height;
 
@@ -203,7 +202,7 @@ Stage.prototype.setSize = function(size) {
  *
  * @param {Size} size
  */
-Stage.prototype.setSizeForType = function(size) {
+Stage.prototype.setSizeForType = function (size) {
   throw new Error('Stage implementation must override setSizeForType');
 };
 
@@ -215,11 +214,11 @@ Stage.prototype.setSizeForType = function(size) {
  * @param {function(?Error, Asset)} done The callback.
  * @return {function()} A function to cancel loading.
  */
-Stage.prototype.loadImage = function() {
+Stage.prototype.loadImage = function () {
   throw new Error('Stage implementation must override loadImage');
 };
 
-Stage.prototype._emitRenderInvalid = function() {
+Stage.prototype._emitRenderInvalid = function () {
   this.emit('renderInvalid');
 };
 
@@ -230,7 +229,7 @@ Stage.prototype._emitRenderInvalid = function() {
  * @param {Layer} layer
  * @throws {Error} If the layer is not valid for this stage.
  */
-Stage.prototype.validateLayer = function(layer) {
+Stage.prototype.validateLayer = function (layer) {
   throw new Error('Stage implementation must override validateLayer');
 };
 
@@ -239,7 +238,7 @@ Stage.prototype.validateLayer = function(layer) {
  * returned list is in display order, background to foreground.
  * @return {Layer[]}
  */
-Stage.prototype.listLayers = function() {
+Stage.prototype.listLayers = function () {
   // Return a copy to prevent unintended mutation by the caller.
   return [].concat(this._layers);
 };
@@ -249,7 +248,7 @@ Stage.prototype.listLayers = function() {
  * @param {Layer} layer
  * @return {boolean}
  */
-Stage.prototype.hasLayer = function(layer) {
+Stage.prototype.hasLayer = function (layer) {
   return this._layers.indexOf(layer) >= 0;
 };
 
@@ -262,7 +261,7 @@ Stage.prototype.hasLayer = function(layer) {
  * @throws An error if the layer already belongs to the stage or if the position
  *     is invalid.
  */
-Stage.prototype.addLayer = function(layer, i) {
+Stage.prototype.addLayer = function (layer, i) {
   if (this._layers.indexOf(layer) >= 0) {
     throw new Error('Layer already in stage');
   }
@@ -280,9 +279,13 @@ Stage.prototype.addLayer = function(layer, i) {
   const viewType = layer.view().type;
   const rendererClass = this._rendererRegistry.get(geometryType, viewType);
   if (!rendererClass) {
-    throw new Error(`No ${this}`.type + ` renderer avaiable for ${geometryType} geometry and ` + `${viewType} view`);
+    throw new Error(
+      `${`No ${this}`.type 
+        } renderer avaiable for ${geometryType} geometry and ` +
+        `${viewType} view`
+    );
   }
-  let renderer = this.createRenderer(rendererClass);
+  const renderer = this.createRenderer(rendererClass);
 
   this._layers.splice(i, 0, layer);
   this._renderers.splice(i, 0, renderer);
@@ -304,8 +307,8 @@ Stage.prototype.addLayer = function(layer, i) {
  * @throws An error if the layer does not belong to the stage or if the position
  *     is invalid.
  */
-Stage.prototype.moveLayer = function(layer, i) {
-  let index = this._layers.indexOf(layer);
+Stage.prototype.moveLayer = function (layer, i) {
+  const index = this._layers.indexOf(layer);
   if (index < 0) {
     throw new Error('No such layer in stage');
   }
@@ -315,7 +318,7 @@ Stage.prototype.moveLayer = function(layer, i) {
   }
 
   layer = this._layers.splice(index, 1)[0];
-  let renderer = this._renderers.splice(index, 1)[0];
+  const renderer = this._renderers.splice(index, 1)[0];
 
   this._layers.splice(i, 0, layer);
   this._renderers.splice(i, 0, renderer);
@@ -328,14 +331,14 @@ Stage.prototype.moveLayer = function(layer, i) {
  * @param {Layer} layer The layer to remove.
  * @throws An error if the layer does not belong to the stage.
  */
-Stage.prototype.removeLayer = function(layer) {
+Stage.prototype.removeLayer = function (layer) {
   const index = this._layers.indexOf(layer);
   if (index < 0) {
     throw new Error('No such layer in stage');
   }
 
   const removedLayer = this._layers.splice(index, 1)[0];
-  let renderer = this._renderers.splice(index, 1)[0];
+  const renderer = this._renderers.splice(index, 1)[0];
 
   this.destroyRenderer(renderer);
 
@@ -350,7 +353,7 @@ Stage.prototype.removeLayer = function(layer) {
 /**
  * Removes all {@link Layer layers} from the stage.
  */
-Stage.prototype.removeAllLayers = function() {
+Stage.prototype.removeAllLayers = function () {
   while (this._layers.length > 0) {
     this.removeLayer(this._layers[0]);
   }
@@ -361,7 +364,7 @@ Stage.prototype.removeAllLayers = function() {
  *
  * Must be overridden by subclasses.
  */
-Stage.prototype.startFrame = function() {
+Stage.prototype.startFrame = function () {
   throw new Error('Stage implementation must override startFrame');
 };
 
@@ -370,7 +373,7 @@ Stage.prototype.startFrame = function() {
  *
  * Must be overridden by subclasses.
  */
-Stage.prototype.endFrame = function() {
+Stage.prototype.endFrame = function () {
   throw new Error('Stage implementation must override endFrame');
 };
 
@@ -380,18 +383,18 @@ Stage.prototype.endFrame = function() {
  * This contains the rendering logic common to all stage types. Subclasses
  * define the startFrame() and endFrame() methods to perform their own logic.
  */
-Stage.prototype.render = function() {
-  var i, j;
+Stage.prototype.render = function () {
+  let i, j;
 
-  let tilesToLoad = this._tilesToLoad;
-  let tilesToRender = this._tilesToRender;
+  const tilesToLoad = this._tilesToLoad;
+  const tilesToRender = this._tilesToRender;
 
   let stableStage = true;
-  var stableLayer;
+  let stableLayer;
 
   // Get the stage dimensions.
-  let width = this._width;
-  let height = this._height;
+  const width = this._width;
+  const height = this._height;
 
   const rect = this._tmpRect;
   const size = this._tmpSize;
@@ -488,7 +491,7 @@ Stage.prototype.render = function() {
   this.emit('renderComplete', stableStage);
 };
 
-Stage.prototype._collectTiles = function(layer, textureStore) {
+Stage.prototype._collectTiles = function (layer, textureStore) {
   const tilesToLoad = this._tilesToLoad;
   const tilesToRender = this._tilesToRender;
   const tmpVisible = this._tmpVisible;
@@ -502,7 +505,7 @@ Stage.prototype._collectTiles = function(layer, textureStore) {
   let isStable = true;
 
   for (let i = 0; i < tmpVisible.length; i++) {
-    let tile = tmpVisible[i];
+    const tile = tmpVisible[i];
     var needsFallback;
     this._collectTileToLoad(tile);
     if (textureStore.texture(tile)) {
@@ -530,7 +533,7 @@ Stage.prototype._collectTiles = function(layer, textureStore) {
   return isStable;
 };
 
-Stage.prototype._collectChildren = function(tile, textureStore) {
+Stage.prototype._collectChildren = function (tile, textureStore) {
   const tmpChildren = this._tmpChildren;
 
   let needsFallback = true;
@@ -553,12 +556,12 @@ Stage.prototype._collectChildren = function(tile, textureStore) {
         needsFallback = true;
       }
     }
-  } while (needsFallback && tmpChildren.length === 1)
+  } while (needsFallback && tmpChildren.length === 1);
 
   return needsFallback;
 };
 
-Stage.prototype._collectParents = function(tile, textureStore, needsFallback) {
+Stage.prototype._collectParents = function (tile, textureStore, needsFallback) {
   // Recursively visit parent tiles until:
   //   - all parents have been marked for loading, if progressive rendering is
   //     enabled; and
@@ -581,18 +584,18 @@ Stage.prototype._collectParents = function(tile, textureStore, needsFallback) {
   return needsFallback;
 };
 
-Stage.prototype._collectTileToLoad = function(tile) {
+Stage.prototype._collectTileToLoad = function (tile) {
   return this._collectTileIntoList(tile, this._tilesToLoad);
 };
 
-Stage.prototype._collectTileToRender = function(tile) {
+Stage.prototype._collectTileToRender = function (tile) {
   return this._collectTileIntoList(tile, this._tilesToRender);
 };
 
-Stage.prototype._collectTileIntoList = function(tile, tileList) {
+Stage.prototype._collectTileIntoList = function (tile, tileList) {
   // TODO: Investigate whether it's worth it to make this better than O(n²).
   let found = false;
-  for (const i = 0; i < tileList.length; i++) {
+  for (let i = 0; i < tileList.length; i++) {
     if (tile.equals(tileList[i])) {
       found = true;
       break;
@@ -610,8 +613,7 @@ Stage.prototype._collectTileIntoList = function(tile, tileList) {
  * @param {Asset} asset
  * @param {Function} done
  */
-Stage.prototype.createTexture = function(tile, asset, done) {
-
+Stage.prototype.createTexture = function (tile, asset, done) {
   const self = this;
 
   function makeTexture() {
@@ -620,10 +622,9 @@ Stage.prototype.createTexture = function(tile, asset, done) {
 
   const fn = cancelize(async(makeTexture));
 
-  return this._createTextureWorkQueue.push(fn, function(err, texture) {
+  return this._createTextureWorkQueue.push(fn, (err, texture) => {
     done(err, tile, asset, texture);
   });
-
 };
 
 /**

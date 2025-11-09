@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import eventEmitter from 'minimal-event-emitter';
 import positionAbsolutely from './util/positionAbsolutely.js';
 import clearOwnProperties from './util/clearOwnProperties.js';
@@ -58,11 +57,10 @@ import { setTransform } from './util/dom.js';
  *     may be used to rotate an embedded hotspot.
  */
 function Hotspot(domElement, parentDomElement, view, coords, opts) {
-
   opts = opts || {};
   opts.perspective = opts.perspective || {};
   opts.perspective.extraTransforms =
-      opts.perspective.extraTransforms != null ? opts.perspective.extraTransforms : "";
+    opts.perspective.extraTransforms != null ? opts.perspective.extraTransforms : '';
 
   this._domElement = domElement;
   this._parentDomElement = parentDomElement;
@@ -91,7 +89,7 @@ eventEmitter(Hotspot);
  * Destructor.
  * Clients should call {@link HotspotContainer#destroyHotspot} instead.
  */
-Hotspot.prototype.destroy = function() {
+Hotspot.prototype.destroy = function () {
   this._parentDomElement.removeChild(this._domElement);
   clearOwnProperties(this);
 };
@@ -99,21 +97,21 @@ Hotspot.prototype.destroy = function() {
 /**
  * @return {Element}
  */
-Hotspot.prototype.domElement = function() {
+Hotspot.prototype.domElement = function () {
   return this._domElement;
 };
 
 /**
  * @return {Object}
  */
-Hotspot.prototype.position = function() {
+Hotspot.prototype.position = function () {
   return this._coords;
 };
 
 /**
  * @param {Object} coords
  */
-Hotspot.prototype.setPosition = function(coords) {
+Hotspot.prototype.setPosition = function (coords) {
   for (var key in coords) {
     this._coords[key] = coords[key];
   }
@@ -125,14 +123,14 @@ Hotspot.prototype.setPosition = function(coords) {
 /**
  * @return {Object}
  */
-Hotspot.prototype.perspective = function() {
+Hotspot.prototype.perspective = function () {
   return this._perspective;
 };
 
 /**
  * @param {Object}
  */
-Hotspot.prototype.setPerspective = function(perspective) {
+Hotspot.prototype.setPerspective = function (perspective) {
   for (var key in perspective) {
     this._perspective[key] = perspective[key];
   }
@@ -142,7 +140,7 @@ Hotspot.prototype.setPerspective = function(perspective) {
 /**
  * Show the hotspot
  */
-Hotspot.prototype.show = function() {
+Hotspot.prototype.show = function () {
   if (!this._visible) {
     this._visible = true;
     this._update();
@@ -152,14 +150,14 @@ Hotspot.prototype.show = function() {
 /**
  * Hide the hotspot
  */
-Hotspot.prototype.hide = function() {
+Hotspot.prototype.hide = function () {
   if (this._visible) {
     this._visible = false;
     this._update();
   }
 };
 
-Hotspot.prototype._update = function() {
+Hotspot.prototype._update = function () {
   const element = this._domElement;
 
   const params = this._coords;
@@ -195,21 +193,22 @@ Hotspot.prototype._update = function() {
   if (isVisible) {
     element.style.display = 'block';
     element.style.position = 'absolute';
-  }
-  else {
+  } else {
     element.style.display = 'none';
     element.style.position = '';
   }
-
 };
 
-Hotspot.prototype._setEmbeddedPosition = function(view, params) {
+Hotspot.prototype._setEmbeddedPosition = function (view, params) {
   const transform = view.coordinatesToPerspectiveTransform(
-      params, this._perspective.radius, this._perspective.extraTransforms);
+    params,
+    this._perspective.radius,
+    this._perspective.extraTransforms
+  );
   setTransform(this._domElement, transform);
 };
 
-Hotspot.prototype._setPosition = function(x, y) {
+Hotspot.prototype._setPosition = function (x, y) {
   positionAbsolutely(this._domElement, x, y, this._perspective.extraTransforms);
 };
 

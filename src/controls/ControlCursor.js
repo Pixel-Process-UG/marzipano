@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-
 import defaults from '../util/defaults.js';
 import clearOwnProperties from '../util/clearOwnProperties.js';
 
 const defaultOpts = {
   active: 'move',
   inactive: 'default',
-  disabled: 'default'
+  disabled: 'default',
 };
 
 /**
@@ -73,23 +72,19 @@ function ControlCursor(controls, id, element, opts) {
 /**
  * Destructor.
  */
-ControlCursor.prototype.destroy = function() {
+ControlCursor.prototype.destroy = function () {
   this._detachFromControlMethod(this._controls.method(this._id));
   this._setOriginalCursor();
 
-  this._controls.removeEventListener('methodEnabled',
-      this._updateAttachmentHandler);
-  this._controls.removeEventListener('methodDisabled',
-      this._updateAttachmentHandler);
-  this._controls.removeEventListener('enabled',
-      this._updateAttachmentHandler);
-  this._controls.removeEventListener('disabled',
-      this._updateAttachmentHandler);
+  this._controls.removeEventListener('methodEnabled', this._updateAttachmentHandler);
+  this._controls.removeEventListener('methodDisabled', this._updateAttachmentHandler);
+  this._controls.removeEventListener('enabled', this._updateAttachmentHandler);
+  this._controls.removeEventListener('disabled', this._updateAttachmentHandler);
 
   clearOwnProperties(this);
 };
 
-ControlCursor.prototype._updateAttachment = function() {
+ControlCursor.prototype._updateAttachment = function () {
   const controls = this._controls;
   const id = this._id;
   if (controls.enabled() && controls.method(id).enabled) {
@@ -99,7 +94,7 @@ ControlCursor.prototype._updateAttachment = function() {
   }
 };
 
-ControlCursor.prototype._attachToControlMethod = function(controlMethod) {
+ControlCursor.prototype._attachToControlMethod = function (controlMethod) {
   if (!this._attached) {
     controlMethod.instance.addEventListener('active', this._setActiveCursor);
     controlMethod.instance.addEventListener('inactive', this._setInactiveCursor);
@@ -114,7 +109,7 @@ ControlCursor.prototype._attachToControlMethod = function(controlMethod) {
   }
 };
 
-ControlCursor.prototype._detachFromControlMethod = function(controlMethod) {
+ControlCursor.prototype._detachFromControlMethod = function (controlMethod) {
   if (this._attached) {
     controlMethod.instance.removeEventListener('active', this._setActiveCursor);
     controlMethod.instance.removeEventListener('inactive', this._setInactiveCursor);
@@ -125,8 +120,8 @@ ControlCursor.prototype._detachFromControlMethod = function(controlMethod) {
   }
 };
 
-ControlCursor.prototype._setCursor = function(cursor) {
+ControlCursor.prototype._setCursor = function (cursor) {
   this._element.style.cursor = cursor;
-}
+};
 
 export default ControlCursor;

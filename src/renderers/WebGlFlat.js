@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import WebGlBaseRenderer from './WebGlBase.js';
 import inherits from '../util/inherits.js';
 

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 function cmp(x, y) {
   if (x < y) {
     return -1;

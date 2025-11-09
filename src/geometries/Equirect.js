@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import inherits from '../util/inherits.js';
 import hash from '../util/hash.js';
 import cmp from '../util/cmp.js';
@@ -35,38 +34,38 @@ function EquirectTile(z, geometry) {
   this._level = geometry.levelList[z];
 }
 
-EquirectTile.prototype.rotX = function() {
+EquirectTile.prototype.rotX = function () {
   return 0;
 };
 
-EquirectTile.prototype.rotY = function() {
+EquirectTile.prototype.rotY = function () {
   return 0;
 };
 
-EquirectTile.prototype.centerX = function() {
+EquirectTile.prototype.centerX = function () {
   return 0.5;
 };
 
-EquirectTile.prototype.centerY = function() {
+EquirectTile.prototype.centerY = function () {
   return 0.5;
 };
 
-EquirectTile.prototype.scaleX = function() {
+EquirectTile.prototype.scaleX = function () {
   return 1;
 };
 
-EquirectTile.prototype.scaleY = function() {
+EquirectTile.prototype.scaleY = function () {
   return 1;
 };
 
-EquirectTile.prototype.parent = function() {
+EquirectTile.prototype.parent = function () {
   if (this.z === 0) {
     return null;
   }
   return new EquirectTile(this.z - 1, this._geometry);
 };
 
-EquirectTile.prototype.children = function(result) {
+EquirectTile.prototype.children = function (result) {
   if (this.z === this._geometry.levelList.length - 1) {
     return null;
   }
@@ -75,23 +74,23 @@ EquirectTile.prototype.children = function(result) {
   return result;
 };
 
-EquirectTile.prototype.neighbors = function() {
+EquirectTile.prototype.neighbors = function () {
   return [];
 };
 
-EquirectTile.prototype.hash = function() {
+EquirectTile.prototype.hash = function () {
   return hash(this.z);
 };
 
-EquirectTile.prototype.equals = function(that) {
+EquirectTile.prototype.equals = function (that) {
   return this._geometry === that._geometry && this.z === that.z;
 };
 
-EquirectTile.prototype.cmp = function(that) {
+EquirectTile.prototype.cmp = function (that) {
   return cmp(this.z, that.z);
 };
 
-EquirectTile.prototype.str = function() {
+EquirectTile.prototype.str = function () {
   return `EquirectTile(${this.z})`;
 };
 
@@ -102,20 +101,20 @@ function EquirectLevel(levelProperties) {
 
 inherits(EquirectLevel, Level);
 
-EquirectLevel.prototype.width = function() {
+EquirectLevel.prototype.width = function () {
   return this._width;
 };
 
-EquirectLevel.prototype.height = function() {
-  return this._width/2;
+EquirectLevel.prototype.height = function () {
+  return this._width / 2;
 };
 
-EquirectLevel.prototype.tileWidth = function() {
+EquirectLevel.prototype.tileWidth = function () {
   return this._width;
 };
 
-EquirectLevel.prototype.tileHeight = function() {
-  return this._width/2;
+EquirectLevel.prototype.tileHeight = function () {
+  return this._width / 2;
 };
 
 /**
@@ -128,7 +127,7 @@ EquirectLevel.prototype.tileHeight = function() {
  *
  * @param {Object[]} levelPropertiesList Level description
  * @param {number} levelPropertiesList[].width Level width in pixels
-*/
+ */
 function EquirectGeometry(levelPropertiesList) {
   if (type(levelPropertiesList) !== 'array') {
     throw new Error('Level list must be an array');
@@ -138,23 +137,23 @@ function EquirectGeometry(levelPropertiesList) {
   this.selectableLevelList = common.makeSelectableLevelList(this.levelList);
 }
 
-EquirectGeometry.prototype.maxTileSize = function() {
+EquirectGeometry.prototype.maxTileSize = function () {
   let maxTileSize = 0;
-  for (const i = 0; i < this.levelList.length; i++) {
+  for (let i = 0; i < this.levelList.length; i++) {
     const level = this.levelList[i];
     maxTileSize = Math.max(maxTileSize, level.tileWidth, level.tileHeight);
   }
   return maxTileSize;
 };
 
-EquirectGeometry.prototype.levelTiles = function(level, result) {
+EquirectGeometry.prototype.levelTiles = function (level, result) {
   const levelIndex = this.levelList.indexOf(level);
   result = result || [];
   result.push(new EquirectTile(levelIndex, this));
   return result;
 };
 
-EquirectGeometry.prototype.visibleTiles = function(view, level, result) {
+EquirectGeometry.prototype.visibleTiles = function (view, level, result) {
   const tile = new EquirectTile(this.levelList.indexOf(level), this);
   result = result || [];
   result.length = 0;

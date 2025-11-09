@@ -19,14 +19,12 @@ var assert = require('chai').assert;
 
 var defaults = require('../../../src/util/defaults');
 
-suite('defaults', function() {
-
-  test('defaults', function() {
+suite('defaults', function () {
+  test('defaults', function () {
     var originalObj = { foo: 42, bar: 37 };
     var defaultsObj = { foo: 100, quux: 200 };
     var expectedObj = { foo: 42, bar: 37, quux: 200 };
     var resultObj = defaults(originalObj, defaultsObj);
     assert.deepEqual(resultObj, expectedObj);
   });
-
 });

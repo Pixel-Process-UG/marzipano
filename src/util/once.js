@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-
 function once(fn) {
   let called = false;
-  var value;
+  let value;
   return function onced() {
     if (!called) {
       called = true;

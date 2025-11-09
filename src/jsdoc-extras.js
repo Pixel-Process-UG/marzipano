@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 // This file contains no executable code, only documentation.
 
 /**
@@ -143,7 +141,7 @@
  * created.
  */
 
- /**
+/**
  * Signals that the contents of the underlying pixel source have changed.
  * @event Asset#change
  */

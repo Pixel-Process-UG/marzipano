@@ -23,20 +23,18 @@ function Key(key) {
   this._key = key;
 }
 
-Key.prototype.hash = function() {
+Key.prototype.hash = function () {
   // Finite numbers hash to their absolute value; everything else hashes to 0.
   return isFinite(this._key) ? Math.floor(Math.abs(this._key)) : 0;
 };
 
-Key.prototype.equals = function(that) {
+Key.prototype.equals = function (that) {
   return this._key === that._key;
 };
 
-suite('Map', function() {
-
-  suite('set', function() {
-
-    test('nonexisting key', function() {
+suite('Map', function () {
+  suite('set', function () {
+    test('nonexisting key', function () {
       var map = new Map();
       var key1 = new Key(1);
       var key2 = new Key(1);
@@ -46,7 +44,7 @@ suite('Map', function() {
       assert.strictEqual(map.size(), 1);
     });
 
-    test('existing key', function() {
+    test('existing key', function () {
       var map = new Map();
       var key1 = new Key(1);
       var key2 = new Key(1);
@@ -57,7 +55,7 @@ suite('Map', function() {
       assert.strictEqual(map.size(), 1);
     });
 
-    test('nonexisting key with same hash as existing key', function() {
+    test('nonexisting key with same hash as existing key', function () {
       var map = new Map();
       var key1 = new Key(1);
       var key2 = new Key(-1);
@@ -70,7 +68,7 @@ suite('Map', function() {
       assert.strictEqual(map.size(), 2);
     });
 
-    test('nonexisting key with different hash than existing key', function() {
+    test('nonexisting key with different hash than existing key', function () {
       var map = new Map();
       var key1 = new Key(1);
       var key2 = new Key(2);
@@ -82,48 +80,42 @@ suite('Map', function() {
       assert.strictEqual(map.get(key2), 'xyz');
       assert.strictEqual(map.size(), 2);
     });
-
   });
 
-  suite('get', function() {
-
-    test('nonexisting key', function() {
+  suite('get', function () {
+    test('nonexisting key', function () {
       var map = new Map();
       var key = new Key(1);
       assert.isNull(map.get(key));
     });
 
-    test('nonexisting key with same hash as existing key', function() {
+    test('nonexisting key with same hash as existing key', function () {
       var map = new Map();
       var key1 = new Key(1);
       var key2 = new Key(2);
       assert.isNull(map.set(key1, 'abc'));
       assert.isNull(map.get(key2));
     });
-
   });
 
-  suite('has', function() {
-
-    test('nonexisting key', function() {
+  suite('has', function () {
+    test('nonexisting key', function () {
       var map = new Map();
       var key = new Key(1);
       assert.isFalse(map.has(key));
     });
 
-    test('nonexisting key with same hash as existing key', function() {
+    test('nonexisting key with same hash as existing key', function () {
       var map = new Map();
       var key1 = new Key(1);
       var key2 = new Key(-1);
       assert.isNull(map.set(key1), 'abc');
       assert.isFalse(map.has(key2));
     });
-
   });
 
-  suite('del', function() {
-
-    test('existing key', function() {
+  suite('del', function () {
+    test('existing key', function () {
       var map = new Map();
       var key1 = new Key(1);
       var key2 = new Key(1);
@@ -133,7 +125,7 @@ suite('Map', function() {
       assert.strictEqual(map.size(), 0);
     });
 
-    test('nonexisting key', function() {
+    test('nonexisting key', function () {
       var map = new Map();
       var key1 = new Key(1);
       var key2 = new Key(2);
@@ -143,7 +135,7 @@ suite('Map', function() {
       assert.strictEqual(map.size(), 1);
     });
 
-    test('existing key with same hash as existing key', function() {
+    test('existing key with same hash as existing key', function () {
       var map = new Map();
       var key1 = new Key(1);
       var key2 = new Key(-1);
@@ -156,7 +148,7 @@ suite('Map', function() {
       assert.strictEqual(map.size(), 1);
     });
 
-    test('nonexisting key with same hash as existing key', function() {
+    test('nonexisting key with same hash as existing key', function () {
       var map = new Map();
       var key1 = new Key(1);
       var key2 = new Key(-1);
@@ -166,32 +158,28 @@ suite('Map', function() {
       assert.strictEqual(map.get(key1), 'abc');
       assert.strictEqual(map.size(), 1);
     });
-
   });
 
-  suite('size', function() {
-
-    test('empty', function() {
+  suite('size', function () {
+    test('empty', function () {
       var map = new Map();
       assert.strictEqual(map.size(), 0);
     });
 
-    test('more elements than buckets', function() {
+    test('more elements than buckets', function () {
       var map = new Map(16);
       for (var i = 0; i < 32; i++) {
         map.set(new Key(i), i);
       }
       assert.strictEqual(map.size(), 32);
     });
-
   });
 
-  suite('clear', function() {
-
-    test('clear', function() {
+  suite('clear', function () {
+    test('clear', function () {
       var map = new Map();
       for (var i = 0; i < 10; i++) {
-        map.set(new Key(i), 2*i);
+        map.set(new Key(i), 2 * i);
       }
       map.clear();
       for (var i = 0; i < 10; i++) {
@@ -199,19 +187,20 @@ suite('Map', function() {
       }
       assert.strictEqual(map.size(), 0);
     });
-
   });
 
-  suite('forEach', function() {
-
-    test('empty', function() {
+  suite('forEach', function () {
+    test('empty', function () {
       var map = new Map();
-      assert.strictEqual(map.forEach(function() {
-        assert.fail('unexpected call');
-      }), 0);
+      assert.strictEqual(
+        map.forEach(function () {
+          assert.fail('unexpected call');
+        }),
+        0
+      );
     });
 
-    test('nonempty', function() {
+    test('nonempty', function () {
       var map = new Map();
       var keys = [];
       var values = [];
@@ -224,7 +213,7 @@ suite('Map', function() {
 
       var seenKeys = [];
       var seenValues = [];
-      var count = map.forEach(function(key, val) {
+      var count = map.forEach(function (key, val) {
         seenKeys.push(key);
         seenValues.push(val);
       });
@@ -236,7 +225,5 @@ suite('Map', function() {
         assert.strictEqual(seenKeys[i]._key, seenValues[i]);
       }
     });
-
   });
-
 });

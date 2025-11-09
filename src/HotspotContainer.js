@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import eventEmitter from 'minimal-event-emitter';
 import Hotspot from './Hotspot.js';
 import calcRect from './util/calcRect.js';
@@ -107,7 +106,7 @@ eventEmitter(HotspotContainer);
 /**
  * Destructor.
  */
-HotspotContainer.prototype.destroy = function() {
+HotspotContainer.prototype.destroy = function () {
   while (this._hotspots.length) {
     this.destroyHotspot(this._hotspots[0]);
   }
@@ -122,14 +121,14 @@ HotspotContainer.prototype.destroy = function() {
 /**
  * @return {Element}
  */
-HotspotContainer.prototype.domElement = function() {
+HotspotContainer.prototype.domElement = function () {
   return this._hotspotContainer;
 };
 
 /**
  * @param {Rect} rect
  */
-HotspotContainer.prototype.setRect = function(rect) {
+HotspotContainer.prototype.setRect = function (rect) {
   this._rect = rect;
   this._visibilityOrRectChanged = true;
 };
@@ -137,7 +136,7 @@ HotspotContainer.prototype.setRect = function(rect) {
 /**
  * @return {Rect}
  */
-HotspotContainer.prototype.rect = function() {
+HotspotContainer.prototype.rect = function () {
   return this._rect;
 };
 
@@ -152,11 +151,10 @@ HotspotContainer.prototype.rect = function() {
  *     the {@link Hotspot} constructor.
  * @return {Hotspot}
  */
-HotspotContainer.prototype.createHotspot = function(domElement, coords, opts) {
+HotspotContainer.prototype.createHotspot = function (domElement, coords, opts) {
   coords = coords || {};
 
-  const hotspot = new Hotspot(
-      domElement, this._hotspotContainer, this._view, coords, opts);
+  const hotspot = new Hotspot(domElement, this._hotspotContainer, this._view, coords, opts);
   this._hotspots.push(hotspot);
   hotspot._update();
 
@@ -169,14 +167,14 @@ HotspotContainer.prototype.createHotspot = function(domElement, coords, opts) {
  * @param {Hotspot} hotspot
  * @return {boolean}
  */
-HotspotContainer.prototype.hasHotspot = function(hotspot) {
+HotspotContainer.prototype.hasHotspot = function (hotspot) {
   return this._hotspots.indexOf(hotspot) >= 0;
 };
 
 /**
  * @return {Hotspot[]}
  */
-HotspotContainer.prototype.listHotspots = function() {
+HotspotContainer.prototype.listHotspots = function () {
   return [].concat(this._hotspots);
 };
 
@@ -185,7 +183,7 @@ HotspotContainer.prototype.listHotspots = function() {
  *
  * @param {Hotspot} hotspot
  */
-HotspotContainer.prototype.destroyHotspot = function(hotspot) {
+HotspotContainer.prototype.destroyHotspot = function (hotspot) {
   let i = this._hotspots.indexOf(hotspot);
   if (i < 0) {
     throw new Error('No such hotspot');
@@ -200,7 +198,7 @@ HotspotContainer.prototype.destroyHotspot = function(hotspot) {
  * Hide the container's DOM element, causing every contained {@link Hotspot} to
  * be hidden.
  */
-HotspotContainer.prototype.hide = function() {
+HotspotContainer.prototype.hide = function () {
   if (this._visible) {
     this._visible = false;
     this._visibilityOrRectChanged = true;
@@ -212,7 +210,7 @@ HotspotContainer.prototype.hide = function() {
  * Show the container's DOM element, causing every contained {@link Hotspot} to
  * be shown.
  */
-HotspotContainer.prototype.show = function() {
+HotspotContainer.prototype.show = function () {
   if (!this._visible) {
     this._visible = true;
     this._visibilityOrRectChanged = true;
@@ -220,15 +218,17 @@ HotspotContainer.prototype.show = function() {
   }
 };
 
-HotspotContainer.prototype._update = function() {
+HotspotContainer.prototype._update = function () {
   const wrapper = this._hotspotContainerWrapper;
   const width = this._stage.width();
   const height = this._stage.height();
   const tmpRect = this._tmpRect;
 
   // Avoid updating the wrapper DOM unless necessary.
-  if (this._visibilityOrRectChanged ||
-      (this._rect && (width !== this._stageWidth || height !== this._stageHeight))) {
+  if (
+    this._visibilityOrRectChanged ||
+    (this._rect && (width !== this._stageWidth || height !== this._stageHeight))
+  ) {
     const visible = this._visible;
     wrapper.style.display = visible ? 'block' : 'none';
 
@@ -251,7 +251,7 @@ HotspotContainer.prototype._update = function() {
   }
 
   // Update hotspots unconditionally, as the view parameters may have changed.
-  for (const i = 0; i < this._hotspots.length; i++) {
+  for (let i = 0; i < this._hotspots.length; i++) {
     this._hotspots[i]._update();
   }
 };

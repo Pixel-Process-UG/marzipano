@@ -23,20 +23,18 @@ function Key(key) {
   this._key = key;
 }
 
-Key.prototype.hash = function() {
+Key.prototype.hash = function () {
   // Finite numbers hash to their absolute value; everything else hashes to 0.
   return isFinite(this._key) ? Math.floor(Math.abs(this._key)) : 0;
 };
 
-Key.prototype.equals = function(that) {
+Key.prototype.equals = function (that) {
   return this._key === that._key;
 };
 
-suite('LruMap', function() {
-
-  suite('set', function() {
-
-    test('nonexisting key', function() {
+suite('LruMap', function () {
+  suite('set', function () {
+    test('nonexisting key', function () {
       var map = new LruMap(4);
       var key1 = new Key(1);
       var key2 = new Key(1);
@@ -46,7 +44,7 @@ suite('LruMap', function() {
       assert.strictEqual(map.size(), 1);
     });
 
-    test('nonexisting key with same hash as existing key', function() {
+    test('nonexisting key with same hash as existing key', function () {
       var map = new LruMap(4);
       var key1 = new Key(1);
       var key2 = new Key(-1);
@@ -59,7 +57,7 @@ suite('LruMap', function() {
       assert.strictEqual(map.size(), 2);
     });
 
-    test('nonexisting key with different hash than existing key', function() {
+    test('nonexisting key with different hash than existing key', function () {
       var map = new LruMap(4);
       var key1 = new Key(1);
       var key2 = new Key(2);
@@ -72,7 +70,7 @@ suite('LruMap', function() {
       assert.strictEqual(map.size(), 2);
     });
 
-    test('existing key', function() {
+    test('existing key', function () {
       var map = new LruMap(4);
       var key1 = new Key(1);
       var key2 = new Key(1);
@@ -83,7 +81,7 @@ suite('LruMap', function() {
       assert.strictEqual(map.size(), 1);
     });
 
-    test('existing key on a full map', function() {
+    test('existing key on a full map', function () {
       var map = new LruMap(4);
       var keys = [];
       var values = [];
@@ -110,7 +108,7 @@ suite('LruMap', function() {
       assert.strictEqual(map.size(), 4);
     });
 
-    test('nonexisting key on a full map', function() {
+    test('nonexisting key on a full map', function () {
       var map = new LruMap(4);
       var keys = [];
       var values = [];
@@ -136,55 +134,49 @@ suite('LruMap', function() {
       assert.strictEqual(map.size(), 4);
     });
 
-    test('on a map with zero capacity', function() {
+    test('on a map with zero capacity', function () {
       var map = new LruMap(0);
       var key = new Key(1);
       assert.strictEqual(map.set(key, 'abc'), key);
       assert.isFalse(map.has(key));
       assert.strictEqual(map.size(), 0);
     });
-
   });
 
-  suite('get', function() {
-
-    test('nonexisting key', function() {
+  suite('get', function () {
+    test('nonexisting key', function () {
       var map = new LruMap(4);
       var key = new Key(1);
       assert.isNull(map.get(key));
     });
 
-    test('nonexisting key with same hash as existing key', function() {
+    test('nonexisting key with same hash as existing key', function () {
       var map = new LruMap(4);
       var key1 = new Key(1);
       var key2 = new Key(-1);
       assert.isNull(map.set(key1, 'abc'));
       assert.isNull(map.get(key2));
     });
-
   });
 
-  suite('has', function() {
-
-    test('nonexisting key', function() {
+  suite('has', function () {
+    test('nonexisting key', function () {
       var map = new LruMap(4);
       var key = new Key(1);
       assert.isFalse(map.has(key));
     });
 
-    test('nonexisting key with same hash as existing key', function() {
+    test('nonexisting key with same hash as existing key', function () {
       var map = new LruMap(4);
       var key1 = new Key(1);
       var key2 = new Key(-1);
       assert.isNull(map.set(key1), 'abc');
       assert.isFalse(map.has(key2));
     });
-
   });
 
-  suite('del', function() {
-
-    test('existing key', function() {
+  suite('del', function () {
+    test('existing key', function () {
       var map = new LruMap(16);
       var key1 = new Key(1);
       var key2 = new Key(1);
@@ -193,7 +185,7 @@ suite('LruMap', function() {
       assert.isFalse(map.has(key1));
     });
 
-    test('nonexisting key', function() {
+    test('nonexisting key', function () {
       var map = new LruMap(16);
       var key1 = new Key(1);
       var key2 = new Key(2);
@@ -202,7 +194,7 @@ suite('LruMap', function() {
       assert.isTrue(map.has(key1));
     });
 
-    test('existing key with same hash as existing key', function() {
+    test('existing key with same hash as existing key', function () {
       var map = new LruMap(16);
       var key1 = new Key(1);
       var key2 = new Key(-1);
@@ -214,7 +206,7 @@ suite('LruMap', function() {
       assert.strictEqual(map.get(key1), 'abc');
     });
 
-    test('nonexisting key with same hash as existing key', function() {
+    test('nonexisting key with same hash as existing key', function () {
       var map = new LruMap(16);
       var key1 = new Key(1);
       var key2 = new Key(-1);
@@ -224,7 +216,7 @@ suite('LruMap', function() {
       assert.strictEqual(map.get(key1), 'abc');
     });
 
-    test('first key on a full map', function() {
+    test('first key on a full map', function () {
       var map = new LruMap(16);
       var first;
       for (var i = 0; i < 16; i++) {
@@ -237,49 +229,45 @@ suite('LruMap', function() {
       assert.strictEqual(map.del(first), 0);
       assert.isFalse(map.has(first));
     });
-
   });
 
-  suite('size', function() {
-
-    test('empty', function() {
+  suite('size', function () {
+    test('empty', function () {
       var map = new LruMap(16);
       assert.strictEqual(map.size(), 0);
     });
 
-    test('one element', function() {
+    test('one element', function () {
       var map = new LruMap(16);
       map.set(new Key(1), 'abc');
       assert.strictEqual(map.size(), 1);
     });
 
-    test('two elements with different hash', function() {
+    test('two elements with different hash', function () {
       var map = new LruMap(16);
       map.set(new Key(1), 'abc');
       map.set(new Key(2), 'xyz');
       assert.strictEqual(map.size(), 2);
     });
 
-    test('two elements with same hash', function() {
+    test('two elements with same hash', function () {
       var map = new LruMap(16);
       map.set(new Key(1), 'abc');
       map.set(new Key(-1), 'xyz');
       assert.strictEqual(map.size(), 2);
     });
 
-    test('full', function() {
+    test('full', function () {
       var map = new LruMap(16);
       for (var i = 0; i < 16; i++) {
         map.set(new Key(i), i);
       }
       assert.strictEqual(map.size(), 16);
     });
-
   });
 
-  suite('clear', function() {
-
-    test('clear', function() {
+  suite('clear', function () {
+    test('clear', function () {
       var map = new LruMap(16);
       for (var i = 0; i < 10; i++) {
         map.set(new Key(i), i);
@@ -290,19 +278,20 @@ suite('LruMap', function() {
       }
       assert.strictEqual(map.size(), 0);
     });
-
   });
 
-  suite('forEach', function() {
-
-    test('empty', function() {
+  suite('forEach', function () {
+    test('empty', function () {
       var map = new LruMap(16);
-      assert.strictEqual(map.forEach(function() {
-        assert.fail('unexpected call');
-      }), 0);
+      assert.strictEqual(
+        map.forEach(function () {
+          assert.fail('unexpected call');
+        }),
+        0
+      );
     });
 
-    test('nonempty', function() {
+    test('nonempty', function () {
       var map = new LruMap(16);
       var keys = [];
       for (var i = 0; i < 10; i++) {
@@ -313,7 +302,7 @@ suite('LruMap', function() {
 
       var seenKeys = [];
       var seenValues = [];
-      var count = map.forEach(function(key, val) {
+      var count = map.forEach(function (key, val) {
         seenKeys.push(key);
         seenValues.push(val);
       });
@@ -326,7 +315,5 @@ suite('LruMap', function() {
         assert.strictEqual(seenKeys[i]._key, seenValues[i]);
       }
     });
-
   });
-
 });

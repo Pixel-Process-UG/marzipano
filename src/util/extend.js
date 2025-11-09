@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-
 function extend(obj, sourceObj) {
-  for (var key in sourceObj) {
+  for (const key in sourceObj) {
     obj[key] = sourceObj[key];
   }
   return obj;

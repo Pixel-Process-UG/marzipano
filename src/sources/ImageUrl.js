@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import eventEmitter from 'minimal-event-emitter';
 import NetworkError from '../NetworkError.js';
 import WorkPool from '../collections/WorkPool.js';
@@ -27,7 +26,7 @@ const templateProperties = {
   x: 'x',
   y: 'y',
   z: 'z',
-  f: 'face'
+  f: 'face',
 };
 
 // Default face order for cube maps.
@@ -58,11 +57,10 @@ const defaultRetryDelay = 10000;
  *     retrying a failed request.
  */
 function ImageUrlSource(sourceFromTile, opts) {
-
   opts = opts ? opts : {};
 
   this._loadPool = new WorkPool({
-    concurrency: opts.concurrency || defaultConcurrency
+    concurrency: opts.concurrency || defaultConcurrency,
   });
 
   this._retryDelay = opts.retryDelay || defaultRetryDelay;
@@ -73,8 +71,7 @@ function ImageUrlSource(sourceFromTile, opts) {
 
 eventEmitter(ImageUrlSource);
 
-ImageUrlSource.prototype.loadAsset = function(stage, tile, done) {
-
+ImageUrlSource.prototype.loadAsset = function (stage, tile, done) {
   const self = this;
 
   const retryDelay = this._retryDelay;
@@ -86,11 +83,11 @@ ImageUrlSource.prototype.loadAsset = function(stage, tile, done) {
 
   const loadImage = stage.loadImage.bind(stage, url, rect);
 
-  const loadFn = function(done) {
+  const loadFn = function (done) {
     // TODO: Deduplicate load requests for the same URL. Although the browser
     // might be smart enough to avoid duplicate requests, they are still unduly
     // impacted by the concurrency parameter.
-    return self._loadPool.push(loadImage, function(err, asset) {
+    return self._loadPool.push(loadImage, (err, asset) => {
       if (err) {
         if (err instanceof NetworkError) {
           // If a network error occurred, wait before retrying.
@@ -107,7 +104,7 @@ ImageUrlSource.prototype.loadAsset = function(stage, tile, done) {
   };
 
   // Check whether we are retrying a failed request.
-  var delayAmount;
+  let delayAmount;
   const lastTime = retryMap[url];
   if (lastTime != null) {
     const currentTime = now();
@@ -144,10 +141,10 @@ ImageUrlSource.prototype.loadAsset = function(stage, tile, done) {
  * @param {String} [opts.cubeMapPreviewFaceOrder='bdflru'] Face order within
  *     the preview image.
  */
-ImageUrlSource.fromString = function(url, opts) {
+ImageUrlSource.fromString = function (url, opts) {
   opts = opts || {};
 
-  const faceOrder = opts && opts.cubeMapPreviewFaceOrder || defaultCubeMapFaceOrder;
+  const faceOrder = (opts && opts.cubeMapPreviewFaceOrder) || defaultCubeMapFaceOrder;
 
   const urlFn = opts.cubeMapPreviewUrl ? withPreview : withoutPreview;
 
@@ -156,7 +153,7 @@ ImageUrlSource.fromString = function(url, opts) {
   function withoutPreview(tile) {
     let tileUrl = url;
 
-    for (var property in templateProperties) {
+    for (const property in templateProperties) {
       const templateProperty = templateProperties[property];
       const regExp = propertyRegExp(property);
       const valueFromTile = tile.hasOwnProperty(templateProperty) ? tile[templateProperty] : '';
@@ -169,8 +166,7 @@ ImageUrlSource.fromString = function(url, opts) {
   function withPreview(tile) {
     if (tile.z === 0) {
       return cubeMapUrl(tile);
-    }
-    else {
+    } else {
       return withoutPreview(tile);
     }
   }
@@ -179,7 +175,7 @@ ImageUrlSource.fromString = function(url, opts) {
     const y = faceOrder.indexOf(tile.face) / 6;
     return {
       url: opts.cubeMapPreviewUrl,
-      rect: { x: 0, y: y, width: 1, height: 1/6 }
+      rect: { x: 0, y, width: 1, height: 1 / 6 },
     };
   }
 };

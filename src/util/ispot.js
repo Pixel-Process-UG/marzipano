@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 // Returns whether n is a power of two.
 function ispot(n) {
   return (n & (n - 1)) == 0;

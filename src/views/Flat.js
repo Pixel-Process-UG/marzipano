@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import eventEmitter from 'minimal-event-emitter';
 import pixelRatio from '../util/pixelRatio.js';
 import real from '../util/real.js';
@@ -42,13 +41,13 @@ const planeAxes = [
   1, // top
   0, // right
   1, // bottom
-  0  // left
+  0, // left
 ];
 const planeCmp = [
   -1, // top
   -1, // right
-   1, // bottom
-   1  // left
+  1, // bottom
+  1, // left
 ];
 
 // A zoom of exactly 0 breaks some computations, so we force a minimum positive
@@ -131,10 +130,8 @@ function FlatView(params, limiter) {
   this._y = params && params.y != null ? params.y : defaultY;
   this._zoom = params && params.zoom != null ? params.zoom : defaultZoom;
   this._mediaAspectRatio = params.mediaAspectRatio;
-  this._width = params && params.width != null ?
-    params.width : defaultWidth;
-  this._height = params && params.height != null ?
-    params.height : defaultHeight;
+  this._width = params && params.width != null ? params.width : defaultWidth;
+  this._height = params && params.height != null ? params.height : defaultHeight;
 
   // The initial value for the view limiter.
   this._limiter = limiter || null;
@@ -148,7 +145,7 @@ function FlatView(params, limiter) {
     0, // top
     0, // right
     0, // bottom
-    0  // left
+    0, // left
   ];
 
   // Whether the projection matrices and view frustum need to be updated.
@@ -167,7 +164,7 @@ eventEmitter(FlatView);
 /**
  * Destructor.
  */
-FlatView.prototype.destroy = function() {
+FlatView.prototype.destroy = function () {
   clearOwnProperties(this);
 };
 
@@ -175,7 +172,7 @@ FlatView.prototype.destroy = function() {
  * Get the x parameter.
  * @return {number}
  */
-FlatView.prototype.x = function() {
+FlatView.prototype.x = function () {
   return this._x;
 };
 
@@ -183,7 +180,7 @@ FlatView.prototype.x = function() {
  * Get the y parameter.
  * @return {number}
  */
-FlatView.prototype.y = function() {
+FlatView.prototype.y = function () {
   return this._y;
 };
 
@@ -191,7 +188,7 @@ FlatView.prototype.y = function() {
  * Get the zoom value.
  * @return {number}
  */
-FlatView.prototype.zoom = function() {
+FlatView.prototype.zoom = function () {
   return this._zoom;
 };
 
@@ -199,7 +196,7 @@ FlatView.prototype.zoom = function() {
  * Get the media aspect ratio.
  * @return {number}
  */
-FlatView.prototype.mediaAspectRatio = function() {
+FlatView.prototype.mediaAspectRatio = function () {
   return this._mediaAspectRatio;
 };
 
@@ -207,7 +204,7 @@ FlatView.prototype.mediaAspectRatio = function() {
  * Get the viewport width.
  * @return {number}
  */
-FlatView.prototype.width = function() {
+FlatView.prototype.width = function () {
   return this._width;
 };
 
@@ -215,7 +212,7 @@ FlatView.prototype.width = function() {
  * Get the viewport height.
  * @return {number}
  */
-FlatView.prototype.height = function() {
+FlatView.prototype.height = function () {
   return this._height;
 };
 
@@ -225,7 +222,7 @@ FlatView.prototype.height = function() {
  * @param {Size=} size
  * @return {Size}
  */
-FlatView.prototype.size = function(size) {
+FlatView.prototype.size = function (size) {
   size = size || {};
   size.width = this._width;
   size.height = this._height;
@@ -238,7 +235,7 @@ FlatView.prototype.size = function(size) {
  * @param {FlatViewParams=} params
  * @return {FlatViewParams}
  */
-FlatView.prototype.parameters = function(params) {
+FlatView.prototype.parameters = function (params) {
   params = params || {};
   params.x = this._x;
   params.y = this._y;
@@ -251,7 +248,7 @@ FlatView.prototype.parameters = function(params) {
  * Get the view limiter, or null if unset.
  * @return {?FlatViewLimiter}
  */
-FlatView.prototype.limiter = function() {
+FlatView.prototype.limiter = function () {
   return this._limiter;
 };
 
@@ -259,7 +256,7 @@ FlatView.prototype.limiter = function() {
  * Set the x parameter.
  * @param {number} x
  */
-FlatView.prototype.setX = function(x) {
+FlatView.prototype.setX = function (x) {
   this._resetParams();
   this._params.x = x;
   this._update(this._params);
@@ -269,7 +266,7 @@ FlatView.prototype.setX = function(x) {
  * Set the y parameter.
  * @param {number} y
  */
-FlatView.prototype.setY = function(y) {
+FlatView.prototype.setY = function (y) {
   this._resetParams();
   this._params.y = y;
   this._update(this._params);
@@ -279,7 +276,7 @@ FlatView.prototype.setY = function(y) {
  * Set the zoom value.
  * @param {number} zoom
  */
-FlatView.prototype.setZoom = function(zoom) {
+FlatView.prototype.setZoom = function (zoom) {
   this._resetParams();
   this._params.zoom = zoom;
   this._update(this._params);
@@ -289,7 +286,7 @@ FlatView.prototype.setZoom = function(zoom) {
  * Add xOffset to the x parameter.
  * @param {number} xOffset
  */
-FlatView.prototype.offsetX = function(xOffset) {
+FlatView.prototype.offsetX = function (xOffset) {
   this.setX(this._x + xOffset);
 };
 
@@ -297,8 +294,7 @@ FlatView.prototype.offsetX = function(xOffset) {
  * Add yOffset to the y parameter.
  * @param {number} yOffset
  */
-FlatView.prototype.offsetY = function(yOffset)
-{
+FlatView.prototype.offsetY = function (yOffset) {
   this.setY(this._y + yOffset);
 };
 
@@ -306,7 +302,7 @@ FlatView.prototype.offsetY = function(yOffset)
  * Add zoomOffset to the zoom value.
  * @param {number} zoomOffset
  */
-FlatView.prototype.offsetZoom = function(zoomOffset) {
+FlatView.prototype.offsetZoom = function (zoomOffset) {
   this.setZoom(this._zoom + zoomOffset);
 };
 
@@ -314,7 +310,7 @@ FlatView.prototype.offsetZoom = function(zoomOffset) {
  * Set the media aspect ratio.
  * @param {number} mediaAspectRatio
  */
-FlatView.prototype.setMediaAspectRatio = function(mediaAspectRatio) {
+FlatView.prototype.setMediaAspectRatio = function (mediaAspectRatio) {
   this._resetParams();
   this._params.mediaAspectRatio = mediaAspectRatio;
   this._update(this._params);
@@ -324,7 +320,7 @@ FlatView.prototype.setMediaAspectRatio = function(mediaAspectRatio) {
  * Set the viewport dimensions.
  * @param {Size} size
  */
-FlatView.prototype.setSize = function(size) {
+FlatView.prototype.setSize = function (size) {
   this._resetParams();
   this._params.width = size.width;
   this._params.height = size.height;
@@ -335,7 +331,7 @@ FlatView.prototype.setSize = function(size) {
  * Set the view parameters. Unspecified parameters are left unchanged.
  * @param {FlatViewParameters} params
  */
-FlatView.prototype.setParameters = function(params) {
+FlatView.prototype.setParameters = function (params) {
   this._resetParams();
   this._params.x = params.x;
   this._params.y = params.y;
@@ -348,13 +344,13 @@ FlatView.prototype.setParameters = function(params) {
  * Set the view limiter.
  * @param {?FlatViewLimiter} limiter The new limiter, or null to unset.
  */
-FlatView.prototype.setLimiter = function(limiter) {
+FlatView.prototype.setLimiter = function (limiter) {
   this._limiter = limiter || null;
   this._update();
 };
 
-FlatView.prototype._resetParams = function() {
-  let params = this._params;
+FlatView.prototype._resetParams = function () {
+  const params = this._params;
   params.x = null;
   params.y = null;
   params.zoom = null;
@@ -363,8 +359,7 @@ FlatView.prototype._resetParams = function() {
   params.height = null;
 };
 
-FlatView.prototype._update = function(params) {
-
+FlatView.prototype._update = function (params) {
   // Avoid object allocation when no parameters are supplied.
   if (params == null) {
     this._resetParams();
@@ -383,8 +378,8 @@ FlatView.prototype._update = function(params) {
   params.x = params.x != null ? params.x : oldX;
   params.y = params.y != null ? params.y : oldY;
   params.zoom = params.zoom != null ? params.zoom : oldZoom;
-  params.mediaAspectRatio = params.mediaAspectRatio != null ?
-    params.mediaAspectRatio : oldMediaAspectRatio;
+  params.mediaAspectRatio =
+    params.mediaAspectRatio != null ? params.mediaAspectRatio : oldMediaAspectRatio;
   params.width = params.width != null ? params.width : oldWidth;
   params.height = params.height != null ? params.height : oldHeight;
 
@@ -405,8 +400,14 @@ FlatView.prototype._update = function(params) {
   const newHeight = params.height;
 
   // Consistency check.
-  if (!real(newX) || !real(newY) || !real(newZoom) ||
-      !real(newMediaAspectRatio) || !real(newWidth) || !real(newHeight)) {
+  if (
+    !real(newX) ||
+    !real(newY) ||
+    !real(newZoom) ||
+    !real(newMediaAspectRatio) ||
+    !real(newWidth) ||
+    !real(newHeight)
+  ) {
     throw new Error('Bad view - suspect a broken limiter');
   }
 
@@ -422,37 +423,41 @@ FlatView.prototype._update = function(params) {
   this._height = newHeight;
 
   // Check whether the parameters changed and emit the corresponding events.
-  if (newX !== oldX || newY !== oldY || newZoom !== oldZoom ||
-      newMediaAspectRatio !== oldMediaAspectRatio ||
-      newWidth !== oldWidth || newHeight !== oldHeight) {
+  if (
+    newX !== oldX ||
+    newY !== oldY ||
+    newZoom !== oldZoom ||
+    newMediaAspectRatio !== oldMediaAspectRatio ||
+    newWidth !== oldWidth ||
+    newHeight !== oldHeight
+  ) {
     this._projectionChanged = true;
     this.emit('change');
   }
   if (newWidth !== oldWidth || newHeight !== oldHeight) {
     this.emit('resize');
   }
-
 };
 
-FlatView.prototype._zoomX = function() {
+FlatView.prototype._zoomX = function () {
   return this._zoom;
 };
 
-FlatView.prototype._zoomY = function() {
+FlatView.prototype._zoomY = function () {
   const mediaAspectRatio = this._mediaAspectRatio;
   const aspect = this._width / this._height;
-  let zoomX = this._zoom;
-  let zoomY = zoomX * mediaAspectRatio / aspect;
+  const zoomX = this._zoom;
+  let zoomY = (zoomX * mediaAspectRatio) / aspect;
   if (isNaN(zoomY)) {
     zoomY = zoomX;
   }
   return zoomY;
 };
 
-FlatView.prototype.updateWithControlParameters = function(parameters) {
+FlatView.prototype.updateWithControlParameters = function (parameters) {
   const scale = this.zoom();
-  let zoomX = this._zoomX();
-  let zoomY = this._zoomY();
+  const zoomX = this._zoomX();
+  const zoomY = this._zoomY();
 
   // TODO: should the scale be the same for both axes?
   this.offsetX(parameters.axisScaledX * zoomX + parameters.x * scale);
@@ -460,23 +465,23 @@ FlatView.prototype.updateWithControlParameters = function(parameters) {
   this.offsetZoom(parameters.zoom * scale);
 };
 
-FlatView.prototype._updateProjection = function() {
+FlatView.prototype._updateProjection = function () {
   const projMatrix = this._projMatrix;
   const invProjMatrix = this._invProjMatrix;
-  let frustum = this._frustum;
+  const frustum = this._frustum;
 
   // Recalculate projection matrix when required.
   if (this._projectionChanged) {
-    let x = this._x;
-    let y = this._y;
+    const x = this._x;
+    const y = this._y;
     const zoomX = this._zoomX();
     const zoomY = this._zoomY();
 
     // Recalculate view frustum.
-    const top     = frustum[0] = (0.5 - y) + 0.5 * zoomY;
-    const right   = frustum[1] = (x - 0.5) + 0.5 * zoomX;
-    const bottom  = frustum[2] = (0.5 - y) - 0.5 * zoomY;
-    const left    = frustum[3] = (x - 0.5) - 0.5 * zoomX;
+    const top = (frustum[0] = 0.5 - y + 0.5 * zoomY);
+    const right = (frustum[1] = x - 0.5 + 0.5 * zoomX);
+    const bottom = (frustum[2] = 0.5 - y - 0.5 * zoomY);
+    const left = (frustum[3] = x - 0.5 - 0.5 * zoomX);
 
     // Recalculate projection matrix and its inverse.
     mat4.ortho(projMatrix, left, right, bottom, top, -1, 1);
@@ -490,7 +495,7 @@ FlatView.prototype._updateProjection = function() {
  * Returns the projection matrix for the current view.
  * @returns {mat4}
  */
-FlatView.prototype.projection = function() {
+FlatView.prototype.projection = function () {
   this._updateProjection();
   return this._projMatrix;
 };
@@ -499,7 +504,7 @@ FlatView.prototype.projection = function() {
  * Returns the inverse projection matrix for the current view.
  * @returns {mat4}
  */
-FlatView.prototype.inverseProjection = function() {
+FlatView.prototype.inverseProjection = function () {
   this._updateProjection();
   return this._invProjMatrix;
 };
@@ -513,7 +518,7 @@ FlatView.prototype.inverseProjection = function() {
  *
  * @param {vec3[]} rectangle The vertices of the rectangle.
  */
-FlatView.prototype.intersects = function(rectangle) {
+FlatView.prototype.intersects = function (rectangle) {
   this._updateProjection();
 
   const frustum = this._frustum;
@@ -522,13 +527,13 @@ FlatView.prototype.intersects = function(rectangle) {
   // planes. This is a sufficient condition, though not necessary, for the
   // rectangle to be completely outside the fruouter
   for (let i = 0; i < frustum.length; i++) {
-    let limit = frustum[i];
+    const limit = frustum[i];
     const axis = planeAxes[i];
     const cmp = planeCmp[i];
     let inside = false;
-    for (const j = 0; j < rectangle.length; j++) {
+    for (let j = 0; j < rectangle.length; j++) {
       const vertex = rectangle[j];
-      if (cmp < 0 && vertex[axis] < limit || cmp > 0 && vertex[axis] > limit) {
+      if ((cmp < 0 && vertex[axis] < limit) || (cmp > 0 && vertex[axis] > limit)) {
         inside = true;
         break;
       }
@@ -545,8 +550,7 @@ FlatView.prototype.intersects = function(rectangle) {
  * @param {Level[]} levelList the list of levels from which to select.
  * @return {Level} the selected level.
  */
-FlatView.prototype.selectLevel = function(levels) {
-
+FlatView.prototype.selectLevel = function (levels) {
   // Multiply the viewport width by the device pixel ratio to get the required
   // horizontal resolution in pixels.
   //
@@ -568,7 +572,6 @@ FlatView.prototype.selectLevel = function(levels) {
   }
 
   return levels[levels.length - 1];
-
 };
 
 /**
@@ -580,15 +583,15 @@ FlatView.prototype.selectLevel = function(levels) {
  * @param {Coords=} result The result argument for the screen coordinates.
  * @return {Coords}
  */
-FlatView.prototype.coordinatesToScreen = function(coords, result) {
-  let ray = this._vec;
+FlatView.prototype.coordinatesToScreen = function (coords, result) {
+  const ray = this._vec;
 
   if (!result) {
     result = {};
   }
 
-  let width = this._width;
-  let height = this._height;
+  const width = this._width;
+  const height = this._height;
 
   // Undefined on a null viewport.
   if (width <= 0 || height <= 0) {
@@ -598,21 +601,21 @@ FlatView.prototype.coordinatesToScreen = function(coords, result) {
   }
 
   // Extract coordinates from argument, filling in default values.
-  let x = coords && coords.x != null ? coords.x : defaultX;
-  let y = coords && coords.y != null ? coords.y : defaultY;
+  const x = coords && coords.x != null ? coords.x : defaultX;
+  const y = coords && coords.y != null ? coords.y : defaultY;
 
   // Project view ray onto clip space.
   vec4.set(ray, x - 0.5, 0.5 - y, -1, 1);
   vec4.transformMat4(ray, ray, this.projection());
 
   // Calculate perspective divide.
-  for (const i = 0; i < 3; i++) {
+  for (let i = 0; i < 3; i++) {
     ray[i] /= ray[3];
   }
 
   // Convert to viewport coordinates and return.
-  result.x = width * (ray[0] + 1) / 2;
-  result.y = height * (1 - ray[1]) / 2;
+  result.x = (width * (ray[0] + 1)) / 2;
+  result.y = (height * (1 - ray[1])) / 2;
 
   return result;
 };
@@ -626,19 +629,19 @@ FlatView.prototype.coordinatesToScreen = function(coords, result) {
  * @param {FlatViewCoords=} result The result argument for the view coordinates.
  * @return {FlatViewCoords}
  */
-FlatView.prototype.screenToCoordinates = function(coords, result) {
+FlatView.prototype.screenToCoordinates = function (coords, result) {
   const ray = this._vec;
 
   if (!result) {
     result = {};
   }
 
-  let width = this._width;
+  const width = this._width;
   const height = this._height;
 
   // Convert viewport coordinates to clip space.
-  const vecx = 2 * coords.x / width - 1;
-  const vecy = 1 - 2 * coords.y / height;
+  const vecx = (2 * coords.x) / width - 1;
+  const vecy = 1 - (2 * coords.y) / height;
   vec4.set(ray, vecx, vecy, 1, 1);
 
   // Project back to world space.
@@ -656,14 +659,13 @@ FlatView.prototype.screenToCoordinates = function(coords, result) {
  * @namespace
  */
 FlatView.limit = {
-
   /**
    * Returns a view limiter that constrains the x parameter.
    * @param {number} min The minimum x value.
    * @param {number} max The maximum y value.
    * @return {FlatViewLimiter}
    */
-  x: function(min, max) {
+  x (min, max) {
     return function limitX(params) {
       params.x = clamp(params.x, min, max);
       return params;
@@ -676,7 +678,7 @@ FlatView.limit = {
    * @param {number} max The maximum y value.
    * @return {FlatViewLimiter}
    */
-  y: function(min, max) {
+  y (min, max) {
     return function limitY(params) {
       params.y = clamp(params.y, min, max);
       return params;
@@ -689,7 +691,7 @@ FlatView.limit = {
    * @param {number} max The maximum zoom value.
    * @return {FlatViewLimiter}
    */
-  zoom: function(min, max) {
+  zoom (min, max) {
     return function limitZoom(params) {
       params.zoom = clamp(params.zoom, min, max);
       return params;
@@ -702,13 +704,13 @@ FlatView.limit = {
    * @param {number} size The image width in pixels.
    * @return {FlatViewLimiter}
    */
-  resolution: function(size) {
+  resolution (size) {
     return function limitResolution(params) {
       if (params.width <= 0 || params.height <= 0) {
         return params;
       }
       const width = params.width;
-      const minZoom = pixelRatio() * width / size;
+      const minZoom = (pixelRatio() * width) / size;
       params.zoom = clamp(params.zoom, minZoom, Infinity);
       return params;
     };
@@ -721,10 +723,10 @@ FlatView.limit = {
    * @param {number} max The maximum x value.
    * @return {FlatViewLimiter}
    */
-  visibleX: function(min, max) {
+  visibleX (min, max) {
     return function limitVisibleX(params) {
       // Calculate the zoom value that makes the specified range fully visible.
-      let maxZoom = max - min;
+      const maxZoom = max - min;
 
       // Clamp zoom to the maximum value.
       if (params.zoom > maxZoom) {
@@ -732,8 +734,8 @@ FlatView.limit = {
       }
 
       // Bound X such that the image is visible up to the range edges.
-      let minX = min + 0.5 * params.zoom;
-      let maxX = max - 0.5 * params.zoom;
+      const minX = min + 0.5 * params.zoom;
+      const maxX = max - 0.5 * params.zoom;
       params.x = clamp(params.x, minX, maxX);
 
       return params;
@@ -747,16 +749,15 @@ FlatView.limit = {
    * @param {number} max The maximum y value.
    * @return {FlatViewLimiter}
    */
-  visibleY: function(min, max) {
+  visibleY (min, max) {
     return function limitVisibleY(params) {
-
       // Do nothing for a null viewport.
       if (params.width <= 0 || params.height <= 0) {
         return params;
       }
 
       // Calculate the X to Y conversion factor.
-      let viewportAspectRatio = params.width / params.height;
+      const viewportAspectRatio = params.width / params.height;
       const factor = viewportAspectRatio / params.mediaAspectRatio;
 
       // Calculate the zoom value that makes the specified range fully visible.
@@ -768,8 +769,8 @@ FlatView.limit = {
       }
 
       // Bound Y such that the image is visible up to the range edges.
-      let minY = min + 0.5 * params.zoom / factor;
-      let maxY = max - 0.5 * params.zoom / factor;
+      const minY = min + (0.5 * params.zoom) / factor;
+      const maxY = max - (0.5 * params.zoom) / factor;
       params.y = clamp(params.y, minY, maxY);
 
       return params;
@@ -783,9 +784,9 @@ FlatView.limit = {
    * this will cause bands to appear around the image.
    * @return {FlatViewLimiter}
    */
-  letterbox: function() {
+  letterbox () {
     return function limitLetterbox(params) {
-      if(params.width <= 0 || params.height <= 0) {
+      if (params.width <= 0 || params.height <= 0) {
         return params;
       }
       const viewportAspectRatio = params.width / params.height;
@@ -807,22 +808,22 @@ FlatView.limit = {
 
       // If the full image width is visible, limit x to the central point.
       // Else, bound x such that image is visible up to the horizontal edges.
-      var minX, maxX;
+      let minX, maxX;
       if (params.zoom > fullWidthZoom) {
         minX = maxX = 0.5;
       } else {
-        minX = 0.0 + 0.5 * params.zoom / fullWidthZoom;
-        maxX = 1.0 - 0.5 * params.zoom / fullWidthZoom;
+        minX = 0.0 + (0.5 * params.zoom) / fullWidthZoom;
+        maxX = 1.0 - (0.5 * params.zoom) / fullWidthZoom;
       }
 
       // If the full image height is visible, limit y to the central point.
       // Else, bound y such that image is visible up to the vertical edges.
-      var minY, maxY;
+      let minY, maxY;
       if (params.zoom > fullHeightZoom) {
         minY = maxY = 0.5;
       } else {
-        minY = 0.0 + 0.5 * params.zoom / fullHeightZoom;
-        maxY = 1.0 - 0.5 * params.zoom / fullHeightZoom;
+        minY = 0.0 + (0.5 * params.zoom) / fullHeightZoom;
+        maxY = 1.0 - (0.5 * params.zoom) / fullHeightZoom;
       }
 
       // Clamp x and y into the calculated bounds.
@@ -831,8 +832,7 @@ FlatView.limit = {
 
       return params;
     };
-  }
-
+  },
 };
 
 FlatView.type = FlatView.prototype.type = 'flat';

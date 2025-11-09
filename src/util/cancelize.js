@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import once from './once.js';
 
 // A cancelable function is an asynchronous function (i.e., one whose last
@@ -38,7 +37,7 @@ function cancelize(fn) {
       throw new Error('cancelized: expected at least one argument');
     }
     const args = Array.prototype.slice.call(arguments, 0);
-    const done = args[args.length - 1] = once(args[args.length - 1]);
+    const done = (args[args.length - 1] = once(args[args.length - 1]));
 
     function cancel() {
       done.apply(null, arguments);

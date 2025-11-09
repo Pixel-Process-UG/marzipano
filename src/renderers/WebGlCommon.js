@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import clamp from '../util/clamp.js';
 
 // These are used to set the WebGl depth for a tile.
@@ -26,7 +25,7 @@ import { vec3 } from 'gl-matrix';
 import { mat4 } from 'gl-matrix';
 
 function createShader(gl, type, src) {
-  let shader = gl.createShader(type);
+  const shader = gl.createShader(type);
   gl.shaderSource(shader, src);
   gl.compileShader(shader);
   if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
@@ -36,7 +35,6 @@ function createShader(gl, type, src) {
 }
 
 function createShaderProgram(gl, vertexSrc, fragmentSrc, attribList, uniformList) {
-
   const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexSrc);
   const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentSrc);
 
@@ -58,7 +56,7 @@ function createShaderProgram(gl, vertexSrc, fragmentSrc, attribList, uniformList
     }
   }
 
-  for (const j = 0; j < uniformList.length; j++) {
+  for (let j = 0; j < uniformList.length; j++) {
     const uniform = uniformList[j];
     shaderProgram[uniform] = gl.getUniformLocation(shaderProgram, uniform);
     if (shaderProgram[uniform] === -1) {
@@ -88,9 +86,24 @@ function createConstantBuffer(gl, target, usage, value) {
 
 function createConstantBuffers(gl, vertexIndices, vertexPositions, textureCoords) {
   return {
-    vertexIndices: createConstantBuffer(gl, gl.ELEMENT_ARRAY_BUFFER, gl.STATIC_DRAW, new Uint16Array(vertexIndices)),
-    vertexPositions: createConstantBuffer(gl, gl.ARRAY_BUFFER, gl.STATIC_DRAW, new Float32Array(vertexPositions)),
-    textureCoords: createConstantBuffer(gl, gl.ARRAY_BUFFER, gl.STATIC_DRAW, new Float32Array(textureCoords))
+    vertexIndices: createConstantBuffer(
+      gl,
+      gl.ELEMENT_ARRAY_BUFFER,
+      gl.STATIC_DRAW,
+      new Uint16Array(vertexIndices)
+    ),
+    vertexPositions: createConstantBuffer(
+      gl,
+      gl.ARRAY_BUFFER,
+      gl.STATIC_DRAW,
+      new Float32Array(vertexPositions)
+    ),
+    textureCoords: createConstantBuffer(
+      gl,
+      gl.ARRAY_BUFFER,
+      gl.STATIC_DRAW,
+      new Float32Array(textureCoords)
+    ),
   };
 }
 
@@ -101,7 +114,7 @@ function destroyConstantBuffers(gl, constantBuffers) {
 }
 
 function enableAttributes(gl, shaderProgram) {
-  let numAttrs = gl.getProgramParameter(shaderProgram, gl.ACTIVE_ATTRIBUTES);
+  const numAttrs = gl.getProgramParameter(shaderProgram, gl.ACTIVE_ATTRIBUTES);
   for (let i = 0; i < numAttrs; i++) {
     gl.enableVertexAttribArray(i);
   }
@@ -109,7 +122,7 @@ function enableAttributes(gl, shaderProgram) {
 
 function disableAttributes(gl, shaderProgram) {
   const numAttrs = gl.getProgramParameter(shaderProgram, gl.ACTIVE_ATTRIBUTES);
-  for (const i = 0; i < numAttrs; i++) {
+  for (let i = 0; i < numAttrs; i++) {
     gl.disableVertexAttribArray(i);
   }
 }
@@ -121,7 +134,7 @@ function setTexture(gl, shaderProgram, texture) {
 }
 
 function setDepth(gl, shaderProgram, layerZ, tileZ) {
-  const depth = (((layerZ + 1) * MAX_LEVELS) - tileZ) / (MAX_LEVELS * MAX_LAYERS);
+  const depth = ((layerZ + 1) * MAX_LEVELS - tileZ) / (MAX_LEVELS * MAX_LAYERS);
   gl.uniform1f(shaderProgram.uDepth, depth);
 }
 
@@ -184,37 +197,36 @@ function setViewport(gl, layer, rect, viewportMatrix) {
   const clampedHeight = clamp(rect.height - bottomExcess, 0, maxClampedHeight);
   const topExcess = rect.height - clampedHeight;
 
-  vec3.set(
-    scaleVector,
-    rect.width / clampedWidth,
-    rect.height / clampedHeight,
-    1);
+  vec3.set(scaleVector, rect.width / clampedWidth, rect.height / clampedHeight, 1);
 
   vec3.set(
     translateVector,
     (rightExcess - leftExcess) / clampedWidth,
     (topExcess - bottomExcess) / clampedHeight,
-    0);
+    0
+  );
 
   mat4.identity(viewportMatrix);
   mat4.translate(viewportMatrix, viewportMatrix, translateVector);
   mat4.scale(viewportMatrix, viewportMatrix, scaleVector);
 
-  gl.viewport(gl.drawingBufferWidth * clampedOffsetX,
-              gl.drawingBufferHeight * clampedOffsetY,
-              gl.drawingBufferWidth * clampedWidth,
-              gl.drawingBufferHeight * clampedHeight);
+  gl.viewport(
+    gl.drawingBufferWidth * clampedOffsetX,
+    gl.drawingBufferHeight * clampedOffsetY,
+    gl.drawingBufferWidth * clampedWidth,
+    gl.drawingBufferHeight * clampedHeight
+  );
 }
 
 export default {
-  createShaderProgram: createShaderProgram,
-  destroyShaderProgram: destroyShaderProgram,
-  createConstantBuffers: createConstantBuffers,
-  destroyConstantBuffers: destroyConstantBuffers,
-  enableAttributes: enableAttributes,
-  disableAttributes: disableAttributes,
-  setTexture: setTexture,
-  setDepth: setDepth,
-  setViewport: setViewport,
-  setupPixelEffectUniforms: setupPixelEffectUniforms
+  createShaderProgram,
+  destroyShaderProgram,
+  createConstantBuffers,
+  destroyConstantBuffers,
+  enableAttributes,
+  disableAttributes,
+  setTexture,
+  setDepth,
+  setViewport,
+  setupPixelEffectUniforms,
 };

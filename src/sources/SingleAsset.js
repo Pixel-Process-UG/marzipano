@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 /**
  * @class SingleAssetSource
  * @implements Source
@@ -23,19 +22,19 @@
  * A {@link Source} that always provides the same {@link Asset}.
  *
  * @param {Asset} asset The asset.
-*/
+ */
 function SingleAssetSource(asset) {
   this._asset = asset;
 }
 
-SingleAssetSource.prototype.asset = function() {
+SingleAssetSource.prototype.asset = function () {
   return this._asset;
 };
 
-SingleAssetSource.prototype.loadAsset = function(stage, tile, done) {
+SingleAssetSource.prototype.loadAsset = function (stage, tile, done) {
   const self = this;
 
-  const timeout = setTimeout(function() {
+  const timeout = setTimeout(() => {
     done(null, tile, self._asset);
   }, 0);
 

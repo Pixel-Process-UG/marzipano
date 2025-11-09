@@ -20,21 +20,20 @@ var assert = require('chai').assert;
 var degToRad = require('../../../src/util/degToRad');
 
 var tab = [
-  [ 0, 0 ],
-  [ 45, Math.PI/4 ],
-  [ 90, Math.PI/2 ],
-  [ 180, Math.PI ],
-  [ 360, 2*Math.PI ]
+  [0, 0],
+  [45, Math.PI / 4],
+  [90, Math.PI / 2],
+  [180, Math.PI],
+  [360, 2 * Math.PI],
 ];
 
-suite('degToRad', function() {
-
-  test('degToRad', function() {
+suite('degToRad', function () {
+  test('degToRad', function () {
     for (var i = 0; i < tab.length; i++) {
-      var deg = tab[i][0], rad = tab[i][1];
+      var deg = tab[i][0],
+        rad = tab[i][1];
       assert.strictEqual(degToRad(deg), rad);
       assert.strictEqual(degToRad(-deg), -rad);
     }
   });
-
 });

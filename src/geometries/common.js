@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-
 import cmp from '../util/cmp.js';
 
 function makeLevelList(levelPropertiesList, LevelClass) {
-  let list = [];
+  const list = [];
 
   for (let i = 0; i < levelPropertiesList.length; i++) {
     list.push(new LevelClass(levelPropertiesList[i]));
   }
 
-  list.sort(function(level1, level2) {
-    return cmp(level1.width(), level2.width());
-  });
+  list.sort((level1, level2) => cmp(level1.width(), level2.width()));
 
   return list;
 }
@@ -34,7 +31,7 @@ function makeLevelList(levelPropertiesList, LevelClass) {
 function makeSelectableLevelList(levelList) {
   const list = [];
 
-  for (const i = 0; i < levelList.length; i++) {
+  for (let i = 0; i < levelList.length; i++) {
     if (!levelList[i]._fallbackOnly) {
       list.push(levelList[i]);
     }

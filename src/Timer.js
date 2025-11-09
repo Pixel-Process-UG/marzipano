@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-
 import eventEmitter from 'minimal-event-emitter';
 import defaults from './util/defaults.js';
 import now from './util/now.js';
 
 const defaultOptions = {
-  duration: Infinity
+  duration: Infinity,
 };
 
 /**
@@ -43,7 +42,6 @@ const defaultOptions = {
  * @param {number} [opts.duration=Infinity] Timeout in milliseconds.
  */
 function Timer(opts) {
-
   opts = defaults(opts || {}, defaultOptions);
 
   this._duration = opts.duration;
@@ -53,7 +51,6 @@ function Timer(opts) {
   this._handle = null;
 
   this._check = this._check.bind(this);
-
 }
 
 eventEmitter(Timer);
@@ -62,7 +59,7 @@ eventEmitter(Timer);
  * Starts the timer. If the timer is already started, this has the effect of
  * stopping and starting again (i.e. resetting the timer).
  */
-Timer.prototype.start = function() {
+Timer.prototype.start = function () {
   this._startTime = now();
   if (this._handle == null && this._duration < Infinity) {
     this._setup(this._duration);
@@ -73,14 +70,14 @@ Timer.prototype.start = function() {
  * Returns whether the timer is in the started state.
  * @return {boolean}
  */
-Timer.prototype.started = function() {
+Timer.prototype.started = function () {
   return this._startTime != null;
 };
 
 /**
  * Stops the timer.
  */
-Timer.prototype.stop = function() {
+Timer.prototype.stop = function () {
   this._startTime = null;
   if (this._handle != null) {
     clearTimeout(this._handle);
@@ -88,16 +85,16 @@ Timer.prototype.stop = function() {
   }
 };
 
-Timer.prototype._setup = function(interval) {
+Timer.prototype._setup = function (interval) {
   this._handle = setTimeout(this._check, interval);
 };
 
-Timer.prototype._teardown = function() {
+Timer.prototype._teardown = function () {
   clearTimeout(this._handle);
   this._handle = null;
 };
 
-Timer.prototype._check = function() {
+Timer.prototype._check = function () {
   const currentTime = now();
   const elapsed = currentTime - this._startTime;
   const remaining = this._duration - elapsed;
@@ -115,7 +112,7 @@ Timer.prototype._check = function() {
 /**
  * Returns the currently set duration.
  */
-Timer.prototype.duration = function() {
+Timer.prototype.duration = function () {
   return this._duration;
 };
 
@@ -126,7 +123,7 @@ Timer.prototype.duration = function() {
  * has already elapsed, the timeout event fires immediately.
  * @param {number}
  */
-Timer.prototype.setDuration = function(duration) {
+Timer.prototype.setDuration = function (duration) {
   this._duration = duration;
   if (this._startTime != null) {
     this._check();

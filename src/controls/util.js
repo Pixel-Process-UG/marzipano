@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-
 function maxFriction(friction, velocityX, velocityY, maxFrictionTime, result) {
-  const velocity = Math.sqrt(Math.pow(velocityX,2) + Math.pow(velocityY,2));
-  friction = Math.max(friction, velocity/maxFrictionTime);
+  const velocity = Math.sqrt(Math.pow(velocityX, 2) + Math.pow(velocityY, 2));
+  friction = Math.max(friction, velocity / maxFrictionTime);
   changeVectorNorm(velocityX, velocityY, friction, result);
   result[0] = Math.abs(result[0]);
   result[1] = Math.abs(result[1]);
 }
 
 function changeVectorNorm(x, y, n, result) {
-  const theta = Math.atan(y/x);
+  const theta = Math.atan(y / x);
   result[0] = n * Math.cos(theta);
   result[1] = n * Math.sin(theta);
 }

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import Map from './collections/Map.js';
 import Set from './collections/Set.js';
 import LruSet from './collections/LruSet.js';
@@ -44,18 +43,18 @@ const State = {
   IDLE: 0,
   START: 1,
   MARK: 2,
-  END: 3
+  END: 3,
 };
 
 const defaultOptions = {
   // Maximum number of cached textures for previously visible tiles.
-  previouslyVisibleCacheSize: 512
+  previouslyVisibleCacheSize: 512,
 };
 
 // Assign an id to each operation so we can track its state.
 // We actually only need this in debug mode, but the code is less convoluted
 // if we track unconditionally, and the performance hit is minimal anyway.
-const nextId = 0;
+let nextId = 0;
 
 // Distinguishes a cancellation from other kinds of errors.
 function CancelError() {}
@@ -75,7 +74,6 @@ inherits(CancelError, Error);
  * @param {Tile} tile The underlying tile.
  */
 function TextureStoreItem(store, tile) {
-
   let self = this;
 
   let id = nextId++;
@@ -87,7 +85,7 @@ function TextureStoreItem(store, tile) {
   self._asset = null;
   self._texture = null;
 
-  self._changeHandler = function() {
+  self._changeHandler = function () {
     store.emit('textureInvalid', tile);
   };
 
@@ -106,8 +104,7 @@ function TextureStoreItem(store, tile) {
     console.log('loading', id, tile);
   }
 
-  self._cancel = fn(stage, tile, function(err, _tile, asset, texture) {
-
+  self._cancel = fn(stage, tile, function (err, _tile, asset, texture) {
     // Make sure we do not call cancel after the operation is complete.
     self._cancel = null;
 
@@ -159,18 +156,17 @@ function TextureStoreItem(store, tile) {
       console.log('load', id, tile);
     }
   });
-
 }
 
-TextureStoreItem.prototype.asset = function() {
+TextureStoreItem.prototype.asset = function () {
   return this._asset;
 };
 
-TextureStoreItem.prototype.texture = function() {
+TextureStoreItem.prototype.texture = function () {
   return this._texture;
 };
 
-TextureStoreItem.prototype.destroy = function() {
+TextureStoreItem.prototype.destroy = function () {
   const id = this._id;
   const store = this._store;
   const tile = this._tile;
@@ -325,7 +321,7 @@ eventEmitter(TextureStore);
 /**
  * Destructor.
  */
-TextureStore.prototype.destroy = function() {
+TextureStore.prototype.destroy = function () {
   this.clear();
   clearOwnProperties(this);
 };
@@ -334,7 +330,7 @@ TextureStore.prototype.destroy = function() {
  * Return the underlying {@link Stage}.
  * @return {Stage}
  */
-TextureStore.prototype.stage = function() {
+TextureStore.prototype.stage = function () {
   return this._stage;
 };
 
@@ -342,24 +338,24 @@ TextureStore.prototype.stage = function() {
  * Return the underlying {@link Source}.
  * @return {Source}
  */
-TextureStore.prototype.source = function() {
+TextureStore.prototype.source = function () {
   return this._source;
 };
 
 /**
  * Remove all textures from the TextureStore, including pinned textures.
  */
-TextureStore.prototype.clear = function() {
+TextureStore.prototype.clear = function () {
   let self = this;
 
   // Collect list of tiles to be evicted.
   self._evicted.length = 0;
-  self._itemMap.forEach(function(tile) {
+  self._itemMap.forEach(function (tile) {
     self._evicted.push(tile);
   });
 
   // Evict tiles.
-  self._evicted.forEach(function(tile) {
+  self._evicted.forEach(function (tile) {
     self._unloadTile(tile);
   });
 
@@ -377,19 +373,19 @@ TextureStore.prototype.clear = function() {
 /**
  * Remove all textures in the TextureStore, excluding unpinned textures.
  */
-TextureStore.prototype.clearNotPinned = function() {
+TextureStore.prototype.clearNotPinned = function () {
   let self = this;
 
   // Collect list of tiles to be evicted.
   self._evicted.length = 0;
-  self._itemMap.forEach(function(tile) {
+  self._itemMap.forEach(function (tile) {
     if (!self._pinMap.has(tile)) {
       self._evicted.push(tile);
     }
   });
 
   // Evict tiles.
-  self._evicted.forEach(function(tile) {
+  self._evicted.forEach(function (tile) {
     self._unloadTile(tile);
   });
 
@@ -404,7 +400,7 @@ TextureStore.prototype.clearNotPinned = function() {
 /**
  * Signal the beginning of a frame. Called from {@link Stage}.
  */
-TextureStore.prototype.startFrame = function() {
+TextureStore.prototype.startFrame = function () {
   // Check that we are in an appropriate state.
   if (this._state !== State.IDLE && this._state !== State.START) {
     throw new Error('TextureStore: startFrame called out of sequence');
@@ -421,7 +417,7 @@ TextureStore.prototype.startFrame = function() {
  * Mark a tile as visible within the current frame. Called from {@link Stage}.
  * @param {Tile} tile The tile to mark.
  */
-TextureStore.prototype.markTile = function(tile) {
+TextureStore.prototype.markTile = function (tile) {
   // Check that we are in an appropriate state.
   if (this._state !== State.START && this._state !== State.MARK) {
     throw new Error('TextureStore: markTile called out of sequence');
@@ -445,7 +441,7 @@ TextureStore.prototype.markTile = function(tile) {
 /**
  * Signal the end of a frame. Called from {@link Stage}.
  */
-TextureStore.prototype.endFrame = function() {
+TextureStore.prototype.endFrame = function () {
   // Check that we are in an appropriate state.
   if (this._state !== State.START && this._state !== State.MARK && this._state !== State.END) {
     throw new Error('TextureStore: endFrame called out of sequence');
@@ -464,12 +460,12 @@ TextureStore.prototype.endFrame = function() {
   }
 };
 
-TextureStore.prototype._update = function() {
+TextureStore.prototype._update = function () {
   const self = this;
 
   // Calculate the set of tiles that used to be visible but no longer are.
   self._noLongerVisible.length = 0;
-  self._visible.forEach(function(tile) {
+  self._visible.forEach(function (tile) {
     if (!self._newVisible.has(tile)) {
       self._noLongerVisible.push(tile);
     }
@@ -478,7 +474,7 @@ TextureStore.prototype._update = function() {
   // Calculate the set of tiles that were visible recently and have become
   // visible again.
   self._visibleAgain.length = 0;
-  self._newVisible.forEach(function(tile) {
+  self._newVisible.forEach(function (tile) {
     if (self._previouslyVisible.has(tile)) {
       self._visibleAgain.push(tile);
     }
@@ -486,7 +482,7 @@ TextureStore.prototype._update = function() {
 
   // Remove tiles that have become visible again from the list of previously
   // visible tiles.
-  self._visibleAgain.forEach(function(tile) {
+  self._visibleAgain.forEach(function (tile) {
     self._previouslyVisible.remove(tile);
   });
 
@@ -494,7 +490,7 @@ TextureStore.prototype._update = function() {
   // Move no longer visible tiles with a loaded texture into the previously
   // visible set, and collect the tiles evicted from the latter.
   self._evicted.length = 0;
-  self._noLongerVisible.forEach(function(tile) {
+  self._noLongerVisible.forEach(function (tile) {
     let item = self._itemMap.get(tile);
     let texture = item && item.texture();
     if (texture) {
@@ -508,7 +504,7 @@ TextureStore.prototype._update = function() {
   });
 
   // Unload evicted tiles, unless they are pinned.
-  self._evicted.forEach(function(tile) {
+  self._evicted.forEach(function (tile) {
     if (!self._pinMap.has(tile)) {
       self._unloadTile(tile);
     }
@@ -516,7 +512,7 @@ TextureStore.prototype._update = function() {
 
   // Load visible tiles that are not already in the store.
   // Refresh texture on visible tiles for dynamic assets.
-  self._newVisible.forEach(function(tile) {
+  self._newVisible.forEach(function (tile) {
     let item = self._itemMap.get(tile);
     if (!item) {
       self._loadTile(tile);
@@ -537,7 +533,7 @@ TextureStore.prototype._update = function() {
   self._evicted.length = 0;
 };
 
-TextureStore.prototype._loadTile = function(tile) {
+TextureStore.prototype._loadTile = function (tile) {
   if (this._itemMap.has(tile)) {
     throw new Error('TextureStore: loading texture already in cache');
   }
@@ -545,7 +541,7 @@ TextureStore.prototype._loadTile = function(tile) {
   this._itemMap.set(tile, item);
 };
 
-TextureStore.prototype._unloadTile = function(tile) {
+TextureStore.prototype._unloadTile = function (tile) {
   let item = this._itemMap.del(tile);
   if (!item) {
     throw new Error('TextureStore: unloading texture not in cache');
@@ -553,7 +549,7 @@ TextureStore.prototype._unloadTile = function(tile) {
   item.destroy();
 };
 
-TextureStore.prototype.asset = function(tile) {
+TextureStore.prototype.asset = function (tile) {
   let item = this._itemMap.get(tile);
   if (item) {
     return item.asset();
@@ -561,7 +557,7 @@ TextureStore.prototype.asset = function(tile) {
   return null;
 };
 
-TextureStore.prototype.texture = function(tile) {
+TextureStore.prototype.texture = function (tile) {
   let item = this._itemMap.get(tile);
   if (item) {
     return item.texture();
@@ -579,7 +575,7 @@ TextureStore.prototype.texture = function(tile) {
  * @param {Tile} tile the tile to pin
  * @returns {number} the pin reference count.
  */
-TextureStore.prototype.pin = function(tile) {
+TextureStore.prototype.pin = function (tile) {
   // Increment reference count.
   let count = (this._pinMap.get(tile) || 0) + 1;
   this._pinMap.set(tile, count);
@@ -596,7 +592,7 @@ TextureStore.prototype.pin = function(tile) {
  * @param {Tile} tile the tile to unpin
  * @returns {number} the pin reference count.
  */
-TextureStore.prototype.unpin = function(tile) {
+TextureStore.prototype.unpin = function (tile) {
   const count = this._pinMap.get(tile);
   // Consistency check.
   if (!count) {
@@ -635,7 +631,7 @@ TextureStore.prototype.unpin = function(tile) {
  * @param {Tile} tile The tile to query.
  * @return {TileState}
  */
-TextureStore.prototype.query = function(tile) {
+TextureStore.prototype.query = function (tile) {
   const item = this._itemMap.get(tile);
   const pinCount = this._pinMap.get(tile) || 0;
   return {
@@ -644,7 +640,7 @@ TextureStore.prototype.query = function(tile) {
     hasAsset: item != null && item.asset() != null,
     hasTexture: item != null && item.texture() != null,
     pinned: pinCount !== 0,
-    pinCount: pinCount
+    pinCount: pinCount,
   };
 };
 

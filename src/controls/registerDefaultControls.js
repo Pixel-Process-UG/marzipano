@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import defaults from '../util/defaults.js';
 import DragControlMethod from './Drag.js';
 import QtvrControlMethod from './Qtvr.js';
@@ -24,7 +23,7 @@ import KeyControlMethod from './Key.js';
 
 const defaultOptions = {
   mouseViewMode: 'drag',
-  dragMode: 'pan'
+  dragMode: 'pan',
 };
 
 /**
@@ -65,32 +64,32 @@ function registerDefaultControls(controls, element, opts) {
     sKey: new KeyControlMethod(83, 'y', 0.7, 3),
     dKey: new KeyControlMethod(68, 'x', 0.7, 3),
     qKey: new KeyControlMethod(81, 'roll', 0.7, 3),
-    eKey: new KeyControlMethod(69, 'roll', -0.7, 3)
+    eKey: new KeyControlMethod(69, 'roll', -0.7, 3),
   };
 
-  const enabledControls = ['scrollZoom', 'touchView', 'pinch' ];
+  const enabledControls = ['scrollZoom', 'touchView', 'pinch'];
 
   if (opts.scrollZoom !== false) {
     controlMethods.scrollZoom = new ScrollZoomControlMethod(element); //{ frictionTime: 0 }
   }
 
   const controlMethodGroups = {
-    arrowKeys: [ 'leftArrowKey', 'rightArrowKey', 'upArrowKey', 'downArrowKey' ],
-    plusMinusKeys: [ 'plusKey', 'minusKey' ],
-    wasdKeys: [ 'wKey', 'aKey', 'sKey', 'dKey' ],
-    qeKeys: [ 'qKey', 'eKey' ]
+    arrowKeys: ['leftArrowKey', 'rightArrowKey', 'upArrowKey', 'downArrowKey'],
+    plusMinusKeys: ['plusKey', 'minusKey'],
+    wasdKeys: ['wKey', 'aKey', 'sKey', 'dKey'],
+    qeKeys: ['qKey', 'eKey'],
   };
 
   switch (opts.dragMode) {
     case 'pinch':
-       controlMethods.pinch = new DragControlMethod(element, 'touch', { hammerEvent: 'pinch' });
+      controlMethods.pinch = new DragControlMethod(element, 'touch', { hammerEvent: 'pinch' });
       break;
     case 'pan':
       controlMethods.touchView = new DragControlMethod(element, 'touch');
       controlMethods.pinch = new PinchZoomControlMethod(element, 'touch');
       break;
     default:
-      throw new Error("Unknown drag mode: " + opts.dragMode);
+      throw new Error(`Unknown drag mode: ${  opts.dragMode}`);
   }
 
   switch (opts.mouseViewMode) {
@@ -101,10 +100,10 @@ function registerDefaultControls(controls, element, opts) {
       enabledControls.push('mouseViewQtvr');
       break;
     default:
-      throw new Error("Unknown mouse view mode: " + opts.mouseViewMode);
+      throw new Error(`Unknown mouse view mode: ${  opts.mouseViewMode}`);
   }
 
-  for (var id in controlMethods) {
+  for (const id in controlMethods) {
     const method = controlMethods[id];
     controls.registerMethod(id, method);
     if (enabledControls.indexOf(id) >= 0) {
@@ -112,7 +111,7 @@ function registerDefaultControls(controls, element, opts) {
     }
   }
 
-  for (var groupId in controlMethodGroups) {
+  for (const groupId in controlMethodGroups) {
     const methodGroup = controlMethodGroups[groupId];
     controls.addMethodGroup(groupId, methodGroup);
   }

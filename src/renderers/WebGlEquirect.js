@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import clearOwnProperties from '../util/clearOwnProperties.js';
 import WebGlCommon from './WebGlCommon.js';
 import vertexSrc from '../shaders/vertexEquirect.js';
@@ -40,9 +39,17 @@ const textureCoords = [0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0];
 
 const attribList = ['aVertexPosition'];
 const uniformList = [
-  'uDepth', 'uOpacity', 'uSampler', 'uInvProjMatrix', 'uViewportMatrix',
-  'uColorOffset', 'uColorMatrix', 'uTextureX', 'uTextureY', 'uTextureWidth',
-  'uTextureHeight'
+  'uDepth',
+  'uOpacity',
+  'uSampler',
+  'uInvProjMatrix',
+  'uViewportMatrix',
+  'uColorOffset',
+  'uColorMatrix',
+  'uTextureX',
+  'uTextureY',
+  'uTextureWidth',
+  'uTextureHeight',
 ];
 
 /**
@@ -71,16 +78,16 @@ function WebGlEquirectRenderer(gl) {
   this.shaderProgram = createShaderProgram(gl, vertexSrc, fragmentSrc, attribList, uniformList);
 }
 
-WebGlEquirectRenderer.prototype.destroy = function() {
+WebGlEquirectRenderer.prototype.destroy = function () {
   destroyConstantBuffers(this.gl, this.constantBuffers);
   destroyShaderProgram(this.gl, this.shaderProgram);
   clearOwnProperties(this);
 };
 
-WebGlEquirectRenderer.prototype.startLayer = function(layer, rect) {
-  let gl = this.gl;
-  let shaderProgram = this.shaderProgram;
-  let constantBuffers = this.constantBuffers;
+WebGlEquirectRenderer.prototype.startLayer = function (layer, rect) {
+  const gl = this.gl;
+  const shaderProgram = this.shaderProgram;
+  const constantBuffers = this.constantBuffers;
   const invProjMatrix = this.invProjMatrix;
   const viewportMatrix = this.viewportMatrix;
 
@@ -116,17 +123,17 @@ WebGlEquirectRenderer.prototype.startLayer = function(layer, rect) {
   setupPixelEffectUniforms(gl, layer.effects(), {
     opacity: shaderProgram.uOpacity,
     colorOffset: shaderProgram.uColorOffset,
-    colorMatrix: shaderProgram.uColorMatrix
+    colorMatrix: shaderProgram.uColorMatrix,
   });
 };
 
-WebGlEquirectRenderer.prototype.endLayer = function(layer, rect) {
-  let gl = this.gl;
-  let shaderProgram = this.shaderProgram;
+WebGlEquirectRenderer.prototype.endLayer = function (layer, rect) {
+  const gl = this.gl;
+  const shaderProgram = this.shaderProgram;
   disableAttributes(gl, shaderProgram);
 };
 
-WebGlEquirectRenderer.prototype.renderTile = function(tile, texture, layer, layerZ) {
+WebGlEquirectRenderer.prototype.renderTile = function (tile, texture, layer, layerZ) {
   const gl = this.gl;
   const shaderProgram = this.shaderProgram;
   const constantBuffers = this.constantBuffers;

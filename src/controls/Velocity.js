@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import eventEmitter from 'minimal-event-emitter';
 import Dynamics from './Dynamics.js';
 import clearOwnProperties from '../util/clearOwnProperties.js';
@@ -29,10 +28,10 @@ import clearOwnProperties from '../util/clearOwnProperties.js';
  * The user should emit 'active' and 'inactive' events if required.
  *
  * @param {String} parameter The parameter to be controlled (e.g. `x`, `y` or `zoom`)
-*/
+ */
 function VelocityControlMethod(parameter) {
-  if(!parameter) {
-    throw new Error("VelocityControlMethod: parameter must be defined");
+  if (!parameter) {
+    throw new Error('VelocityControlMethod: parameter must be defined');
   }
 
   this._parameter = parameter;
@@ -43,7 +42,7 @@ eventEmitter(VelocityControlMethod);
 /**
  * Destructor.
  */
-VelocityControlMethod.prototype.destroy = function() {
+VelocityControlMethod.prototype.destroy = function () {
   clearOwnProperties(this);
 };
 
@@ -51,7 +50,7 @@ VelocityControlMethod.prototype.destroy = function() {
  * Set the parameter's velocity.
  * @param {Number} velocity
  */
-VelocityControlMethod.prototype.setVelocity = function(velocity) {
+VelocityControlMethod.prototype.setVelocity = function (velocity) {
   this._dynamics.velocity = velocity;
   this.emit('parameterDynamics', this._parameter, this._dynamics);
 };
@@ -60,7 +59,7 @@ VelocityControlMethod.prototype.setVelocity = function(velocity) {
  * Set the parameter's friction.
  * @param {Number} friction
  */
-VelocityControlMethod.prototype.setFriction = function(friction) {
+VelocityControlMethod.prototype.setFriction = function (friction) {
   this._dynamics.friction = friction;
   this.emit('parameterDynamics', this._parameter, this._dynamics);
 };

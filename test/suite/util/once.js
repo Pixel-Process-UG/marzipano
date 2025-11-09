@@ -21,17 +21,15 @@ var sinon = require('sinon');
 var once = require('../../../src/util/once');
 
 function twice(x) {
-  return 2*x;
+  return 2 * x;
 }
 
-suite('once', function() {
-
-  test('does not call a second time', function() {
+suite('once', function () {
+  test('does not call a second time', function () {
     var spy = sinon.spy(twice);
     var fn = once(spy);
     assert.strictEqual(fn(2), 4);
     assert.strictEqual(fn(3), 4);
     assert.isTrue(spy.calledOnce);
   });
-
 });

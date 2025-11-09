@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import eventEmitter from 'minimal-event-emitter';
 import Composer from './Composer.js';
 import clearOwnProperties from '../util/clearOwnProperties.js';
@@ -48,7 +47,7 @@ function Controls(opts) {
   this._composer = new Composer();
 
   // Whether the controls are enabled.
-  this._enabled = (opts && opts.enabled) ? !!opts.enabled : true;
+  this._enabled = opts && opts.enabled ? !!opts.enabled : true;
 
   // How many control methods are enabled and in the active state.
   this._activeCount = 0;
@@ -63,7 +62,7 @@ eventEmitter(Controls);
 /**
  * Destructor.
  */
-Controls.prototype.destroy = function() {
+Controls.prototype.destroy = function () {
   this.detach();
   this._composer.destroy();
   clearOwnProperties(this);
@@ -72,9 +71,9 @@ Controls.prototype.destroy = function() {
 /**
  * @return {ControlMethod[]} List of registered @{link ControlMethod instances}
  */
-Controls.prototype.methods = function() {
-  let obj = {};
-  for (var id in this._methods) {
+Controls.prototype.methods = function () {
+  const obj = {};
+  for (const id in this._methods) {
     obj[id] = this._methods[id];
   }
   return obj;
@@ -84,7 +83,7 @@ Controls.prototype.methods = function() {
  * @param {String} id
  * @return {ControlMethod}
  */
-Controls.prototype.method = function(id) {
+Controls.prototype.method = function (id) {
   return this._methods[id];
 };
 
@@ -93,20 +92,20 @@ Controls.prototype.method = function(id) {
  * @param {ControlMethod} instance
  * @param {Boolean} [enable=false]
  */
-Controls.prototype.registerMethod = function(id, instance, enable) {
+Controls.prototype.registerMethod = function (id, instance, enable) {
   if (this._methods[id]) {
     throw new Error(`Control method already registered with id ${id}`);
   }
 
   this._methods[id] = {
-    instance: instance,
+    instance,
     enabled: false,
     active: false,
     activeHandler: this._handleActive.bind(this, id),
-    inactiveHandler: this._handleInactive.bind(this, id)
+    inactiveHandler: this._handleInactive.bind(this, id),
   };
 
-  if(enable) {
+  if (enable) {
     this.enableMethod(id, instance);
   }
 };
@@ -114,8 +113,8 @@ Controls.prototype.registerMethod = function(id, instance, enable) {
 /**
  * @param {String} id
  */
-Controls.prototype.unregisterMethod = function(id) {
-  let method = this._methods[id];
+Controls.prototype.unregisterMethod = function (id) {
+  const method = this._methods[id];
   if (!method) {
     throw new Error(`No control method registered with id ${id}`);
   }
@@ -128,8 +127,8 @@ Controls.prototype.unregisterMethod = function(id) {
 /**
  * @param {String} id
  */
-Controls.prototype.enableMethod = function(id) {
-  let method = this._methods[id];
+Controls.prototype.enableMethod = function (id) {
+  const method = this._methods[id];
   if (!method) {
     throw new Error(`No control method registered with id ${id}`);
   }
@@ -148,8 +147,8 @@ Controls.prototype.enableMethod = function(id) {
 /**
  * @param {String} id
  */
-Controls.prototype.disableMethod = function(id) {
-  let method = this._methods[id];
+Controls.prototype.disableMethod = function (id) {
+  const method = this._methods[id];
   if (!method) {
     throw new Error(`No control method registered with id ${id}`);
   }
@@ -171,61 +170,61 @@ Controls.prototype.disableMethod = function(id) {
  * @param {String} groupId
  * @param {String[]} methodIds
  */
-Controls.prototype.addMethodGroup = function(groupId, methodIds) {
+Controls.prototype.addMethodGroup = function (groupId, methodIds) {
   this._methodGroups[groupId] = methodIds;
-}
+};
 
 /**
  * @param {String} groupId
  */
-Controls.prototype.removeMethodGroup = function(id) {
+Controls.prototype.removeMethodGroup = function (id) {
   delete this._methodGroups[id];
-}
+};
 
 /**
  * @return {ControlMethodGroup[]} List of control method groups
  */
-Controls.prototype.methodGroups = function() {
+Controls.prototype.methodGroups = function () {
   const obj = {};
-  for (var id in this._methodGroups) {
+  for (const id in this._methodGroups) {
     obj[id] = this._methodGroups[id];
   }
   return obj;
-}
+};
 
 /**
  * Enables all the control methods in the group
  * @param {String} groupId
  */
-Controls.prototype.enableMethodGroup = function(id) {
-  let self = this;
-  self._methodGroups[id].forEach(function(methodId) {
+Controls.prototype.enableMethodGroup = function (id) {
+  const self = this;
+  self._methodGroups[id].forEach((methodId) => {
     self.enableMethod(methodId);
   });
-}
+};
 
 /**
  * Disables all the control methods in the group
  * @param {String} groupId
  */
-Controls.prototype.disableMethodGroup = function(id) {
+Controls.prototype.disableMethodGroup = function (id) {
   const self = this;
-  self._methodGroups[id].forEach(function(methodId) {
+  self._methodGroups[id].forEach((methodId) => {
     self.disableMethod(methodId);
   });
-}
+};
 
 /**
  * @returns {Boolean}
  */
-Controls.prototype.enabled = function() {
+Controls.prototype.enabled = function () {
   return this._enabled;
 };
 
 /**
  * Enables the controls
  */
-Controls.prototype.enable = function() {
+Controls.prototype.enable = function () {
   if (this._enabled) {
     return;
   }
@@ -240,7 +239,7 @@ Controls.prototype.enable = function() {
 /**
  * Disables the controls
  */
-Controls.prototype.disable = function() {
+Controls.prototype.disable = function () {
   if (!this._enabled) {
     return;
   }
@@ -258,7 +257,7 @@ Controls.prototype.disable = function() {
  *
  * @param {RenderLoop}
  */
-Controls.prototype.attach = function(renderLoop) {
+Controls.prototype.attach = function (renderLoop) {
   if (this._attachedRenderLoop) {
     this.detach();
   }
@@ -274,7 +273,7 @@ Controls.prototype.attach = function(renderLoop) {
 /**
  * Detaches the controls
  */
-Controls.prototype.detach = function() {
+Controls.prototype.detach = function () {
   if (!this._attachedRenderLoop) {
     return;
   }
@@ -290,12 +289,12 @@ Controls.prototype.detach = function() {
 /**
  * @param {Boolean}
  */
-Controls.prototype.attached = function() {
-  return this._attachedRenderLoop != null;
+Controls.prototype.attached = function () {
+  return this._attachedRenderLoop !== null;
 };
 
-Controls.prototype._listen = function(id) {
-  let method = this._methods[id];
+Controls.prototype._listen = function (id) {
+  const method = this._methods[id];
   if (!method) {
     throw new Error('Bad method id');
   }
@@ -303,8 +302,8 @@ Controls.prototype._listen = function(id) {
   method.instance.addEventListener('inactive', method.inactiveHandler);
 };
 
-Controls.prototype._unlisten = function(id) {
-  let method = this._methods[id];
+Controls.prototype._unlisten = function (id) {
+  const method = this._methods[id];
   if (!method) {
     throw new Error('Bad method id');
   }
@@ -312,8 +311,8 @@ Controls.prototype._unlisten = function(id) {
   method.instance.removeEventListener('inactive', method.inactiveHandler);
 };
 
-Controls.prototype._handleActive = function(id) {
-  let method = this._methods[id];
+Controls.prototype._handleActive = function (id) {
+  const method = this._methods[id];
   if (!method) {
     throw new Error('Bad method id');
   }
@@ -326,8 +325,8 @@ Controls.prototype._handleActive = function(id) {
   }
 };
 
-Controls.prototype._handleInactive = function(id) {
-  let method = this._methods[id];
+Controls.prototype._handleInactive = function (id) {
+  const method = this._methods[id];
   if (!method) {
     throw new Error('Bad method id');
   }
@@ -340,7 +339,7 @@ Controls.prototype._handleInactive = function(id) {
   }
 };
 
-Controls.prototype._incrementActiveCount = function() {
+Controls.prototype._incrementActiveCount = function () {
   this._activeCount++;
   if (debug) {
     this._checkActiveCount();
@@ -350,7 +349,7 @@ Controls.prototype._incrementActiveCount = function() {
   }
 };
 
-Controls.prototype._decrementActiveCount = function() {
+Controls.prototype._decrementActiveCount = function () {
   this._activeCount--;
   if (debug) {
     this._checkActiveCount();
@@ -360,23 +359,23 @@ Controls.prototype._decrementActiveCount = function() {
   }
 };
 
-Controls.prototype._checkActiveCount = function() {
-  const count = 0;
-  for (var id in this._methods) {
-    let method = this._methods[id];
+Controls.prototype._checkActiveCount = function () {
+  let count = 0;
+  for (const id in this._methods) {
+    const method = this._methods[id];
     if (method.enabled && method.active) {
       count++;
     }
   }
-  if (count != this._activeCount) {
+  if (count !== this._activeCount) {
     throw new Error('Bad control state');
   }
 };
 
-Controls.prototype._updateComposer = function() {
+Controls.prototype._updateComposer = function () {
   const composer = this._composer;
 
-  for (var id in this._methods) {
+  for (const id in this._methods) {
     const method = this._methods[id];
     const enabled = this._enabled && method.enabled;
 
@@ -389,7 +388,7 @@ Controls.prototype._updateComposer = function() {
   }
 };
 
-Controls.prototype._updateViewsWithControls = function() {
+Controls.prototype._updateViewsWithControls = function () {
   const controlData = this._composer.offsets();
   if (controlData.changing) {
     this._attachedRenderLoop.renderOnNextFrame();
@@ -400,7 +399,7 @@ Controls.prototype._updateViewsWithControls = function() {
   this.updatedViews_.length = 0;
 
   const layers = this._attachedRenderLoop.stage().listLayers();
-  for (const i = 0; i < layers.length; i++) {
+  for (let i = 0; i < layers.length; i++) {
     const view = layers[i].view();
     if (this.updatedViews_.indexOf(view) < 0) {
       layers[i].view().updateWithControlParameters(controlData.offsets);

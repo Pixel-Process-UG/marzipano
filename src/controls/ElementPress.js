@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import eventEmitter from 'minimal-event-emitter';
 import Dynamics from './Dynamics.js';
 import clearOwnProperties from '../util/clearOwnProperties.js';
@@ -32,19 +31,19 @@ import clearOwnProperties from '../util/clearOwnProperties.js';
  * @param {number} velocity Velocity at which the parameter changes. Use a
  * negative number for opposite direction
  * @param {number} friction Friction at which the parameter stops
-*/
+ */
 function ElementPressControlMethod(element, parameter, velocity, friction) {
-  if(!element) {
-    throw new Error("ElementPressControlMethod: element must be defined");
+  if (!element) {
+    throw new Error('ElementPressControlMethod: element must be defined');
   }
-  if(!parameter) {
-    throw new Error("ElementPressControlMethod: parameter must be defined");
+  if (!parameter) {
+    throw new Error('ElementPressControlMethod: parameter must be defined');
   }
-  if(!velocity) {
-    throw new Error("ElementPressControlMethod: velocity must be defined");
+  if (!velocity) {
+    throw new Error('ElementPressControlMethod: velocity must be defined');
   }
-  if(!friction) {
-    throw new Error("ElementPressControlMethod: friction must be defined");
+  if (!friction) {
+    throw new Error('ElementPressControlMethod: friction must be defined');
   }
 
   this._element = element;
@@ -71,7 +70,7 @@ eventEmitter(ElementPressControlMethod);
 /**
  * Destructor.
  */
-ElementPressControlMethod.prototype.destroy = function() {
+ElementPressControlMethod.prototype.destroy = function () {
   this._element.removeEventListener('mousedown', this._pressHandler);
   this._element.removeEventListener('mouseup', this._releaseHandler);
   this._element.removeEventListener('mouseleave', this._releaseHandler);
@@ -81,7 +80,7 @@ ElementPressControlMethod.prototype.destroy = function() {
   clearOwnProperties(this);
 };
 
-ElementPressControlMethod.prototype._handlePress = function() {
+ElementPressControlMethod.prototype._handlePress = function () {
   this._pressing = true;
 
   this._dynamics.velocity = this._velocity;
@@ -90,8 +89,8 @@ ElementPressControlMethod.prototype._handlePress = function() {
   this.emit('active');
 };
 
-ElementPressControlMethod.prototype._handleRelease = function() {
-  if(this._pressing) {
+ElementPressControlMethod.prototype._handleRelease = function () {
+  if (this._pressing) {
     this._dynamics.friction = this._friction;
     this.emit('parameterDynamics', this._parameter, this._dynamics);
     this.emit('inactive');

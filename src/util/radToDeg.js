@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-
 /**
  * @memberof util
  * @param {number} rad
  * @return {number}
  */
 function radToDeg(rad) {
-  return rad * 180 / Math.PI;
+  return (rad * 180) / Math.PI;
 }
 
 export default radToDeg;

@@ -7,7 +7,8 @@
       "Bash(node convert-to-esm.js:*)",
       "Bash(find:*)",
       "Bash(node modernize-syntax.js:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(node fix-eslint.js:*)"
     ],
     "deny": [],
     "ask": []

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 function type(x) {
   const typ = typeof x;
   if (typ === 'object') {

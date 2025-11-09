@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-
 function defaults(obj, defaultsObj) {
-  for (var key in defaultsObj) {
+  for (const key in defaultsObj) {
     if (!(key in obj)) {
       obj[key] = defaultsObj[key];
     }

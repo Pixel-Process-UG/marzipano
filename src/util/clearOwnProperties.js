@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-
 // Sets an object's own properties to undefined. This may be called by
 // destructors to avoid retaining references and help detect incorrect use of
 // destroyed instances.
 function clearOwnProperties(obj) {
-  for (var prop in obj) {
+  for (const prop in obj) {
     if (obj.hasOwnProperty(prop)) {
       obj[prop] = undefined;
     }

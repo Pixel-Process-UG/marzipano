@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 /**
  * @class RendererRegistry
  * @classdesc
@@ -36,7 +35,7 @@ function RendererRegistry() {
  * @param {string} viewType The view type, as given by {@link View#type}.
  * @param {*} Renderer The renderer class.
  */
-RendererRegistry.prototype.set = function(geometryType, viewType, Renderer) {
+RendererRegistry.prototype.set = function (geometryType, viewType, Renderer) {
   if (!this._renderers[geometryType]) {
     this._renderers[geometryType] = {};
   }
@@ -51,9 +50,8 @@ RendererRegistry.prototype.set = function(geometryType, viewType, Renderer) {
  * @param {*} Renderer The renderer class, or null if no such renderer has been
  * registered.
  */
-RendererRegistry.prototype.get = function(geometryType, viewType) {
-  const Renderer = this._renderers[geometryType] &&
-      this._renderers[geometryType][viewType];
+RendererRegistry.prototype.get = function (geometryType, viewType) {
+  const Renderer = this._renderers[geometryType] && this._renderers[geometryType][viewType];
   return Renderer || null;
 };
 

@@ -20,20 +20,20 @@ var assert = require('chai').assert;
 var mod = require('../../../src/util/mod');
 
 var tab = [
-  [  1, 3, 1 ],
-  [  3, 3, 0 ],
-  [  4, 3, 1 ],
-  [ -1, 3, 2 ],
-  [ -3, 3, 0 ]
+  [1, 3, 1],
+  [3, 3, 0],
+  [4, 3, 1],
+  [-1, 3, 2],
+  [-3, 3, 0],
 ];
 
-suite('mod', function() {
-
-  test('mod', function() {
+suite('mod', function () {
+  test('mod', function () {
     for (var i = 0; i < tab.length; i++) {
-      var a = tab[i][0], b = tab[i][1], c = tab[i][2];
+      var a = tab[i][0],
+        b = tab[i][1],
+        c = tab[i][2];
       assert.strictEqual(mod(a, b), c);
     }
   });
-
 });

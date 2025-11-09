@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import mod from '../util/mod.js';
 
 // An LruMap holds up to a maximum number of key-value pairs, ordered by their
@@ -40,12 +39,12 @@ function LruMap(capacity) {
   this._size = 0;
 }
 
-LruMap.prototype._index = function(i) {
+LruMap.prototype._index = function (i) {
   return mod(this._start + i, this._capacity);
 };
 
 // Returns the value associated to the specified key, or null if not found.
-LruMap.prototype.get = function(key) {
+LruMap.prototype.get = function (key) {
   for (let i = 0; i < this._size; i++) {
     const existingKey = this._keys[this._index(i)];
     if (key.equals(existingKey)) {
@@ -60,13 +59,12 @@ LruMap.prototype.get = function(key) {
 // is at capacity, the oldest key-value pair is removed. Returns the removed
 // key, or null otherwise. If the capacity is zero, does nothing and returns
 // the key.
-LruMap.prototype.set = function(key, value) {
+LruMap.prototype.set = function (key, value) {
   if (this._capacity === 0) {
     return key;
   }
   this.del(key);
-  const evictedKey =
-      this._size === this._capacity ? this._keys[this._index(0)] : null;
+  const evictedKey = this._size === this._capacity ? this._keys[this._index(0)] : null;
   this._keys[this._index(this._size)] = key;
   this._values[this._index(this._size)] = value;
   if (this._size < this._capacity) {
@@ -79,11 +77,11 @@ LruMap.prototype.set = function(key, value) {
 
 // Removes the key-value pair associated with the specified key.
 // Returns the removed value, or null if not found.
-LruMap.prototype.del = function(key) {
+LruMap.prototype.del = function (key) {
   for (let i = 0; i < this._size; i++) {
     if (key.equals(this._keys[this._index(i)])) {
       const existingValue = this._values[this._index(i)];
-      for (const j = i; j < this._size - 1; j++) {
+      for (let j = i; j < this._size - 1; j++) {
         this._keys[this._index(j)] = this._keys[this._index(j + 1)];
         this._values[this._index(j)] = this._values[this._index(j + 1)];
       }
@@ -95,7 +93,7 @@ LruMap.prototype.del = function(key) {
 };
 
 // Returns whether there is a value associated with the specified key.
-LruMap.prototype.has = function(key) {
+LruMap.prototype.has = function (key) {
   for (let i = 0; i < this._size; i++) {
     if (key.equals(this._keys[this._index(i)])) {
       return true;
@@ -105,12 +103,12 @@ LruMap.prototype.has = function(key) {
 };
 
 // Returns the number of key-value pairs in the map.
-LruMap.prototype.size = function() {
+LruMap.prototype.size = function () {
   return this._size;
 };
 
 // Removes all key-value pairs from the map.
-LruMap.prototype.clear = function() {
+LruMap.prototype.clear = function () {
   this._keys.length = 0;
   this._values.length = 0;
   this._start = 0;
@@ -120,9 +118,9 @@ LruMap.prototype.clear = function() {
 // Calls fn(key, value) for each item in the map, in an unspecified order.
 // Returns the number of times fn was called.
 // The result is unspecified if the map is mutated during iteration.
-LruMap.prototype.forEach = function(fn) {
-  const count = 0;
-  for (const i = 0; i < this._size; i++) {
+LruMap.prototype.forEach = function (fn) {
+  let count = 0;
+  for (let i = 0; i < this._size; i++) {
     fn(this._keys[this._index(i)], this._values[this._index(i)]);
     count += 1;
   }

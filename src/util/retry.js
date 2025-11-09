@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-
 import noop from './noop.js';
 
 // Return a cancelable function that executes fn in a loop until it returns
 // successfully.
 function retry(fn) {
-
   return function retried() {
-
-    const args = arguments.length ? Array.prototype.slice.call(arguments, 0, arguments.length - 1) : [];
+    const args = arguments.length
+      ? Array.prototype.slice.call(arguments, 0, arguments.length - 1)
+      : [];
     const done = arguments.length ? arguments[arguments.length - 1] : noop;
 
     let cfn = null;
@@ -45,9 +44,7 @@ function retry(fn) {
       canceled = true;
       cfn.apply(null, arguments);
     };
-
   };
-
 }
 
 export default retry;

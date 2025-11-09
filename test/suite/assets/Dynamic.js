@@ -17,7 +17,7 @@
 
 var assert = require('chai').assert;
 var sinon = require('sinon');
-sinon.assert.expose(assert, {prefix: ''});
+sinon.assert.expose(assert, { prefix: '' });
 
 var DynamicAsset = require('../../../src/assets/Dynamic');
 
@@ -28,17 +28,16 @@ function createTestCanvas(width, height) {
   return canvas;
 }
 
-suite('DynamicAsset', function() {
-
-  test('element', function() {
+suite('DynamicAsset', function () {
+  test('element', function () {
     var img = new Image();
     var asset = new DynamicAsset(img);
     assert.strictEqual(asset.element(), img);
   });
 
-  test('image width and height', function(done) {
+  test('image width and height', function (done) {
     var img = new Image(10, 20);
-    img.onload = function() {
+    img.onload = function () {
       var asset = new DynamicAsset(img);
       assert.strictEqual(asset.width(), 12);
       assert.strictEqual(asset.height(), 34);
@@ -47,21 +46,21 @@ suite('DynamicAsset', function() {
     img.src = createTestCanvas(12, 34).toDataURL();
   });
 
-  test('canvas width and height', function() {
+  test('canvas width and height', function () {
     var asset = new DynamicAsset(createTestCanvas(12, 34));
     assert.strictEqual(asset.width(), 12);
     assert.strictEqual(asset.height(), 34);
   });
 
-  test('isDynamic', function() {
+  test('isDynamic', function () {
     var img = new Image();
     var asset = new DynamicAsset(img);
     assert.isTrue(asset.isDynamic());
   });
 
-  test('mark dirty', function() {
+  test('mark dirty', function () {
     var img = new Image();
-    var asset = new DynamicAsset(img, {dynamic: true});
+    var asset = new DynamicAsset(img, { dynamic: true });
 
     var spy = sinon.spy();
     asset.addEventListener('change', spy);
@@ -71,5 +70,4 @@ suite('DynamicAsset', function() {
     assert.strictEqual(asset.timestamp(), 1);
     assert.calledOnce(spy);
   });
-
 });

@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-
 /**
  * @memberof util
  * @param {number} deg
  * @return {number}
  */
 function degToRad(deg) {
-  return deg * Math.PI / 180;
+  return (deg * Math.PI) / 180;
 }
 
 export default degToRad;

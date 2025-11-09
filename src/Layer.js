@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import eventEmitter from 'minimal-event-emitter';
 import extend from './util/extend.js';
 import clearOwnProperties from './util/clearOwnProperties.js';
@@ -41,7 +40,7 @@ import clearOwnProperties from './util/clearOwnProperties.js';
  * @param {TextureStore} textureStore
  * @param {Object} opts
  * @param {Effects} opts.effects
-*/
+ */
 function Layer(source, geometry, view, textureStore, opts) {
   opts = opts || {};
 
@@ -56,22 +55,19 @@ function Layer(source, geometry, view, textureStore, opts) {
 
   this._fixedLevelIndex = null;
 
-  this._viewChangeHandler = function() {
+  this._viewChangeHandler = function () {
     self.emit('viewChange', self.view());
   };
 
   this._view.addEventListener('change', this._viewChangeHandler);
 
-  this._textureStoreChangeHandler = function() {
+  this._textureStoreChangeHandler = function () {
     self.emit('textureStoreChange', self.textureStore());
   };
 
-  this._textureStore.addEventListener('textureLoad',
-    this._textureStoreChangeHandler);
-  this._textureStore.addEventListener('textureError',
-    this._textureStoreChangeHandler);
-  this._textureStore.addEventListener('textureInvalid',
-    this._textureStoreChangeHandler);
+  this._textureStore.addEventListener('textureLoad', this._textureStoreChangeHandler);
+  this._textureStore.addEventListener('textureError', this._textureStoreChangeHandler);
+  this._textureStore.addEventListener('textureInvalid', this._textureStoreChangeHandler);
 }
 
 eventEmitter(Layer);
@@ -79,14 +75,11 @@ eventEmitter(Layer);
 /**
  * Destructor.
  */
-Layer.prototype.destroy = function() {
+Layer.prototype.destroy = function () {
   this._view.removeEventListener('change', this._viewChangeHandler);
-  this._textureStore.removeEventListener('textureLoad',
-    this._textureStoreChangeHandler);
-  this._textureStore.removeEventListener('textureError',
-    this._textureStoreChangeHandler);
-  this._textureStore.removeEventListener('textureInvalid',
-    this._textureStoreChangeHandler);
+  this._textureStore.removeEventListener('textureLoad', this._textureStoreChangeHandler);
+  this._textureStore.removeEventListener('textureError', this._textureStoreChangeHandler);
+  this._textureStore.removeEventListener('textureInvalid', this._textureStoreChangeHandler);
   clearOwnProperties(this);
 };
 
@@ -94,7 +87,7 @@ Layer.prototype.destroy = function() {
  * Returns the underlying {@link Source source}.
  * @return {Source}
  */
-Layer.prototype.source = function() {
+Layer.prototype.source = function () {
   return this._source;
 };
 
@@ -102,7 +95,7 @@ Layer.prototype.source = function() {
  * Returns the underlying {@link Geometry geometry}.
  * @return {Geometry}
  */
-Layer.prototype.geometry = function() {
+Layer.prototype.geometry = function () {
   return this._geometry;
 };
 
@@ -110,7 +103,7 @@ Layer.prototype.geometry = function() {
  * Returns the underlying {@link View view}.
  * @return {View}
  */
-Layer.prototype.view = function() {
+Layer.prototype.view = function () {
   return this._view;
 };
 
@@ -118,7 +111,7 @@ Layer.prototype.view = function() {
  * Returns the underlying {@link TextureStore texture store}.
  * @return {TextureStore}
  */
-Layer.prototype.textureStore = function() {
+Layer.prototype.textureStore = function () {
   return this._textureStore;
 };
 
@@ -126,7 +119,7 @@ Layer.prototype.textureStore = function() {
  * Returns the currently set {@link Effects effects}.
  * @return {Effects}
  */
-Layer.prototype.effects = function() {
+Layer.prototype.effects = function () {
   return this._effects;
 };
 
@@ -134,7 +127,7 @@ Layer.prototype.effects = function() {
  * Sets the {@link Effects effects}.
  * @param {Effects} effects
  */
-Layer.prototype.setEffects = function(effects) {
+Layer.prototype.setEffects = function (effects) {
   this._effects = effects;
   this.emit('effectsChange', this._effects);
 };
@@ -147,7 +140,7 @@ Layer.prototype.setEffects = function(effects) {
  *
  * @param {Effects} effects
  */
-Layer.prototype.mergeEffects = function(effects) {
+Layer.prototype.mergeEffects = function (effects) {
   extend(this._effects, effects);
   this.emit('effectsChange', this._effects);
 };
@@ -156,7 +149,7 @@ Layer.prototype.mergeEffects = function(effects) {
  * Returns the fixed level index.
  * @return {(number|null)}
  */
-Layer.prototype.fixedLevel = function() {
+Layer.prototype.fixedLevel = function () {
   return this._fixedLevelIndex;
 };
 
@@ -167,18 +160,17 @@ Layer.prototype.fixedLevel = function() {
  * @param {(number|null)} levelIndex
  * @throws An error if the level index is out of range.
  */
-Layer.prototype.setFixedLevel = function(levelIndex) {
+Layer.prototype.setFixedLevel = function (levelIndex) {
   if (levelIndex !== this._fixedLevelIndex) {
-    if (levelIndex != null && (levelIndex >= this._geometry.levelList.length ||
-        levelIndex < 0)) {
-      throw new Error("Level index out of range: " + levelIndex);
+    if (levelIndex != null && (levelIndex >= this._geometry.levelList.length || levelIndex < 0)) {
+      throw new Error('Level index out of range: ' + levelIndex);
     }
     this._fixedLevelIndex = levelIndex;
     this.emit('fixedLevelChange', this._fixedLevelIndex);
   }
 };
 
-Layer.prototype._selectLevel = function() {
+Layer.prototype._selectLevel = function () {
   var level;
   if (this._fixedLevelIndex != null) {
     level = this._geometry.levelList[this._fixedLevelIndex];
@@ -188,7 +180,7 @@ Layer.prototype._selectLevel = function() {
   return level;
 };
 
-Layer.prototype.visibleTiles = function(result) {
+Layer.prototype.visibleTiles = function (result) {
   let level = this._selectLevel();
   return this._geometry.visibleTiles(this._view, level, result);
 };
@@ -197,7 +189,7 @@ Layer.prototype.visibleTiles = function(result) {
  * Pin a whole level into the texture store.
  * @param {Number} levelIndex
  */
-Layer.prototype.pinLevel = function(levelIndex) {
+Layer.prototype.pinLevel = function (levelIndex) {
   let level = this._geometry.levelList[levelIndex];
   let tiles = this._geometry.levelTiles(level);
   for (let i = 0; i < tiles.length; i++) {
@@ -209,10 +201,10 @@ Layer.prototype.pinLevel = function(levelIndex) {
  * Unpin a whole level from the texture store.
  * @param {Number} levelIndex
  */
-Layer.prototype.unpinLevel = function(levelIndex) {
+Layer.prototype.unpinLevel = function (levelIndex) {
   const level = this._geometry.levelList[levelIndex];
   const tiles = this._geometry.levelTiles(level);
-  for (const i = 0; i < tiles.length; i++) {
+  for (let i = 0; i < tiles.length; i++) {
     this._textureStore.unpin(tiles[i]);
   }
 };
@@ -220,14 +212,14 @@ Layer.prototype.unpinLevel = function(levelIndex) {
 /**
  * Pin the first level. Equivalent to `pinLevel(0)`.
  */
-Layer.prototype.pinFirstLevel = function() {
+Layer.prototype.pinFirstLevel = function () {
   return this.pinLevel(0);
 };
 
 /**
  * Unpin the first level. Equivalent to `unpinLevel(0)`.
  */
-Layer.prototype.unpinFirstLevel = function() {
+Layer.prototype.unpinFirstLevel = function () {
   return this.unpinLevel(0);
 };
 

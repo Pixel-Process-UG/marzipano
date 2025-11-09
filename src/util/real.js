@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 function real(x) {
   return typeof x === 'number' && isFinite(x);
 }

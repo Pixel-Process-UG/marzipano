@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import Layer from './Layer.js';
 import TextureStore from './TextureStore.js';
 import HotspotContainer from './HotspotContainer.js';
@@ -59,7 +58,8 @@ function Scene(viewer, view) {
     viewer._controlContainer,
     viewer.stage(),
     this._view,
-    viewer.renderLoop());
+    viewer.renderLoop()
+  );
 
   // The current movement.
   this._movement = null;
@@ -89,7 +89,7 @@ eventEmitter(Scene);
 /**
  * Destructor. Clients should call {@link Viewer#destroyScene} instead.
  */
-Scene.prototype.destroy = function() {
+Scene.prototype.destroy = function () {
   this._view.removeEventListener('change', this._viewChangeHandler);
   this._viewer.removeEventListener('sceneChange', this._updateHotspotContainerHandler);
 
@@ -108,7 +108,7 @@ Scene.prototype.destroy = function() {
  * Returns the {@link HotspotContainer hotspot container} for the scene.
  * @return {Layer}
  */
-Scene.prototype.hotspotContainer = function() {
+Scene.prototype.hotspotContainer = function () {
   return this._hotspotContainer;
 };
 
@@ -121,16 +121,16 @@ Scene.prototype.hotspotContainer = function() {
  *
  * @return {Layer}
  */
-Scene.prototype.layer = function() {
+Scene.prototype.layer = function () {
   return this._layers[0];
 };
 
 /**
-* Returns a list of all {@link Layer layers} belonging to the scene. The
-* returned list is in display order, background to foreground.
-* @return {Layer[]}
+ * Returns a list of all {@link Layer layers} belonging to the scene. The
+ * returned list is in display order, background to foreground.
+ * @return {Layer[]}
  */
-Scene.prototype.listLayers = function() {
+Scene.prototype.listLayers = function () {
   return [].concat(this._layers);
 };
 
@@ -138,7 +138,7 @@ Scene.prototype.listLayers = function() {
  * Returns the scene's underlying {@link View view}.
  * @return {View}
  */
-Scene.prototype.view = function() {
+Scene.prototype.view = function () {
   return this._view;
 };
 
@@ -146,7 +146,7 @@ Scene.prototype.view = function() {
  * Returns the {@link Viewer viewer} the scene belongs to.
  * @return {Viewer}
  */
-Scene.prototype.viewer = function() {
+Scene.prototype.viewer = function () {
   return this._viewer;
 };
 
@@ -154,7 +154,7 @@ Scene.prototype.viewer = function() {
  * Returns whether the scene is currently visible.
  * @return {boolean}
  */
-Scene.prototype.visible = function() {
+Scene.prototype.visible = function () {
   return this._viewer.scene() === this;
 };
 
@@ -173,7 +173,7 @@ Scene.prototype.visible = function() {
  *     constructor.
  * @return {Layer}
  */
-Scene.prototype.createLayer = function(opts) {
+Scene.prototype.createLayer = function (opts) {
   opts = opts || {};
 
   const textureStoreOpts = opts.textureStoreOpts || {};
@@ -203,7 +203,7 @@ Scene.prototype.createLayer = function(opts) {
  * @param {Layer} layer
  * @throws An error if the layer does not belong to the scene.
  */
-Scene.prototype.destroyLayer = function(layer) {
+Scene.prototype.destroyLayer = function (layer) {
   const i = this._layers.indexOf(layer);
   if (i < 0) {
     throw new Error('No such layer in scene');
@@ -221,7 +221,7 @@ Scene.prototype.destroyLayer = function(layer) {
 /**
  * Destroys all {@link Layer layers} and removes them from the scene.
  */
-Scene.prototype.destroyAllLayers = function() {
+Scene.prototype.destroyAllLayers = function () {
   while (this._layers.length > 0) {
     this.destroyLayer(this._layers[0]);
   }
@@ -235,7 +235,7 @@ Scene.prototype.destroyAllLayers = function() {
  * @param {Object} opts Options to pass into {@link Viewer#switchScene}.
  * @param {function} done Function to call when the switch is complete.
  */
-Scene.prototype.switchTo = function(opts, done) {
+Scene.prototype.switchTo = function (opts, done) {
   return this._viewer.switchScene(this, opts, done);
 };
 
@@ -256,14 +256,14 @@ Scene.prototype.switchTo = function(opts, done) {
  * @param {function} done Function to call when the tween finishes or is
  *    interrupted.
  */
-Scene.prototype.lookTo = function(params, opts, done) {
+Scene.prototype.lookTo = function (params, opts, done) {
   const self = this;
 
   opts = opts || {};
   done = done || noop;
 
   if (type(params) !== 'object') {
-    throw new Error("Target view parameters must be an object");
+    throw new Error('Target view parameters must be an object');
   }
 
   // Quadratic in/out easing.
@@ -293,12 +293,10 @@ Scene.prototype.lookTo = function(params, opts, done) {
     view.normalizeToClosest(finalParams, finalParams);
   }
 
-  let movement = function() {
-
+  let movement = function () {
     let finalUpdate = false;
 
-    return function(params, elapsed) {
-
+    return function (params, elapsed) {
       if (elapsed >= duration && finalUpdate) {
         return null;
       }
@@ -314,7 +312,6 @@ Scene.prototype.lookTo = function(params, opts, done) {
       finalUpdate = elapsed >= duration;
 
       return params;
-
     };
   };
 
@@ -324,13 +321,12 @@ Scene.prototype.lookTo = function(params, opts, done) {
     this._viewer.controls().disable();
   }
 
-  this.startMovement(movement, function() {
+  this.startMovement(movement, function () {
     if (reenableControls) {
       self._viewer.controls().enable();
     }
     done();
   });
-
 };
 
 /**
@@ -340,8 +336,7 @@ Scene.prototype.lookTo = function(params, opts, done) {
  * @param {function} done Function to be called when the movement finishes or is
  *     interrupted.
  */
-Scene.prototype.startMovement = function(fn, done) {
-
+Scene.prototype.startMovement = function (fn, done) {
   let renderLoop = this._viewer.renderLoop();
 
   if (this._movement) {
@@ -366,8 +361,7 @@ Scene.prototype.startMovement = function(fn, done) {
 /**
  * Stops the current movement.
  */
-Scene.prototype.stopMovement = function() {
-
+Scene.prototype.stopMovement = function () {
   const done = this._movementCallback;
   let renderLoop = this._viewer.renderLoop();
 
@@ -394,12 +388,11 @@ Scene.prototype.stopMovement = function() {
  * Returns the current movement.
  * @return {function}
  */
-Scene.prototype.movement = function() {
+Scene.prototype.movement = function () {
   return this._movement;
 };
 
-Scene.prototype._updateMovement = function() {
-
+Scene.prototype._updateMovement = function () {
   if (!this._movement) {
     throw new Error('Should not call update');
   }
@@ -419,10 +412,9 @@ Scene.prototype._updateMovement = function() {
     view.setParameters(params);
     renderLoop.renderOnNextFrame();
   }
-
 };
 
-Scene.prototype._updateHotspotContainer = function() {
+Scene.prototype._updateHotspotContainer = function () {
   if (this.visible()) {
     this._hotspotContainer.show();
   } else {

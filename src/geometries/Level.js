@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-
 function Level(levelProperties) {
   this._fallbackOnly = !!levelProperties.fallbackOnly;
 }
 
-Level.prototype.numHorizontalTiles = function() {
+Level.prototype.numHorizontalTiles = function () {
   return Math.ceil(this.width() / this.tileWidth());
 };
 
-Level.prototype.numVerticalTiles = function() {
+Level.prototype.numVerticalTiles = function () {
   return Math.ceil(this.height() / this.tileHeight());
 };
 
-Level.prototype.fallbackOnly = function() {
+Level.prototype.fallbackOnly = function () {
   return this._fallbackOnly;
 };
 

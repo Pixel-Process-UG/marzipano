@@ -19,14 +19,12 @@ var assert = require('chai').assert;
 
 var clamp = require('../../../src/util/clamp');
 
-suite('clamp', function() {
-
-  test('below', function() {
+suite('clamp', function () {
+  test('below', function () {
     assert.strictEqual(clamp(-0.5, 0, 1), 0);
   });
 
-  test('above', function() {
+  test('above', function () {
     assert.strictEqual(clamp(1.5, 0, 1), 1);
   });
-
 });

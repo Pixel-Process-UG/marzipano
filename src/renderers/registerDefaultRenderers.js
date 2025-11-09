@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import WebGlCube from './WebGlCube.js';
 import WebGlFlat from './WebGlFlat.js';
 import WebGlEquirect from './WebGlEquirect.js';

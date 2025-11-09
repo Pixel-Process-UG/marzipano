@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 /**
  * Modulo operation
  *
@@ -24,7 +23,7 @@
  * @returns {Number} Value in range `[0,divisor[`
  */
 function mod(a, b) {
-  return (+a % (b = +b) + b) % b;
+  return ((+a % (b = +b)) + b) % b;
 }
 
 export default mod;

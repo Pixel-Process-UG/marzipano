@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import eventEmitter from 'minimal-event-emitter';
 import Dynamics from './Dynamics.js';
 import clearOwnProperties from '../util/clearOwnProperties.js';
@@ -35,17 +34,17 @@ import clearOwnProperties from '../util/clearOwnProperties.js';
  * @param {Element} [element=document] DOM element where the key events are listened to
  */
 function KeyControlMethod(keyCode, parameter, velocity, friction, element) {
-  if(!keyCode) {
-    throw new Error("KeyControlMethod: keyCode must be defined");
+  if (!keyCode) {
+    throw new Error('KeyControlMethod: keyCode must be defined');
   }
-  if(!parameter) {
-    throw new Error("KeyControlMethod: parameter must be defined");
+  if (!parameter) {
+    throw new Error('KeyControlMethod: parameter must be defined');
   }
-  if(!velocity) {
-    throw new Error("KeyControlMethod: velocity must be defined");
+  if (!velocity) {
+    throw new Error('KeyControlMethod: velocity must be defined');
   }
-  if(!friction) {
-    throw new Error("KeyControlMethod: friction must be defined");
+  if (!friction) {
+    throw new Error('KeyControlMethod: friction must be defined');
   }
 
   element = element || document;
@@ -72,15 +71,17 @@ eventEmitter(KeyControlMethod);
 /**
  * Destructor.
  */
-KeyControlMethod.prototype.destroy = function() {
+KeyControlMethod.prototype.destroy = function () {
   this._element.removeEventListener('keydown', this._keydownHandler);
   this._element.removeEventListener('keyup', this._keyupHandler);
   window.removeEventListener('blur', this._blurHandler);
   clearOwnProperties(this);
 };
 
-KeyControlMethod.prototype._handlePress = function(e) {
-  if(e.keyCode !== this._keyCode) { return; }
+KeyControlMethod.prototype._handlePress = function (e) {
+  if (e.keyCode !== this._keyCode) {
+    return;
+  }
 
   this._pressing = true;
 
@@ -90,10 +91,12 @@ KeyControlMethod.prototype._handlePress = function(e) {
   this.emit('active');
 };
 
-KeyControlMethod.prototype._handleRelease = function(e) {
-  if(e.keyCode !== this._keyCode) { return; }
+KeyControlMethod.prototype._handleRelease = function (e) {
+  if (e.keyCode !== this._keyCode) {
+    return;
+  }
 
-  if(this._pressing) {
+  if (this._pressing) {
     this._dynamics.friction = this._friction;
     this.emit('parameterDynamics', this._parameter, this._dynamics);
     this.emit('inactive');
@@ -102,7 +105,7 @@ KeyControlMethod.prototype._handleRelease = function(e) {
   this._pressing = false;
 };
 
-KeyControlMethod.prototype._handleBlur = function() {
+KeyControlMethod.prototype._handleBlur = function () {
   this._dynamics.velocity = 0;
   this.emit('parameterDynamics', this._parameter, this._dynamics);
   this.emit('inactive');

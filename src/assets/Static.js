@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import global from '../util/global.js';
 import eventEmitter from 'minimal-event-emitter';
 import clearOwnProperties from '../util/clearOwnProperties.js';
@@ -22,7 +21,7 @@ import clearOwnProperties from '../util/clearOwnProperties.js';
 const propertyMap = {
   HTMLImageElement: ['naturalWidth', 'naturalHeight'],
   HTMLCanvasElement: ['width', 'height'],
-  ImageBitmap: ['width', 'height']
+  ImageBitmap: ['width', 'height'],
 };
 
 /**
@@ -38,7 +37,7 @@ const propertyMap = {
  */
 function StaticAsset(element) {
   let supported = false;
-  for (var type in propertyMap) {
+  for (const type in propertyMap) {
     if (global[type] && element instanceof global[type]) {
       supported = true;
       this._widthProp = propertyMap[type][0];
@@ -58,27 +57,27 @@ eventEmitter(StaticAsset);
 /**
  * Destructor.
  */
-StaticAsset.prototype.destroy = function() {
+StaticAsset.prototype.destroy = function () {
   clearOwnProperties(this);
 };
 
-StaticAsset.prototype.element = function() {
+StaticAsset.prototype.element = function () {
   return this._element;
 };
 
-StaticAsset.prototype.width = function() {
+StaticAsset.prototype.width = function () {
   return this._element[this._widthProp];
 };
 
-StaticAsset.prototype.height = function() {
+StaticAsset.prototype.height = function () {
   return this._element[this._heightProp];
 };
 
-StaticAsset.prototype.timestamp = function() {
+StaticAsset.prototype.timestamp = function () {
   return 0;
 };
 
-StaticAsset.prototype.isDynamic = function() {
+StaticAsset.prototype.isDynamic = function () {
   return false;
 };
 

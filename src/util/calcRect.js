@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 /**
  * Converts a {@link RectSpec} into an equivalent {@link Rect}.
  *
@@ -33,10 +32,9 @@
  *     filled in and returned; otherwise, a fresh object is returned.
  */
 function calcRect(totalWidth, totalHeight, spec, result) {
-
   result = result || {};
 
-  var width;
+  let width;
   if (spec != null && spec.absoluteWidth != null) {
     width = spec.absoluteWidth / totalWidth;
   } else if (spec != null && spec.relativeWidth != null) {
@@ -45,7 +43,7 @@ function calcRect(totalWidth, totalHeight, spec, result) {
     width = 1;
   }
 
-  var height;
+  let height;
   if (spec && spec.absoluteHeight != null) {
     height = spec.absoluteHeight / totalHeight;
   } else if (spec != null && spec.relativeHeight != null) {
@@ -54,7 +52,7 @@ function calcRect(totalWidth, totalHeight, spec, result) {
     height = 1;
   }
 
-  var x;
+  let x;
   if (spec != null && spec.absoluteX != null) {
     x = spec.absoluteX / totalWidth;
   } else if (spec != null && spec.relativeX != null) {
@@ -63,7 +61,7 @@ function calcRect(totalWidth, totalHeight, spec, result) {
     x = 0;
   }
 
-  var y;
+  let y;
   if (spec != null && spec.absoluteY != null) {
     y = spec.absoluteY / totalHeight;
   } else if (spec != null && spec.relativeY != null) {

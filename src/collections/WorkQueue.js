@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import now from '../util/now.js';
 
 function WorkTask(fn, cb) {
@@ -25,19 +24,18 @@ function WorkTask(fn, cb) {
 
 function WorkQueue(opts) {
   this._queue = [];
-  this._delay = opts && opts.delay || 0;
-  this._paused = opts && !!opts.paused || false;
+  this._delay = (opts && opts.delay) || 0;
+  this._paused = (opts && !!opts.paused) || false;
   this._currentTask = null;
   this._lastFinished = null;
 }
 
-WorkQueue.prototype.length = function() {
+WorkQueue.prototype.length = function () {
   return this._queue.length;
 };
 
-WorkQueue.prototype.push = function(fn, cb) {
-
-  let task = new WorkTask(fn, cb);
+WorkQueue.prototype.push = function (fn, cb) {
+  const task = new WorkTask(fn, cb);
 
   const cancel = this._cancel.bind(this, task);
 
@@ -48,24 +46,22 @@ WorkQueue.prototype.push = function(fn, cb) {
   this._next();
 
   return cancel;
-
 };
 
-WorkQueue.prototype.pause = function() {
+WorkQueue.prototype.pause = function () {
   if (!this._paused) {
     this._paused = true;
   }
 };
 
-WorkQueue.prototype.resume = function() {
+WorkQueue.prototype.resume = function () {
   if (this._paused) {
     this._paused = false;
     this._next();
   }
 };
 
-WorkQueue.prototype._start = function(task) {
-
+WorkQueue.prototype._start = function (task) {
   // Consistency check.
   if (this._currentTask) {
     throw new Error('WorkQueue: called start while running task');
@@ -82,12 +78,10 @@ WorkQueue.prototype._start = function(task) {
   if (typeof task.cfn !== 'function') {
     throw new Error('WorkQueue: function is not cancellable');
   }
-
 };
 
-WorkQueue.prototype._finish = function(task) {
-
-  let args = Array.prototype.slice.call(arguments, 1);
+WorkQueue.prototype._finish = function (task) {
+  const args = Array.prototype.slice.call(arguments, 1);
 
   // Consistency check.
   if (this._currentTask !== task) {
@@ -101,34 +95,26 @@ WorkQueue.prototype._finish = function(task) {
   this._currentTask = null;
   this._lastFinished = now();
   this._next();
-
 };
 
-WorkQueue.prototype._cancel = function(task) {
-
+WorkQueue.prototype._cancel = function (task) {
   const args = Array.prototype.slice.call(arguments, 1);
 
   if (this._currentTask === task) {
-
     // Cancel running task. Because cancel passes control to the _finish
     // callback we passed into fn, the cleanup logic will be handled there.
     task.cfn.apply(null, args);
-
   } else {
-
     // Remove task from queue.
     const pos = this._queue.indexOf(task);
     if (pos >= 0) {
       this._queue.splice(pos, 1);
       task.cb.apply(null, args);
     }
-
   }
-
 };
 
-WorkQueue.prototype._next = function() {
-
+WorkQueue.prototype._next = function () {
   if (this._paused) {
     // Do not start tasks while paused.
     return;
@@ -157,7 +143,6 @@ WorkQueue.prototype._next = function() {
   // Run the next task.
   const task = this._queue.shift();
   this._start(task);
-
 };
 
 export default WorkQueue;

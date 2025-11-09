@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-
 function prefixProperty(property) {
-
   const style = document.documentElement.style;
   const prefixList = ['Moz', 'Webkit', 'Khtml', 'O', 'ms'];
 
-  for (const i = 0; i < prefixList.length; i++) {
+  for (let i = 0; i < prefixList.length; i++) {
     const prefix = prefixList[i];
     const capitalizedProperty = property[0].toUpperCase() + property.slice(1);
-    let prefixedProperty = prefix + capitalizedProperty;
+    const prefixedProperty = prefix + capitalizedProperty;
 
     if (prefixedProperty in style) {
       return prefixedProperty;
@@ -31,15 +29,13 @@ function prefixProperty(property) {
   }
 
   return property;
-
 }
 
 function getWithVendorPrefix(property) {
-  let prefixedProperty = prefixProperty(property);
+  const prefixedProperty = prefixProperty(property);
   return function getPropertyWithVendorPrefix(element) {
     return element.style[prefixedProperty];
   };
-
 }
 
 function setWithVendorPrefix(property) {

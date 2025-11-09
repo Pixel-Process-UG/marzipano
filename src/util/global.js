@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-
 // The global object.
-const globalObject = (function() {
+const globalObject = (function () {
   if (typeof window !== 'undefined') {
     return window;
   }

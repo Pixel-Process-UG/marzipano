@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import Set from './collections/Set.js';
 
 /**
@@ -44,7 +43,7 @@ function TileSearcher() {
  *     starting tile when visible. Existing array members are preserved.
  * @return {number} The number of visible tiles found.
  */
-TileSearcher.prototype.search = function(view, startingTile, result) {
+TileSearcher.prototype.search = function (view, startingTile, result) {
   const stack = this._stack;
   const visited = this._visited;
   const vertices = this._vertices;
@@ -74,7 +73,7 @@ TileSearcher.prototype.search = function(view, startingTile, result) {
 
     // Add neighbors to the stack of tiles to explore.
     const neighbors = tile.neighbors();
-    for (const i = 0; i < neighbors.length; i++) {
+    for (let i = 0; i < neighbors.length; i++) {
       stack.push(neighbors[i]);
     }
 
@@ -93,7 +92,7 @@ TileSearcher.prototype.search = function(view, startingTile, result) {
   return count;
 };
 
-TileSearcher.prototype._clear = function() {
+TileSearcher.prototype._clear = function () {
   this._stack.length = 0;
   this._visited.clear();
 };

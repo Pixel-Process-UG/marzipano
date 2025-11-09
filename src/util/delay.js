@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 // Perform a cancelable delay.
 // See util/cancelize.js for an explanation of what cancelables are.
 function delay(ms, done) {
-
   // Work around IE8 bug whereby a setTimeout callback may still be called
   // after the corresponding clearTimeout is invoked.
   let timer = null;
@@ -41,7 +39,6 @@ function delay(ms, done) {
   timer = setTimeout(finish, ms);
 
   return cancel;
-
 }
 
 export default delay;

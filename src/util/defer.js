@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 function defer(fn, args) {
   function deferred() {
     if (args && args.length > 0) {

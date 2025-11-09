@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import StaticAsset from './Static.js';
 import inherits from '../util/inherits.js';
 import eventEmitter from 'minimal-event-emitter';
@@ -43,15 +42,15 @@ eventEmitter(DynamicAsset);
 /**
  * Destructor.
  */
-DynamicAsset.prototype.destroy = function() {
+DynamicAsset.prototype.destroy = function () {
   clearOwnProperties(this);
 };
 
-DynamicAsset.prototype.timestamp = function() {
+DynamicAsset.prototype.timestamp = function () {
   return this._timestamp;
 };
 
-DynamicAsset.prototype.isDynamic = function() {
+DynamicAsset.prototype.isDynamic = function () {
   return true;
 };
 
@@ -61,7 +60,7 @@ DynamicAsset.prototype.isDynamic = function() {
  *
  * @throws If the asset is not dynamic.
  */
-DynamicAsset.prototype.markDirty = function() {
+DynamicAsset.prototype.markDirty = function () {
   this._timestamp++;
   this.emit('change');
 };

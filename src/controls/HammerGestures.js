@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import Hammer from 'hammerjs';
 
 const nextId = 1;
@@ -38,8 +37,8 @@ function HammerGestures() {
   this._refCount = {};
 }
 
-HammerGestures.prototype.get = function(element, type) {
-  let key = getKeyForElementAndType(element, type);
+HammerGestures.prototype.get = function (element, type) {
+  const key = getKeyForElementAndType(element, type);
   if (!this._managers[key]) {
     this._managers[key] = this._createManager(element, type);
     this._refCount[key] = 0;
@@ -48,15 +47,14 @@ HammerGestures.prototype.get = function(element, type) {
   return new HammerGesturesHandle(this, this._managers[key], element, type);
 };
 
-HammerGestures.prototype._createManager = function(element, type) {
-  let manager = new Hammer.Manager(element);
+HammerGestures.prototype._createManager = function (element, type) {
+  const manager = new Hammer.Manager(element);
 
   // Managers are created with different parameters for different pointer
   // types.
   if (type === 'mouse') {
     manager.add(new Hammer.Pan({ direction: Hammer.DIRECTION_ALL, threshold: 0 }));
-  }
-  else if (type === 'touch' || type === 'pen' || type === 'kinect') {
+  } else if (type === 'touch' || type === 'pen' || type === 'kinect') {
     // On touch one wants to have both panning and pinching. The panning
     // recognizer needs a threshold to allow the pinch to be recognized.
     manager.add(new Hammer.Pan({ direction: Hammer.DIRECTION_ALL, threshold: 20, pointers: 1 }));
@@ -66,7 +64,7 @@ HammerGestures.prototype._createManager = function(element, type) {
   return manager;
 };
 
-HammerGestures.prototype._releaseHandle = function(element, type) {
+HammerGestures.prototype._releaseHandle = function (element, type) {
   const key = getKeyForElementAndType(element, type);
   if (this._refCount[key]) {
     this._refCount[key]--;
@@ -86,20 +84,20 @@ function HammerGesturesHandle(hammerGestures, manager, element, type) {
   this._eventHandlers = [];
 }
 
-HammerGesturesHandle.prototype.on = function(events, handler) {
+HammerGesturesHandle.prototype.on = function (events, handler) {
   const type = this._type;
-  const handlerFilteredEvents = function(e) {
+  const handlerFilteredEvents = function (e) {
     if (type === e.pointerType) {
       handler(e);
     }
   };
 
-  this._eventHandlers.push({ events: events, handler: handlerFilteredEvents });
+  this._eventHandlers.push({ events, handler: handlerFilteredEvents });
   this._manager.on(events, handlerFilteredEvents);
 };
 
-HammerGesturesHandle.prototype.release = function() {
-  for (const i = 0; i < this._eventHandlers.length; i++) {
+HammerGesturesHandle.prototype.release = function () {
+  for (let i = 0; i < this._eventHandlers.length; i++) {
     const eventHandler = this._eventHandlers[i];
     this._manager.off(eventHandler.events, eventHandler.handler);
   }
@@ -111,7 +109,7 @@ HammerGesturesHandle.prototype.release = function() {
   this._hammerGestures = null;
 };
 
-HammerGesturesHandle.prototype.manager = function() {
+HammerGesturesHandle.prototype.manager = function () {
   return this._manager;
 };
 

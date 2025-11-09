@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import clearOwnProperties from '../util/clearOwnProperties.js';
 import WebGlCommon from './WebGlCommon.js';
 import vertexSrc from '../shaders/vertexNormal.js';
@@ -41,8 +40,13 @@ const textureCoords = [0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0];
 
 const attribList = ['aVertexPosition', 'aTextureCoord'];
 const uniformList = [
-  'uDepth', 'uOpacity', 'uSampler', 'uProjMatrix', 'uViewportMatrix',
-  'uColorOffset', 'uColorMatrix'
+  'uDepth',
+  'uOpacity',
+  'uSampler',
+  'uProjMatrix',
+  'uViewportMatrix',
+  'uColorOffset',
+  'uColorMatrix',
 ];
 
 function WebGlBaseRenderer(gl) {
@@ -66,16 +70,16 @@ function WebGlBaseRenderer(gl) {
   this.shaderProgram = createShaderProgram(gl, vertexSrc, fragmentSrc, attribList, uniformList);
 }
 
-WebGlBaseRenderer.prototype.destroy = function() {
+WebGlBaseRenderer.prototype.destroy = function () {
   destroyConstantBuffers(this.gl, this.constantBuffers);
   destroyShaderProgram(this.gl, this.shaderProgram);
   clearOwnProperties(this);
 };
 
-WebGlBaseRenderer.prototype.startLayer = function(layer, rect) {
-  let gl = this.gl;
-  let shaderProgram = this.shaderProgram;
-  let constantBuffers = this.constantBuffers;
+WebGlBaseRenderer.prototype.startLayer = function (layer, rect) {
+  const gl = this.gl;
+  const shaderProgram = this.shaderProgram;
+  const constantBuffers = this.constantBuffers;
   const viewportMatrix = this.viewportMatrix;
 
   gl.useProgram(shaderProgram);
@@ -93,17 +97,17 @@ WebGlBaseRenderer.prototype.startLayer = function(layer, rect) {
   setupPixelEffectUniforms(gl, layer.effects(), {
     opacity: shaderProgram.uOpacity,
     colorOffset: shaderProgram.uColorOffset,
-    colorMatrix: shaderProgram.uColorMatrix
+    colorMatrix: shaderProgram.uColorMatrix,
   });
 };
 
-WebGlBaseRenderer.prototype.endLayer = function(layer, rect) {
-  let gl = this.gl;
-  let shaderProgram = this.shaderProgram;
+WebGlBaseRenderer.prototype.endLayer = function (layer, rect) {
+  const gl = this.gl;
+  const shaderProgram = this.shaderProgram;
   disableAttributes(gl, shaderProgram);
 };
 
-WebGlBaseRenderer.prototype.renderTile = function(tile, texture, layer, layerZ) {
+WebGlBaseRenderer.prototype.renderTile = function (tile, texture, layer, layerZ) {
   const gl = this.gl;
   const shaderProgram = this.shaderProgram;
   const constantBuffers = this.constantBuffers;

@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-
 import WorkQueue from './WorkQueue.js';
 import mod from '../util/mod.js';
 
 function WorkPool(opts) {
-  this._concurrency = opts && opts.concurrency || 1;
-  this._paused = opts && !!opts.paused || false;
+  this._concurrency = (opts && opts.concurrency) || 1;
+  this._paused = (opts && !!opts.paused) || false;
 
   this._pool = [];
   for (let i = 0; i < this._concurrency; i++) {
@@ -30,7 +29,7 @@ function WorkPool(opts) {
   this._next = 0;
 }
 
-WorkPool.prototype.length = function() {
+WorkPool.prototype.length = function () {
   const len = 0;
   for (let i = 0; i < this._pool.length; i++) {
     len += this._pool[i].length();
@@ -38,14 +37,14 @@ WorkPool.prototype.length = function() {
   return len;
 };
 
-WorkPool.prototype.push = function(fn, cb) {
-  let i = this._next;
+WorkPool.prototype.push = function (fn, cb) {
+  const i = this._next;
   const cancel = this._pool[i].push(fn, cb);
   this._next = mod(this._next + 1, this._concurrency);
   return cancel;
 };
 
-WorkPool.prototype.pause = function() {
+WorkPool.prototype.pause = function () {
   if (!this._paused) {
     this._paused = true;
     for (let i = 0; i < this._concurrency; i++) {
@@ -54,10 +53,10 @@ WorkPool.prototype.pause = function() {
   }
 };
 
-WorkPool.prototype.resume = function() {
+WorkPool.prototype.resume = function () {
   if (this._paused) {
     this._paused = false;
-    for (const i = 0; i < this._concurrency; i++) {
+    for (let i = 0; i < this._concurrency; i++) {
       this._pool[i].resume();
     }
   }

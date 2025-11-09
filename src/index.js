@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 // Stages
 export { default as WebGlStage } from './stages/WebGl.js';
 

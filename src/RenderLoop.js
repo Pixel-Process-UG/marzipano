@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import eventEmitter from 'minimal-event-emitter';
 import clearOwnProperties from './util/clearOwnProperties.js';
 
@@ -42,7 +41,6 @@ import clearOwnProperties from './util/clearOwnProperties.js';
  * @param {Stage} stage
  */
 function RenderLoop(stage) {
-
   const self = this;
 
   // The stage wrapped by the loop.
@@ -61,7 +59,7 @@ function RenderLoop(stage) {
   this._boundLoop = this._loop.bind(this);
 
   // Handler for renderInvalid events emitted by the stage.
-  this._renderInvalidHandler = function() {
+  this._renderInvalidHandler = function () {
     // If we are already rendering, there's no need to schedule a new render
     // on the next frame.
     if (!self._rendering) {
@@ -71,7 +69,6 @@ function RenderLoop(stage) {
 
   // Handle renderInvalid events emitted by the stage.
   this._stage.addEventListener('renderInvalid', this._renderInvalidHandler);
-
 }
 
 eventEmitter(RenderLoop);
@@ -79,7 +76,7 @@ eventEmitter(RenderLoop);
 /**
  * Destructor.
  */
-RenderLoop.prototype.destroy = function() {
+RenderLoop.prototype.destroy = function () {
   this.stop();
   this._stage.removeEventListener('renderInvalid', this._renderInvalidHandler);
   clearOwnProperties(this);
@@ -89,14 +86,14 @@ RenderLoop.prototype.destroy = function() {
  * Returns the underlying stage.
  * @return {Stage}
  */
-RenderLoop.prototype.stage = function() {
+RenderLoop.prototype.stage = function () {
   return this._stage;
 };
 
 /**
  * Starts the render loop.
  */
-RenderLoop.prototype.start = function() {
+RenderLoop.prototype.start = function () {
   this._running = true;
   this.renderOnNextFrame();
 };
@@ -104,7 +101,7 @@ RenderLoop.prototype.start = function() {
 /**
  * Stops the render loop.
  */
-RenderLoop.prototype.stop = function() {
+RenderLoop.prototype.stop = function () {
   if (this._requestHandle) {
     window.cancelAnimationFrame(this._requestHandle);
     this._requestHandle = null;
@@ -116,13 +113,13 @@ RenderLoop.prototype.stop = function() {
  * Forces the stage to render on the next frame, even if its contents remain
  * valid. Does nothing if the loop is stopped.
  */
-RenderLoop.prototype.renderOnNextFrame = function() {
+RenderLoop.prototype.renderOnNextFrame = function () {
   if (this._running && !this._requestHandle) {
     this._requestHandle = window.requestAnimationFrame(this._boundLoop);
   }
 };
 
-RenderLoop.prototype._loop = function() {
+RenderLoop.prototype._loop = function () {
   if (!this._running) {
     throw new Error('Render loop running while in stopped state');
   }

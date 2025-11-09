@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 // Convert a number to a string in decimal notation.
 function decimal(x) {
   // Double-precision floats have 15 significant decimal digits.

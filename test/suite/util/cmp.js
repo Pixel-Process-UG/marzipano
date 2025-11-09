@@ -19,18 +19,16 @@ var assert = require('chai').assert;
 
 var cmp = require('../../../src/util/cmp');
 
-suite('cmp', function() {
-
-  test('less than', function() {
+suite('cmp', function () {
+  test('less than', function () {
     assert.strictEqual(cmp(0, 1), -1);
   });
 
-  test('equal', function() {
+  test('equal', function () {
     assert.strictEqual(cmp(1, 1), 0);
   });
 
-  test('greater than', function() {
+  test('greater than', function () {
     assert.strictEqual(cmp(1, 0), 1);
   });
-
 });

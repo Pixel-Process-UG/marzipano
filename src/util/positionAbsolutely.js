@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import decimal from './decimal.js';
 
 import { setTransform } from './dom.js';
@@ -23,7 +22,10 @@ function positionAbsolutely(element, x, y, extraTransforms) {
   extraTransforms = extraTransforms || '';
   // A translateZ(0) transform improves performance on Chrome by creating a
   // new layer for the element, which prevents unnecessary repaints.
-  const transform = `translateX(${decimal}`(x) + `px) translateY(${decimal}`(y) + `px) translateZ(0) ${extraTransforms}`;
+  const transform =
+    `${`translateX(${decimal}`(x) +
+    `px) translateY(${decimal}`(y) 
+    }px) translateZ(0) ${extraTransforms}`;
   setTransform(element, transform);
 }
 

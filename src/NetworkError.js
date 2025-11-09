@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import inherits from './util/inherits.js';
 
 /**

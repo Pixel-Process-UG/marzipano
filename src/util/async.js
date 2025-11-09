@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-
 // Transform a synchronous function into an asynchronous one.
 function async(fn) {
   return function asynced(done) {
-    var err, ret;
+    let err, ret;
     try {
       ret = fn();
     } catch (e) {

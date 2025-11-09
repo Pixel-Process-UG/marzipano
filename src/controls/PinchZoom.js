@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import eventEmitter from 'minimal-event-emitter';
 import Dynamics from './Dynamics.js';
 import HammerGestures from './HammerGestures.js';
@@ -31,7 +30,7 @@ import clearOwnProperties from '../util/clearOwnProperties.js';
  * @param {string} pointerType Which Hammer.js pointer type to use
  * @param {Object} opts
  */
-function PinchZoomControlMethod(element, pointerType, opts) {
+function PinchZoomControlMethod(element, pointerType, _opts) {
   this._hammer = HammerGestures.get(element, pointerType);
 
   this._lastEvent = null;
@@ -51,19 +50,19 @@ eventEmitter(PinchZoomControlMethod);
 /**
  * Destructor.
  */
-PinchZoomControlMethod.prototype.destroy = function() {
+PinchZoomControlMethod.prototype.destroy = function () {
   this._hammer.release();
   clearOwnProperties(this);
 };
 
-PinchZoomControlMethod.prototype._handleStart = function() {
+PinchZoomControlMethod.prototype._handleStart = function () {
   if (!this._active) {
     this._active = true;
     this.emit('active');
   }
 };
 
-PinchZoomControlMethod.prototype._handleEnd = function() {
+PinchZoomControlMethod.prototype._handleEnd = function () {
   this._lastEvent = null;
 
   if (this._active) {
@@ -72,8 +71,8 @@ PinchZoomControlMethod.prototype._handleEnd = function() {
   }
 };
 
-PinchZoomControlMethod.prototype._handleEvent = function(e) {
-  const scale = e.scale;
+PinchZoomControlMethod.prototype._handleEvent = function (e) {
+  let scale = e.scale;
 
   if (this._lastEvent) {
     scale /= this._lastEvent.scale;

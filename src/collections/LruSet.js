@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import mod from '../util/mod.js';
 
 // An LruSet holds up to a maximum number of elements, ordered by their time of
@@ -38,7 +37,7 @@ function LruSet(capacity) {
   this._size = 0;
 }
 
-LruSet.prototype._index = function(i) {
+LruSet.prototype._index = function (i) {
   return mod(this._start + i, this._capacity);
 };
 
@@ -47,13 +46,12 @@ LruSet.prototype._index = function(i) {
 // oldest element is removed. Returns the removed element if it does not equal
 // the inserted element, or null otherwise. If the capacity is zero, does
 // nothing and returns the element.
-LruSet.prototype.add = function(element) {
+LruSet.prototype.add = function (element) {
   if (this._capacity === 0) {
     return element;
   }
   this.remove(element);
-  const evictedElement =
-      this._size === this._capacity ? this._elements[this._index(0)] : null;
+  const evictedElement = this._size === this._capacity ? this._elements[this._index(0)] : null;
   this._elements[this._index(this._size)] = element;
   if (this._size < this._capacity) {
     this._size++;
@@ -65,11 +63,11 @@ LruSet.prototype.add = function(element) {
 
 // Removes an element from the set.
 // Returns the removed element, or null if the element was not found.
-LruSet.prototype.remove = function(element) {
+LruSet.prototype.remove = function (element) {
   for (let i = 0; i < this._size; i++) {
     const existingElement = this._elements[this._index(i)];
     if (element.equals(existingElement)) {
-      for (const j = i; j < this._size - 1; j++) {
+      for (let j = i; j < this._size - 1; j++) {
         this._elements[this._index(j)] = this._elements[this._index(j + 1)];
       }
       this._size--;
@@ -80,7 +78,7 @@ LruSet.prototype.remove = function(element) {
 };
 
 // Returns whether an element is in the set.
-LruSet.prototype.has = function(element) {
+LruSet.prototype.has = function (element) {
   for (let i = 0; i < this._size; i++) {
     if (element.equals(this._elements[this._index(i)])) {
       return true;
@@ -90,12 +88,12 @@ LruSet.prototype.has = function(element) {
 };
 
 // Returns the number of elements in the set.
-LruSet.prototype.size = function() {
+LruSet.prototype.size = function () {
   return this._size;
 };
 
 // Removes all elements from the set.
-LruSet.prototype.clear = function() {
+LruSet.prototype.clear = function () {
   this._elements.length = 0;
   this._start = 0;
   this._size = 0;
@@ -104,9 +102,9 @@ LruSet.prototype.clear = function() {
 // Calls fn(element) for each element in the set, in an unspecified order.
 // Returns the number of times fn was called.
 // The result is unspecified if the set is mutated during iteration.
-LruSet.prototype.forEach = function(fn) {
-  const count = 0;
-  for (const i = 0; i < this._size; i++) {
+LruSet.prototype.forEach = function (fn) {
+  let count = 0;
+  for (let i = 0; i < this._size; i++) {
     fn(this._elements[this._index(i)]);
     count += 1;
   }

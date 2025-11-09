@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import eventEmitter from 'minimal-event-emitter';
 import Dynamics from './Dynamics.js';
 import now from '../util/now.js';
@@ -34,36 +33,36 @@ function ControlComposer(opts) {
 
   this._methods = [];
 
-  this._parameters = [ 'x' ,'y', 'axisScaledX', 'axisScaledY', 'zoom', 'yaw', 'pitch', 'roll' ];
+  this._parameters = ['x', 'y', 'axisScaledX', 'axisScaledY', 'zoom', 'yaw', 'pitch', 'roll'];
 
   this._now = opts.nowForTesting || now;
 
-  this._composedOffsets = { };
+  this._composedOffsets = {};
 
   this._composeReturn = { offsets: this._composedOffsets, changing: null };
 }
 
 eventEmitter(ControlComposer);
 
-ControlComposer.prototype.add = function(instance) {
+ControlComposer.prototype.add = function (instance) {
   if (this.has(instance)) {
     return;
   }
 
-  let dynamics = {};
-  this._parameters.forEach(function(parameter) {
+  const dynamics = {};
+  this._parameters.forEach((parameter) => {
     dynamics[parameter] = {
       dynamics: new Dynamics(),
-      time: null
+      time: null,
     };
   });
 
   const parameterDynamicsHandler = this._updateDynamics.bind(this, dynamics);
 
-  let method = {
-    instance: instance,
-    dynamics: dynamics,
-    parameterDynamicsHandler: parameterDynamicsHandler
+  const method = {
+    instance,
+    dynamics,
+    parameterDynamicsHandler,
   };
 
   instance.addEventListener('parameterDynamics', parameterDynamicsHandler);
@@ -71,7 +70,7 @@ ControlComposer.prototype.add = function(instance) {
   this._methods.push(method);
 };
 
-ControlComposer.prototype.remove = function(instance) {
+ControlComposer.prototype.remove = function (instance) {
   const index = this._indexOfInstance(instance);
   if (index >= 0) {
     const method = this._methods.splice(index, 1)[0];
@@ -79,11 +78,11 @@ ControlComposer.prototype.remove = function(instance) {
   }
 };
 
-ControlComposer.prototype.has = function(instance) {
+ControlComposer.prototype.has = function (instance) {
   return this._indexOfInstance(instance) >= 0;
 };
 
-ControlComposer.prototype._indexOfInstance = function(instance) {
+ControlComposer.prototype._indexOfInstance = function (instance) {
   for (let i = 0; i < this._methods.length; i++) {
     if (this._methods[i].instance === instance) {
       return i;
@@ -92,36 +91,36 @@ ControlComposer.prototype._indexOfInstance = function(instance) {
   return -1;
 };
 
-ControlComposer.prototype.list = function() {
-  let instances = [];
+ControlComposer.prototype.list = function () {
+  const instances = [];
   for (let i = 0; i < this._methods.length; i++) {
     instances.push(this._methods[i].instance);
   }
   return instances;
 };
 
-ControlComposer.prototype._updateDynamics = function(storedDynamics, parameter, dynamics) {
-  let parameterDynamics = storedDynamics[parameter];
+ControlComposer.prototype._updateDynamics = function (storedDynamics, parameter, dynamics) {
+  const parameterDynamics = storedDynamics[parameter];
 
   if (!parameterDynamics) {
-    throw new Error("Unknown control parameter " + parameter);
+    throw new Error(`Unknown control parameter ${  parameter}`);
   }
 
   const newTime = this._now();
-  parameterDynamics.dynamics.update(dynamics, (newTime - parameterDynamics.time)/1000);
+  parameterDynamics.dynamics.update(dynamics, (newTime - parameterDynamics.time) / 1000);
   parameterDynamics.time = newTime;
 
   this.emit('change');
 };
 
-ControlComposer.prototype._resetComposedOffsets = function() {
+ControlComposer.prototype._resetComposedOffsets = function () {
   for (let i = 0; i < this._parameters.length; i++) {
     this._composedOffsets[this._parameters[i]] = 0;
   }
 };
 
-ControlComposer.prototype.offsets = function() {
-  var parameter;
+ControlComposer.prototype.offsets = function () {
+  let parameter;
   let changing = false;
 
   const currentTime = this._now();
@@ -131,23 +130,23 @@ ControlComposer.prototype.offsets = function() {
   for (let i = 0; i < this._methods.length; i++) {
     const methodDynamics = this._methods[i].dynamics;
 
-    for (const p = 0; p < this._parameters.length; p++) {
+    for (let p = 0; p < this._parameters.length; p++) {
       parameter = this._parameters[p];
       const parameterDynamics = methodDynamics[parameter];
       const dynamics = parameterDynamics.dynamics;
 
       // Add offset to composed offset
-      if (dynamics.offset != null) {
+      if (dynamics.offset !== null) {
         this._composedOffsets[parameter] += dynamics.offset;
         // Reset offset
         dynamics.offset = null;
       }
 
       // Calculate offset from velocity and add it
-      const elapsed = (currentTime - parameterDynamics.time)/1000;
+      const elapsed = (currentTime - parameterDynamics.time) / 1000;
       const offsetFromVelocity = dynamics.offsetFromVelocity(elapsed);
 
-      if(offsetFromVelocity) {
+      if (offsetFromVelocity) {
         this._composedOffsets[parameter] += offsetFromVelocity;
       }
 
@@ -156,7 +155,7 @@ ControlComposer.prototype.offsets = function() {
       dynamics.velocity = currentVelocity;
 
       // If there is still a velocity, set changing
-      if(currentVelocity) {
+      if (currentVelocity) {
         changing = true;
       }
 
@@ -168,9 +167,9 @@ ControlComposer.prototype.offsets = function() {
   return this._composeReturn;
 };
 
-ControlComposer.prototype.destroy = function() {
+ControlComposer.prototype.destroy = function () {
   const instances = this.list();
-  for (const i = 0; i < instances.length; i++) {
+  for (let i = 0; i < instances.length; i++) {
     this.remove(instances[i]);
   }
 

@@ -21,24 +21,22 @@ var wait = require('../../wait');
 
 var defer = require('../../../src/util/defer');
 
-suite('defer', function() {
-
-  test('without arguments', function(done) {
+suite('defer', function () {
+  test('without arguments', function (done) {
     var spy = sinon.spy();
     defer(spy);
-    wait.untilSpyCalled(spy, function() {
+    wait.untilSpyCalled(spy, function () {
       assert.isTrue(spy.calledWithExactly());
       done();
     });
   });
 
-  test('with arguments', function(done) {
+  test('with arguments', function (done) {
     var spy = sinon.spy();
     defer(spy, [1, 2, 3]);
-    wait.untilSpyCalled(spy, function() {
+    wait.untilSpyCalled(spy, function () {
       assert.isTrue(spy.calledWithExactly(1, 2, 3));
       done();
     });
   });
-
 });

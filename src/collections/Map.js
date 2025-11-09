@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import mod from '../util/mod.js';
 
 const defaultCapacity = 64;
@@ -23,8 +22,10 @@ const defaultCapacity = 64;
 // values. The capacity, if given, is just a hint; the map is allowed to exceed
 // it, but performance may suffer.
 function Map(capacity) {
-  if (capacity != null &&
-      (!isFinite(capacity) || Math.floor(capacity) !== capacity || capacity < 1)) {
+  if (
+    capacity != null &&
+    (!isFinite(capacity) || Math.floor(capacity) !== capacity || capacity < 1)
+  ) {
     throw new Error('Map: invalid capacity');
   }
   this._capacity = capacity || defaultCapacity;
@@ -39,14 +40,14 @@ function Map(capacity) {
 }
 
 // Returns the value associated with the specified key, or null if not found.
-Map.prototype.get = function(key) {
-  let h = mod(key.hash(), this._capacity);
-  let keyBucket = this._keyBuckets[h];
+Map.prototype.get = function (key) {
+  const h = mod(key.hash(), this._capacity);
+  const keyBucket = this._keyBuckets[h];
   for (let i = 0; i < keyBucket.length; i++) {
-    let existingKey = keyBucket[i];
+    const existingKey = keyBucket[i];
     if (key.equals(existingKey)) {
-      let valBucket = this._valBuckets[h];
-      let existingValue = valBucket[i];
+      const valBucket = this._valBuckets[h];
+      const existingValue = valBucket[i];
       return existingValue;
     }
   }
@@ -56,14 +57,14 @@ Map.prototype.get = function(key) {
 // Associates the specified value with the specified key, possibly replacing the
 // currently associated value.
 // Returns the replaced value, or null if no value was replaced.
-Map.prototype.set = function(key, val) {
-  let h = mod(key.hash(), this._capacity);
-  let keyBucket = this._keyBuckets[h];
-  let valBucket = this._valBuckets[h];
+Map.prototype.set = function (key, val) {
+  const h = mod(key.hash(), this._capacity);
+  const keyBucket = this._keyBuckets[h];
+  const valBucket = this._valBuckets[h];
   for (let i = 0; i < keyBucket.length; i++) {
-    let existingKey = keyBucket[i];
+    const existingKey = keyBucket[i];
     if (key.equals(existingKey)) {
-      let existingValue = valBucket[i];
+      const existingValue = valBucket[i];
       keyBucket[i] = key;
       valBucket[i] = val;
       return existingValue;
@@ -77,18 +78,18 @@ Map.prototype.set = function(key, val) {
 
 // Removes the key-value pair associated with the specified key.
 // Returns the removed value, or null if not found.
-Map.prototype.del = function(key) {
-  let h = mod(key.hash(), this._capacity);
-  let keyBucket = this._keyBuckets[h];
-  let valBucket = this._valBuckets[h];
+Map.prototype.del = function (key) {
+  const h = mod(key.hash(), this._capacity);
+  const keyBucket = this._keyBuckets[h];
+  const valBucket = this._valBuckets[h];
   for (let i = 0; i < keyBucket.length; i++) {
-    let existingKey = keyBucket[i];
+    const existingKey = keyBucket[i];
     if (key.equals(existingKey)) {
       const existingValue = valBucket[i];
       // Splice manually to avoid Array#splice return value allocation.
       for (let j = i; j < keyBucket.length - 1; j++) {
-        keyBucket[j] = keyBucket[j+1];
-        valBucket[j] = valBucket[j+1];
+        keyBucket[j] = keyBucket[j + 1];
+        valBucket[j] = valBucket[j + 1];
       }
       keyBucket.length = keyBucket.length - 1;
       valBucket.length = valBucket.length - 1;
@@ -100,9 +101,9 @@ Map.prototype.del = function(key) {
 };
 
 // Returns whether there is a value associated with the specified key.
-Map.prototype.has = function(key) {
+Map.prototype.has = function (key) {
   const h = mod(key.hash(), this._capacity);
-  let keyBucket = this._keyBuckets[h];
+  const keyBucket = this._keyBuckets[h];
   for (let i = 0; i < keyBucket.length; i++) {
     const existingKey = keyBucket[i];
     if (key.equals(existingKey)) {
@@ -113,12 +114,12 @@ Map.prototype.has = function(key) {
 };
 
 // Returns the number of key-value pairs in the map.
-Map.prototype.size = function() {
+Map.prototype.size = function () {
   return this._size;
 };
 
 // Removes all key-value pairs from the map.
-Map.prototype.clear = function() {
+Map.prototype.clear = function () {
   for (let i = 0; i < this._capacity; i++) {
     this._keyBuckets[i].length = 0;
     this._valBuckets[i].length = 0;
@@ -129,12 +130,12 @@ Map.prototype.clear = function() {
 // Calls fn(key, value) for each key-value pair in the map, in an unspecified
 // order. Returns the number of times fn was called.
 // The result is unspecified if the map is mutated during iteration.
-Map.prototype.forEach = function(fn) {
-  const count = 0;
-  for (const i = 0; i < this._capacity; i++) {
+Map.prototype.forEach = function (fn) {
+  let count = 0;
+  for (let i = 0; i < this._capacity; i++) {
     const keyBucket = this._keyBuckets[i];
     const valBucket = this._valBuckets[i];
-    for (const j = 0; j < keyBucket.length; j++) {
+    for (let j = 0; j < keyBucket.length; j++) {
       fn(keyBucket[j], valBucket[j]);
       count += 1;
     }

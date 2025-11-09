@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-
 // Jenkins one-at-a-time hash
 // http://www.burtleburtle.net/bob/hash/doobs.html
 // Input: an array of integers
 // Output: an integer
 
 function hash() {
-  const h = 0;
-  for (const i = 0; i < arguments.length; i++) {
+  let h = 0;
+  for (let i = 0; i < arguments.length; i++) {
     const k = arguments[i];
     h += k;
     h += k << 10;

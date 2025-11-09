@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import now from './now.js';
 
 function tween(duration, update, done) {
@@ -23,13 +22,14 @@ function tween(duration, update, done) {
   const startTime = now();
 
   function runUpdate() {
-    if(cancelled) { return; }
-    const tweenVal = (now() - startTime)/duration;
-    if(tweenVal < 1) {
+    if (cancelled) {
+      return;
+    }
+    const tweenVal = (now() - startTime) / duration;
+    if (tweenVal < 1) {
       update(tweenVal);
       requestAnimationFrame(runUpdate);
-    }
-    else {
+    } else {
       update(1);
       done();
     }
@@ -41,7 +41,7 @@ function tween(duration, update, done) {
   return function cancel() {
     cancelled = true;
     done.apply(null, arguments);
-  }
+  };
 }
 
 export default tween;
