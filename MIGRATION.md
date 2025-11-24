@@ -1,6 +1,6 @@
 # Migration Guide
 
-This guide helps you migrate from older versions of Marzipano to the modernized version (0.10.2+).
+This guide helps you migrate from older versions of Marzipano to the modernized version (1.0.0+).
 
 ## Overview of Changes
 
@@ -120,6 +120,6 @@ If you encounter issues during migration:
 
 ## Version History
 
-- **0.10.2+**: Modernized with ES6 modules, updated dependencies
+- **1.0.0+**: Modernized with ES6 modules, updated dependencies
 - **0.10.1 and earlier**: CommonJS modules, older dependencies
 

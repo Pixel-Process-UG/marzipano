@@ -34,7 +34,7 @@ You can include Marzipano in your project in several ways:
   const { Viewer, Scene, ImageUrlSource, RectilinearView, CubeGeometry } = require('marzipano');
   ```
 
-**Note:** As of version 0.10.2+, Marzipano uses ES6 modules. See [MIGRATION.md](./MIGRATION.md) for migration guidance from older versions.
+**Note:** As of version 1.0.0+, Marzipano uses ES6 modules. See [MIGRATION.md](./MIGRATION.md) for migration guidance from older versions.
 
 ### Developer guide
 
