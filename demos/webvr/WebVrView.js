@@ -12,12 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-'use strict';
+import * as Marzipano from '../../dist/marzipano.es.js';
 
-var clearOwnProperties = Marzipano.util.clearOwnProperties;
-var eventEmitter = Marzipano.dependencies.eventEmitter;
-var mat4 = Marzipano.dependencies.glMatrix.mat4;
-var vec4 = Marzipano.dependencies.glMatrix.vec4;
+const clearOwnProperties = Marzipano.util.clearOwnProperties;
+const eventEmitter = Marzipano.dependencies.eventEmitter;
+const mat4 = Marzipano.dependencies.glMatrix.mat4;
+const vec4 = Marzipano.dependencies.glMatrix.vec4;
 
 // A minimal View implementation for use with WebVR.
 //
@@ -124,3 +124,5 @@ WebVrView.prototype.intersects = function(rectangle) {
 
 // Pretend to be a RectilinearView so that an appropriate renderer can be found.
 WebVrView.type = WebVrView.prototype.type = 'rectilinear';
+
+export default WebVrView;

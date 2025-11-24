@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-'use strict';
+import * as Marzipano from '../../dist/marzipano.es.js';
 
 // Create viewer.
-var viewer = new Marzipano.Viewer(document.getElementById('pano'));
+const viewer = new Marzipano.Viewer(document.getElementById('pano'));
 
 // Create left and right layers
-var geometry = new Marzipano.CubeGeometry([
+const geometry = new Marzipano.CubeGeometry([
   { tileSize: 256, size: 256, fallbackOnly: true },
   { tileSize: 512, size: 512 },
   { tileSize: 512, size: 1024 },
@@ -28,17 +28,17 @@ var geometry = new Marzipano.CubeGeometry([
 ]);
 
 // Create views.
-var viewLimiter = Marzipano.RectilinearView.limit.traditional(3100, 100*Math.PI/180);
-var viewLeft = new Marzipano.RectilinearView(null, viewLimiter);
-var viewRight = new Marzipano.RectilinearView(null, viewLimiter);
+const viewLimiter = Marzipano.RectilinearView.limit.traditional(3100, 100*Math.PI/180);
+const viewLeft = new Marzipano.RectilinearView(null, viewLimiter);
+const viewRight = new Marzipano.RectilinearView(null, viewLimiter);
 
 // Get the stage.
-var stage = viewer.stage();
+const stage = viewer.stage();
 
 // Create layers.
-var leftLayer = createLayer(stage, viewLeft, geometry, 'left',
+const leftLayer = createLayer(stage, viewLeft, geometry, 'left',
   { relativeWidth: 0.5, relativeX: 0 });
-var rightLayer = createLayer(stage, viewRight, geometry, 'right',
+const rightLayer = createLayer(stage, viewRight, geometry, 'right',
   { relativeWidth: 0.5, relativeX: 0.5 });
 
 // Add layers to stage.
@@ -46,13 +46,13 @@ stage.addLayer(leftLayer);
 stage.addLayer(rightLayer);
 
 function createLayer(stage, view, geometry, eye, rect) {
-  var urlPrefix = "//www.marzipano.net/media/music-room";
-  var source = new Marzipano.ImageUrlSource.fromString(
+  const urlPrefix = "//www.marzipano.net/media/music-room";
+  const source = Marzipano.ImageUrlSource.fromString(
     urlPrefix + "/" + eye + "/{z}/{f}/{y}/{x}.jpg",
     { cubeMapPreviewUrl: urlPrefix + "/" + eye + "/preview.jpg" });
 
-  var textureStore = new Marzipano.TextureStore(source, stage);
-  var layer = new Marzipano.Layer(source, geometry, view, textureStore,
+  const textureStore = new Marzipano.TextureStore(source, stage);
+  const layer = new Marzipano.Layer(source, geometry, view, textureStore,
                                   { effects: { rect: rect }});
 
   layer.pinFirstLevel();
@@ -64,17 +64,17 @@ function createLayer(stage, view, geometry, eye, rect) {
 // Note that setProjectionCenterX() and setProjectionCenterY() are
 // experimental APIs and may change in the future.
 
-var projectionCenterXElement = document.querySelector("#projection-center-x");
-var projectionCenterYElement = document.querySelector("#projection-center-y");
+const projectionCenterXElement = document.querySelector("#projection-center-x");
+const projectionCenterYElement = document.querySelector("#projection-center-y");
 
 projectionCenterXElement.addEventListener('input', function() {
-  var projectionCenterX = projectionCenterXElement.value;
+  const projectionCenterX = projectionCenterXElement.value;
   viewLeft.setProjectionCenterX(parseFloat(projectionCenterX));
   viewRight.setProjectionCenterX(parseFloat(-projectionCenterX));
 });
 
 projectionCenterYElement.addEventListener('input', function() {
-  var projectionCenterY = projectionCenterYElement.value;
+  const projectionCenterY = projectionCenterYElement.value;
   viewLeft.setProjectionCenterY(parseFloat(projectionCenterY));
   viewRight.setProjectionCenterY(parseFloat(projectionCenterY));
 });
