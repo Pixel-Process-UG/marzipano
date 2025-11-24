@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-'use strict';
+import * as Marzipano from '../../dist/marzipano.es.js';
 
 // Custom tile source for procedurally generated solid color tiles.
 function SolidColorSource(width, height) {
@@ -45,16 +45,16 @@ SolidColorSource.prototype._tileColor = function(tile) {
 };
 
 SolidColorSource.prototype.loadAsset = function(stage, tile, done) {
-  var width = this._width;
-  var height = this._height;
-  var text = this._tileText(tile);
-  var color = this._tileColor(tile);
+  const width = this._width;
+  const height = this._height;
+  const text = this._tileText(tile);
+  const color = this._tileColor(tile);
 
   // Create the canvas element.
-  var element = document.createElement("canvas");
+  const element = document.createElement("canvas");
   element.width = width;
   element.height = height;
-  var ctx = element.getContext("2d");
+  const ctx = element.getContext("2d");
 
   // Draw tile background.
   ctx.fillStyle = color;
@@ -72,8 +72,8 @@ SolidColorSource.prototype.loadAsset = function(stage, tile, done) {
   ctx.fillText(text, width/2, height/2);
 
   // Pass result into callback.
-  var timeout = setTimeout(function() {
-    var asset = new Marzipano.StaticAsset(element);
+  const timeout = setTimeout(function() {
+    const asset = new Marzipano.StaticAsset(element);
     done(null, tile, asset);
   }, 0);
 
@@ -84,3 +84,5 @@ SolidColorSource.prototype.loadAsset = function(stage, tile, done) {
     done.apply(null, arguments);
   };
 };
+
+export default SolidColorSource;

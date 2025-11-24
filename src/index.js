@@ -87,10 +87,6 @@ export { default as autorotate } from './autorotate.js';
 export { default as AudioAnchor } from './audio/AudioAnchor.js';
 export { default as audioManager } from './audio/AudioManager.js';
 
-// XR
-export { default as XRSessionHandle } from './xr/XRSession.js';
-export { default as XRControls } from './xr/XRControls.js';
-
 // Transitions
 export { crossfade, zoomMorph, orbitToTarget, getTransition } from './transitions/Transitions.js';
 

@@ -13,27 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-'use strict';
+import * as Marzipano from '../../dist/marzipano.es.js';
 
 // Create viewer.
 // Use progressive rendering to produce a more pleasing visual effect when
 // zooming past several resolution levels, at the cost of additional bandwidth
 // consumption.
-var viewer = new Marzipano.Viewer(
+const viewer = new Marzipano.Viewer(
     document.getElementById('pano'), {stage: {progressive: true}});
 
 // Create source.
 // The tiles were generated with the krpano tools, which indexes the tiles
 // from 1 instead of 0. Hence, we cannot use ImageUrlSource.fromString()
 // and must write a custom function to convert tiles into URLs.
-var urlPrefix = "//www.marzipano.net/media/prague";
-var previewUrl = urlPrefix + "/preview.jpg";
-var tileUrl = function(f, z, x, y) {
+const urlPrefix = "//www.marzipano.net/media/prague";
+const previewUrl = urlPrefix + "/preview.jpg";
+const tileUrl = function(f, z, x, y) {
   return urlPrefix + "/l" + z + "/" + f + "/" + y + "/" + x + ".jpg";
 };
-var source = new Marzipano.ImageUrlSource(function(tile) {
+const source = new Marzipano.ImageUrlSource(function(tile) {
   if (tile.z === 0) {
-    var mapY = 'lfrbud'.indexOf(tile.face) / 6;
+    const mapY = 'lfrbud'.indexOf(tile.face) / 6;
     return { url: previewUrl, rect: { x: 0, y: mapY, width: 1, height: 1/6 }};
   } else {
     return { url: tileUrl(tile.face, tile.z, tile.x+1, tile.y+1) };
@@ -41,7 +41,7 @@ var source = new Marzipano.ImageUrlSource(function(tile) {
 });
 
 // Create geometry.
-var geometry = new Marzipano.CubeGeometry([
+const geometry = new Marzipano.CubeGeometry([
   { tileSize: 256, size: 256, fallbackOnly: true },
   { tileSize: 512, size: 512 },
   { tileSize: 512, size: 1024 },
@@ -54,11 +54,11 @@ var geometry = new Marzipano.CubeGeometry([
 ]);
 
 // Create view.
-var limiter = Marzipano.RectilinearView.limit.traditional(65536, 100*Math.PI/180);
-var view = new Marzipano.RectilinearView(null, limiter);
+const limiter = Marzipano.RectilinearView.limit.traditional(65536, 100*Math.PI/180);
+const view = new Marzipano.RectilinearView(null, limiter);
 
 // Create scene.
-var scene = viewer.createScene({
+const scene = viewer.createScene({
   source: source,
   geometry: geometry,
   view: view,

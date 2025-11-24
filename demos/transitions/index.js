@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-'use strict';
+import * as Marzipano from '../../dist/marzipano.es.js';
+import transitionFunctions from './transitionFunctions.js';
 
 // Create viewer.
-var viewer = new Marzipano.Viewer(document.getElementById('pano'));
+const viewer = new Marzipano.Viewer(document.getElementById('pano'));
 
 // Create a geometry to be shared by the two scenes.
-var geometry = new Marzipano.CubeGeometry([
+const geometry = new Marzipano.CubeGeometry([
     { tileSize: 256, size: 256, fallbackOnly: true },
     { size: 512, tileSize: 512 },
     { size: 1024, tileSize: 512 },
@@ -27,16 +28,16 @@ var geometry = new Marzipano.CubeGeometry([
 ]);
 
 // Create a view limiter to be shared by the two scenes.
-var limiter = Marzipano.RectilinearView.limit.traditional(2048, 120*Math.PI/180);
+const limiter = Marzipano.RectilinearView.limit.traditional(2048, 120*Math.PI/180);
 
-var urlPrefix = "//www.marzipano.net/media";
+const urlPrefix = "//www.marzipano.net/media";
 
 // Set up the first scene.
-var view1 = new Marzipano.RectilinearView(null, limiter);
-var source1 = Marzipano.ImageUrlSource.fromString(
+const view1 = new Marzipano.RectilinearView(null, limiter);
+const source1 = Marzipano.ImageUrlSource.fromString(
   urlPrefix + "/electricity-museum/{z}/{f}/{y}/{x}.jpg",
   { cubeMapPreviewUrl: urlPrefix + "/electricity-museum/preview.jpg" });
-var scene1 = viewer.createScene({
+const scene1 = viewer.createScene({
   source: source1,
   geometry: geometry,
   view: view1,
@@ -44,11 +45,11 @@ var scene1 = viewer.createScene({
 });
 
 // Set up the second scene.
-var view2 = new Marzipano.RectilinearView(null, limiter);
-var source2 = Marzipano.ImageUrlSource.fromString(
+const view2 = new Marzipano.RectilinearView(null, limiter);
+const source2 = Marzipano.ImageUrlSource.fromString(
   urlPrefix + "/jeronimos/{z}/{f}/{y}/{x}.jpg",
   { cubeMapPreviewUrl: urlPrefix + "/jeronimos/preview.jpg" });
-var scene2 = viewer.createScene({
+const scene2 = viewer.createScene({
   source: source2,
   geometry: geometry,
   view: view2,
@@ -56,7 +57,7 @@ var scene2 = viewer.createScene({
 });
 
 // Store the currently displayed scene.
-var currentScene;
+let currentScene;
 
 // Display the initial scene.
 nextScene().switchTo({ transitionDuration: 0 });
@@ -79,18 +80,18 @@ function changeScene(transitionDuration, transitionUpdate) {
 }
 
 // Get elements from DOM.
-var menuItems = document.querySelectorAll("[data-easing]");
-var easingSelect = document.getElementById("easing");
-var funSelect = document.getElementById("fun");
-var timeInput = document.getElementById("time");
+const menuItems = document.querySelectorAll("[data-easing]");
+const easingSelect = document.getElementById("easing");
+const funSelect = document.getElementById("fun");
+const timeInput = document.getElementById("time");
 
 // Set up the predefined transitions menu.
-for (var i = 0; i < menuItems.length; i++) {
+for (let i = 0; i < menuItems.length; i++) {
   (function(i) {
-    var item = menuItems[i];
-    var fun = transitionFunctions[item.getAttribute('data-fun')];
-    var time = parseInt(item.getAttribute('data-time'));
-    var ease = easing[item.getAttribute('data-easing')];
+    const item = menuItems[i];
+    const fun = transitionFunctions[item.getAttribute('data-fun')];
+    const time = parseInt(item.getAttribute('data-time'));
+    const ease = easing[item.getAttribute('data-easing')];
     item.onclick = function() {
       changeScene(time, fun(ease));
     }
@@ -98,16 +99,16 @@ for (var i = 0; i < menuItems.length; i++) {
 }
 
 // Populate custom animation easings.
-for (var key in easing) {
-  var el = document.createElement('option');
+for (const key in easing) {
+  const el = document.createElement('option');
   el.value = key;
   el.innerHTML = key;
   easingSelect.appendChild(el);
 }
 
 // Populate custom animation functions.
-for (var key in transitionFunctions) {
-  var el = document.createElement('option');
+for (const key in transitionFunctions) {
+  const el = document.createElement('option');
   el.value = key;
   el.innerHTML = key;
   funSelect.appendChild(el);
@@ -115,9 +116,9 @@ for (var key in transitionFunctions) {
 
 // Kick off custom transition on form submission.
 document.getElementById('customForm').onsubmit = function(e) {
-  var time = timeInput.value;
-  var fun = transitionFunctions[funSelect.value];
-  var ease = easing[easingSelect.value];
+  const time = timeInput.value;
+  const fun = transitionFunctions[funSelect.value];
+  const ease = easing[easingSelect.value];
   changeScene(time, fun(ease));
   e.preventDefault();
 }

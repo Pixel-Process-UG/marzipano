@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-'use strict';
+import * as Marzipano from '../../dist/marzipano.es.js';
 
 // Anaglyph methods from http://www.3dtv.at/knowhow/anaglyphcomparison_en.aspx.
 //
@@ -29,13 +29,13 @@
 // additive composition when the left image is rendered on top of the right one.
 
 // Luminance values.
-var lumR = 0.3086;
-var lumG = 0.6094;
-var lumB = 0.0820;
+const lumR = 0.3086;
+const lumG = 0.6094;
+const lumB = 0.0820;
 
 function gray() {
-  var leftEffects = Marzipano.colorEffects.identity();
-  var leftMatrix = leftEffects.colorMatrix;
+  const leftEffects = Marzipano.colorEffects.identity();
+  const leftMatrix = leftEffects.colorMatrix;
 
   leftMatrix[0] = lumR;
   leftMatrix[1] = lumG;
@@ -57,8 +57,8 @@ function gray() {
   leftMatrix[14] = 0;
   leftMatrix[15] = 0;
 
-  var rightEffects = Marzipano.colorEffects.identity();
-  var rightMatrix = rightEffects.colorMatrix;
+  const rightEffects = Marzipano.colorEffects.identity();
+  const rightMatrix = rightEffects.colorMatrix;
 
   rightMatrix[0] = 0;
   rightMatrix[1] = 0;
@@ -84,8 +84,8 @@ function gray() {
 }
 
 function color() {
-  var leftEffects = Marzipano.colorEffects.identity();
-  var leftMatrix = leftEffects.colorMatrix;
+  const leftEffects = Marzipano.colorEffects.identity();
+  const leftMatrix = leftEffects.colorMatrix;
 
   leftMatrix[0] = 1;
   leftMatrix[1] = 0;
@@ -107,8 +107,8 @@ function color() {
   leftMatrix[14] = 0;
   leftMatrix[15] = 0;
 
-  var rightEffects = Marzipano.colorEffects.identity();
-  var rightMatrix = rightEffects.colorMatrix;
+  const rightEffects = Marzipano.colorEffects.identity();
+  const rightMatrix = rightEffects.colorMatrix;
 
   rightMatrix[0] = 0;
   rightMatrix[1] = 0;
@@ -134,8 +134,8 @@ function color() {
 }
 
 function halfcolor() {
-  var leftEffects = Marzipano.colorEffects.identity();
-  var leftMatrix = leftEffects.colorMatrix;
+  const leftEffects = Marzipano.colorEffects.identity();
+  const leftMatrix = leftEffects.colorMatrix;
 
   leftMatrix[0] = lumR;
   leftMatrix[1] = lumG;
@@ -157,8 +157,8 @@ function halfcolor() {
   leftMatrix[14] = 0;
   leftMatrix[15] = 0;
 
-  var rightEffects = Marzipano.colorEffects.identity();
-  var rightMatrix = rightEffects.colorMatrix;
+  const rightEffects = Marzipano.colorEffects.identity();
+  const rightMatrix = rightEffects.colorMatrix;
 
   rightMatrix[0] = 0;
   rightMatrix[1] = 0;
@@ -184,8 +184,8 @@ function halfcolor() {
 }
 
 function optimized() {
-  var leftEffects = Marzipano.colorEffects.identity();
-  var leftMatrix = leftEffects.colorMatrix;
+  const leftEffects = Marzipano.colorEffects.identity();
+  const leftMatrix = leftEffects.colorMatrix;
 
   leftMatrix[0] = 0;
   leftMatrix[1] = 0.7;
@@ -207,8 +207,8 @@ function optimized() {
   leftMatrix[14] = 0;
   leftMatrix[15] = 0;
 
-  var rightEffects = Marzipano.colorEffects.identity();
-  var rightMatrix = rightEffects.colorMatrix;
+  const rightEffects = Marzipano.colorEffects.identity();
+  const rightMatrix = rightEffects.colorMatrix;
 
   rightMatrix[0] = 0;
   rightMatrix[1] = 0;
@@ -233,9 +233,11 @@ function optimized() {
   return { left: leftEffects, right: rightEffects };
 }
 
-var colorTransformEffects = {
+const colorTransformEffects = {
   gray: gray,
   color: color,
   halfcolor: halfcolor,
   optimized: optimized
 };
+
+export default colorTransformEffects;

@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-'use strict';
-
 function linear(val) { return val; }
 
-var transitionFunctions = {
+const transitionFunctions = {
 
   opacity: function(ease) {
     ease = ease || linear;
@@ -75,7 +73,7 @@ var transitionFunctions = {
   fromCenterAndOpacity: function(ease) {
     ease = ease || linear;
     return function(val, newScene) {
-      var eased = ease(val);
+      const eased = ease(val);
       newScene.layer().setEffects({ rect: {
         relativeWidth: eased,
         relativeHeight: eased,
@@ -89,7 +87,7 @@ var transitionFunctions = {
   fromTopAndOpacity: function(ease) {
     ease = ease || linear;
     return function(val, newScene) {
-      var eased = ease(val);
+      const eased = ease(val);
       newScene.layer().setEffects({ opacity: val, rect: { relativeY: -1 + eased }});
     }
   },
@@ -104,8 +102,8 @@ var transitionFunctions = {
   throughBlack: function(ease) {
     ease = ease || linear;
     return function(val, newScene, oldScene) {
-      var eased = ease(val);
-      var offset;
+      const eased = ease(val);
+      let offset;
       if (eased < 0.5) {
         offset = eased * 2;
         newScene.layer().setEffects({ opacity: 0 });
@@ -118,3 +116,5 @@ var transitionFunctions = {
   }
 
 };
+
+export default transitionFunctions;

@@ -13,39 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-'use strict';
+import * as Marzipano from '../../dist/marzipano.es.js';
 
 // Create a stage and register the default renderers.
-var stage = new Marzipano.WebGlStage();
+const stage = new Marzipano.WebGlStage();
 Marzipano.registerDefaultRenderers(stage);
 
 // Set up view.
-var initialViewParams = { yaw: Math.PI/16, pitch: 0, fov: Math.PI/2 };
-var view = new Marzipano.RectilinearView(initialViewParams);
+const initialViewParams = { yaw: Math.PI/16, pitch: 0, fov: Math.PI/2 };
+const view = new Marzipano.RectilinearView(initialViewParams);
 
 // Set up the bottom layer.
-var levelsBelow = [512].map(function(size) {
+const levelsBelow = [512].map(function(size) {
   return {size: size, tileSize: 512};
 });
-var geometryBelow = new Marzipano.CubeGeometry(levelsBelow);
-var sourceBelow = new Marzipano.ImageUrlSource(function(tile) {
+const geometryBelow = new Marzipano.CubeGeometry(levelsBelow);
+const sourceBelow = new Marzipano.ImageUrlSource(function(tile) {
   return { url: "//www.marzipano.net/media/pixels/red.png" };
 });
-var textureStoreBelow = new Marzipano.TextureStore(sourceBelow, stage);
-var layerBelow = new Marzipano.Layer(
+const textureStoreBelow = new Marzipano.TextureStore(sourceBelow, stage);
+const layerBelow = new Marzipano.Layer(
     sourceBelow, geometryBelow, view, textureStoreBelow, { effects: { opacity: 1 } });
 
 // Set up the top layer.
-var levelsAbove = [512, 1024, 2048, 4096].map(function(size) {
+const levelsAbove = [512, 1024, 2048, 4096].map(function(size) {
   return {size: size, tileSize: 512};
 });
-var geometryAbove = new Marzipano.CubeGeometry(levelsAbove);
-var sourceAbove = new Marzipano.ImageUrlSource(function(tile) {
+const geometryAbove = new Marzipano.CubeGeometry(levelsAbove);
+const sourceAbove = new Marzipano.ImageUrlSource(function(tile) {
   return { url: "//www.marzipano.net/media/generated-tiles/" +
     tile.z + '_' + tile.face + '_' + tile.x + '_' + tile.y + '.png' };
 });
-var textureStoreAbove = new Marzipano.TextureStore(sourceAbove, stage);
-var layerAbove = new Marzipano.Layer(
+const textureStoreAbove = new Marzipano.TextureStore(sourceAbove, stage);
+const layerAbove = new Marzipano.Layer(
     sourceAbove, geometryAbove, view, textureStoreAbove, { effects: { opacity: 0.6 } });
 
 // Add layers to stage.
@@ -53,7 +53,7 @@ stage.addLayer(layerBelow);
 stage.addLayer(layerAbove);
 
 // Add stage into DOM and update its size.
-var container = document.getElementById('rendered');
+const container = document.getElementById('rendered');
 container.appendChild(stage.domElement());
 stage.setSize({ width: container.clientWidth, height: container.clientHeight });
 
@@ -66,7 +66,7 @@ layerAbove.pinLevel(0);
 layerAbove.setFixedLevel(2);
 
 // List of tiles to be preloaded.
-var preloadTiles = [
+const preloadTiles = [
   // Level 1 tile on top right of front face (parent fallback).
   new Marzipano.CubeGeometry.Tile('f', 1, 0, 1, geometryAbove),
   // Level 2 tile on bottom right of front face (intended display level).
@@ -82,14 +82,14 @@ var preloadTiles = [
 ];
 
 // Pin tiles to force them to load.
-for (var i = 0; i < preloadTiles.length; i++) {
+for (let i = 0; i < preloadTiles.length; i++) {
   layerAbove.textureStore().pin(preloadTiles[i]);
 }
 
 // Check whether all tiles have loaded.
 function ready() {
-  for (var i = 0; i < preloadTiles.length; i++) {
-    var state = layerAbove.textureStore().query(preloadTiles[i]);
+  for (let i = 0; i < preloadTiles.length; i++) {
+    const state = layerAbove.textureStore().query(preloadTiles[i]);
     if (!state.hasTexture) {
       return false;
     }
@@ -98,7 +98,7 @@ function ready() {
 }
 
 // Wait for tiles to load, then render.
-var checkInterval = 200;
+const checkInterval = 200;
 setTimeout(function check() {
   if (ready()) {
     stage.render();

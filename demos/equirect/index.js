@@ -13,25 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-'use strict';
+import * as Marzipano from '../../dist/marzipano.es.js';
 
 // Create viewer.
-var viewer = new Marzipano.Viewer(document.getElementById('pano'));
+const viewer = new Marzipano.Viewer(document.getElementById('pano'));
 
 // Create source.
-var source = Marzipano.ImageUrlSource.fromString(
+const source = Marzipano.ImageUrlSource.fromString(
   "//www.marzipano.net/media/equirect/angra.jpg"
 );
 
 // Create geometry.
-var geometry = new Marzipano.EquirectGeometry([{ width: 4000 }]);
+const geometry = new Marzipano.EquirectGeometry([{ width: 4000 }]);
 
 // Create view.
-var limiter = Marzipano.RectilinearView.limit.traditional(1024, 100*Math.PI/180);
-var view = new Marzipano.RectilinearView({ yaw: Math.PI }, limiter);
+const limiter = Marzipano.RectilinearView.limit.traditional(1024, 100*Math.PI/180);
+const view = new Marzipano.RectilinearView({ yaw: Math.PI }, limiter);
 
 // Create scene.
-var scene = viewer.createScene({
+const scene = viewer.createScene({
   source: source,
   geometry: geometry,
   view: view,

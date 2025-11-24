@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-'use strict';
+import * as Marzipano from '../../dist/marzipano.es.js';
 
 // Custom control method to alter the view according to the device orientation.
 function DeviceOrientationControlMethod() {
@@ -36,6 +36,8 @@ function DeviceOrientationControlMethod() {
 }
 
 Marzipano.dependencies.eventEmitter(DeviceOrientationControlMethod);
+
+export default DeviceOrientationControlMethod;
 
 
 DeviceOrientationControlMethod.prototype.destroy = function() {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-'use strict';
+import * as Marzipano from '../../dist/marzipano.es.js';
 
 // Dynamic asset containing a video element.
 // Note that this won't work on IE 11 because of lack of support for video
@@ -115,3 +115,5 @@ VideoAsset.prototype.destroy = function() {
     this._emitChangeIfPlayingLoop = null;
   }
 };
+
+export default VideoAsset;

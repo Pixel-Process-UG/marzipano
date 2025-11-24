@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-'use strict';
+import * as Marzipano from '../../dist/marzipano.es.js';
 
 // Create viewer.
-var viewer = new Marzipano.Viewer(document.getElementById('pano'));
+const viewer = new Marzipano.Viewer(document.getElementById('pano'));
 
 // The tiles were generated with the krpano tools, which index the tiles
 // from 1 instead of 0. Hence, we cannot use ImageUrlSource.fromString()
 // and must write a custom function to convert tiles into URLs.
-var urlPrefix = "//www.marzipano.net/media/lisboa";
-var tileUrl = function(z, x, y) {
+const urlPrefix = "//www.marzipano.net/media/lisboa";
+const tileUrl = function(z, x, y) {
   return urlPrefix + "/l" + z + "/" + y + "/l" + z + '_' + y + '_' + x + ".jpg";
 };
-var source = new Marzipano.ImageUrlSource(function(tile) {
+const source = new Marzipano.ImageUrlSource(function(tile) {
   return { url: tileUrl(tile.z+1, tile.x+1, tile.y+1) };
 });
 
 // Create geometry.
-var geometry = new Marzipano.FlatGeometry([
+const geometry = new Marzipano.FlatGeometry([
   { width: 756,   height: 312,   tileWidth: 756, tileHeight: 756 },
   { width: 1512,  height: 624,   tileWidth: 756, tileHeight: 756 },
   { width: 3024,  height: 1248,  tileWidth: 756, tileHeight: 756 },
@@ -43,14 +43,14 @@ var geometry = new Marzipano.FlatGeometry([
 // Create view.
 // The letterbox view limiter allows the view to zoom out until the image is
 // fully visible, adding black bands around the image where necessary.
-var limiter = Marzipano.util.compose(
+const limiter = Marzipano.util.compose(
   Marzipano.FlatView.limit.resolution(48384),
   Marzipano.FlatView.limit.letterbox()
 );
-var view = new Marzipano.FlatView({ mediaAspectRatio: 48384/19968}, limiter);
+const view = new Marzipano.FlatView({ mediaAspectRatio: 48384/19968}, limiter);
 
 // Create scene.
-var scene = viewer.createScene({
+const scene = viewer.createScene({
   source: source,
   geometry: geometry,
   view: view,
