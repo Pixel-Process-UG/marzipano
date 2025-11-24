@@ -19,6 +19,7 @@ import sinon from 'sinon';
 import eventEmitter from 'minimal-event-emitter';
 import defer from '../../src/util/defer.js';
 import cancelize from '../../src/util/cancelize.js';
+import wait from '../wait.js';
 
 import TextureStore from '../../src/TextureStore.js';
 
@@ -192,81 +193,91 @@ describe('TextureStore', function () {
   });
 
   describe('textures', function () {
-    it('load texture for static asset', function (done) {
+    it('load texture for static asset', async function () {
       var store = makeTextureStore();
       var tile = new MockTile();
-      store.addEventListener('textureStartLoad', function (eventTile) {
-        assert.strictEqual(eventTile, tile);
-        assert.strictEqual(store.texture(tile), null);
-        assert.isFalse(store.query(tile).hasAsset);
-        assert.isFalse(store.query(tile).hasTexture);
-        store.addEventListener('textureLoad', function (eventTile) {
-          var texture = store.texture(tile);
-          assert.strictEqual(eventTile, tile);
-          assert.isNotNull(texture);
-          assert.strictEqual(texture.id, tile.id);
-          assert.isFalse(store.query(tile).hasAsset);
-          assert.isTrue(store.query(tile).hasTexture);
-          done();
-        });
-      });
+
+      const startLoadPromise = wait.waitForEvent(store, 'textureStartLoad');
+      const loadPromise = wait.waitForEvent(store, 'textureLoad');
+
       store.startFrame();
       store.markTile(tile);
       store.endFrame();
+
+      const [eventTile] = await startLoadPromise;
+      assert.strictEqual(eventTile, tile);
+      assert.strictEqual(store.texture(tile), null);
+      assert.isFalse(store.query(tile).hasAsset);
+      assert.isFalse(store.query(tile).hasTexture);
+
+      const [loadedTile] = await loadPromise;
+      var texture = store.texture(tile);
+      assert.strictEqual(loadedTile, tile);
+      assert.isNotNull(texture);
+      assert.strictEqual(texture.id, tile.id);
+      assert.isFalse(store.query(tile).hasAsset);
+      assert.isTrue(store.query(tile).hasTexture);
     });
 
-    it('load texture for dynamic asset', function (done) {
+    it('load texture for dynamic asset', async function () {
       var store = makeTextureStore();
       var tile = new MockTile({ dynamicAsset: true });
-      store.addEventListener('textureStartLoad', function (eventTile) {
-        assert.strictEqual(eventTile, tile);
-        assert.strictEqual(store.texture(tile), null);
-        assert.isFalse(store.query(tile).hasAsset);
-        assert.isFalse(store.query(tile).hasTexture);
-        store.addEventListener('textureLoad', function (eventTile) {
-          var texture = store.texture(tile);
-          assert.strictEqual(eventTile, tile);
-          assert.isNotNull(texture);
-          assert.strictEqual(texture.id, tile.id);
-          assert.isTrue(store.query(tile).hasAsset);
-          assert.isTrue(store.query(tile).hasTexture);
-          done();
-        });
-      });
+
+      const startLoadPromise = wait.waitForEvent(store, 'textureStartLoad');
+      const loadPromise = wait.waitForEvent(store, 'textureLoad');
+
       store.startFrame();
       store.markTile(tile);
       store.endFrame();
+
+      const [eventTile] = await startLoadPromise;
+      assert.strictEqual(eventTile, tile);
+      assert.strictEqual(store.texture(tile), null);
+      assert.isFalse(store.query(tile).hasAsset);
+      assert.isFalse(store.query(tile).hasTexture);
+
+      const [loadedTile] = await loadPromise;
+      var texture = store.texture(tile);
+      assert.strictEqual(loadedTile, tile);
+      assert.isNotNull(texture);
+      assert.strictEqual(texture.id, tile.id);
+      assert.isTrue(store.query(tile).hasAsset);
+      assert.isTrue(store.query(tile).hasTexture);
     });
 
-    it('retry on loadAsset failure', function (done) {
+    it('retry on loadAsset failure', async function () {
       var store = makeTextureStore();
       var tile = new MockTile({ assetFailures: 1 }); // will succeed when retried
-      store.addEventListener('textureLoad', function (eventTile) {
-        var texture = store.texture(tile);
-        assert.strictEqual(eventTile, tile);
-        assert.isNotNull(texture);
-        assert.strictEqual(texture.id, tile.id);
-        assert.isFalse(store.query(tile).hasAsset);
-        assert.isTrue(store.query(tile).hasTexture);
-        done();
-      });
+
+      const loadPromise = wait.waitForEvent(store, 'textureLoad');
+
       store.startFrame();
       store.markTile(tile);
       store.endFrame();
+
+      const [eventTile] = await loadPromise;
+      var texture = store.texture(tile);
+      assert.strictEqual(eventTile, tile);
+      assert.isNotNull(texture);
+      assert.strictEqual(texture.id, tile.id);
+      assert.isFalse(store.query(tile).hasAsset);
+      assert.isTrue(store.query(tile).hasTexture);
     });
 
-    it('error on createTexture failure', function (done) {
+    it('error on createTexture failure', async function () {
       var store = makeTextureStore();
       var tile = new MockTile({ textureFailures: 1 });
-      store.addEventListener('textureError', function (eventTile) {
-        assert.strictEqual(eventTile, tile);
-        assert.isFalse(store.query(tile).hasAsset);
-        assert.isFalse(store.query(tile).hasTexture);
-        done();
-      });
+
+      const errorPromise = wait.waitForEvent(store, 'textureError');
+
       store.startFrame();
       store.markTile(tile);
       store.endFrame();
+
+      const [eventTile] = await errorPromise;
+      assert.strictEqual(eventTile, tile);
+      assert.isFalse(store.query(tile).hasAsset);
+      assert.isFalse(store.query(tile).hasTexture);
     });
 
     it('cancel load', function () {
@@ -287,103 +298,125 @@ describe('TextureStore', function () {
       });
     });
 
-    it('unload texture', function (done) {
+    it('unload texture', async function () {
       var store = makeTextureStore({
         previouslyVisibleCacheSize: 0,
       });
       var tile = new MockTile();
+
+      const loadPromise = wait.waitForEvent(store, 'textureLoad');
+
       store.startFrame();
       store.markTile(tile);
       store.endFrame();
-      store.addEventListener('textureLoad', function () {
-        store.addEventListener('textureUnload', function (eventTile) {
-          assert.strictEqual(eventTile, tile);
-          assert.isFalse(store.query(tile).hasAsset);
-          assert.isFalse(store.query(tile).hasTexture);
-          done();
-        });
-        store.startFrame();
-        store.endFrame();
-      });
+
+      await loadPromise;
+
+      const unloadPromise = wait.waitForEvent(store, 'textureUnload');
+
+      store.startFrame();
+      store.endFrame();
+
+      const [eventTile] = await unloadPromise;
+      assert.strictEqual(eventTile, tile);
+      assert.isFalse(store.query(tile).hasAsset);
+      assert.isFalse(store.query(tile).hasTexture);
     });
 
-    it('return asset for a tile', function (done) {
+    it('return asset for a tile', async function () {
       var store = makeTextureStore();
       var tile = new MockTile({ dynamicAsset: true });
+
+      const loadPromise = wait.waitForEvent(store, 'textureLoad');
+
       store.startFrame();
       store.markTile(tile);
       store.endFrame();
-      store.addEventListener('textureLoad', function () {
-        var asset = store.asset(tile);
-        assert.instanceOf(asset, MockAsset);
-        assert.strictEqual(asset.id, tile.id);
-        done();
-      });
+
+      await loadPromise;
+
+      var asset = store.asset(tile);
+      assert.instanceOf(asset, MockAsset);
+      assert.strictEqual(asset.id, tile.id);
     });
 
-    it('return texture for a tile', function (done) {
+    it('return texture for a tile', async function () {
       var store = makeTextureStore();
       var tile = new MockTile();
+
+      const loadPromise = wait.waitForEvent(store, 'textureLoad');
+
       store.startFrame();
       store.markTile(tile);
       store.endFrame();
-      store.addEventListener('textureLoad', function () {
-        var texture = store.texture(tile);
-        assert.instanceOf(texture, MockTexture);
-        assert.strictEqual(texture.id, tile.id);
-        done();
-      });
+
+      await loadPromise;
+
+      var texture = store.texture(tile);
+      assert.instanceOf(texture, MockTexture);
+      assert.strictEqual(texture.id, tile.id);
     });
 
-    it('refresh texture for dynamic assets', function (done) {
+    it('refresh texture for dynamic assets', async function () {
       var store = makeTextureStore();
       var tile = new MockTile({ dynamicAsset: true });
+
+      const loadPromise = wait.waitForEvent(store, 'textureLoad');
+
       store.startFrame();
       store.markTile(tile);
       store.endFrame();
-      store.addEventListener('textureLoad', function () {
-        store.startFrame();
-        store.markTile(tile);
-        store.endFrame();
-        var asset = store.asset(tile);
-        var texture = store.texture(tile);
-        assert.isTrue(texture.refresh.calledWithExactly(tile, asset));
-        done();
-      });
+
+      await loadPromise;
+
+      store.startFrame();
+      store.markTile(tile);
+      store.endFrame();
+      var asset = store.asset(tile);
+      var texture = store.texture(tile);
+      assert.isTrue(texture.refresh.calledWithExactly(tile, asset));
     });
 
-    it('do not refresh texture for static assets', function (done) {
+    it('do not refresh texture for static assets', async function () {
       var store = makeTextureStore();
       var tile = new MockTile();
+
+      const loadPromise = wait.waitForEvent(store, 'textureLoad');
+
       store.startFrame();
       store.markTile(tile);
       store.endFrame();
-      store.addEventListener('textureLoad', function () {
-        store.startFrame();
-        store.markTile(tile);
-        store.endFrame();
-        var texture = store.texture(tile);
-        assert.isTrue(texture.refresh.notCalled);
-        done();
-      });
+
+      await loadPromise;
+
+      store.startFrame();
+      store.markTile(tile);
+      store.endFrame();
+      var texture = store.texture(tile);
+      assert.isTrue(texture.refresh.notCalled);
     });
 
-    it('notify on texture invalidation by dynamic asset', function (done) {
+    it('notify on texture invalidation by dynamic asset', async function () {
       var store = makeTextureStore();
       var tile = new MockTile({ dynamicAsset: true });
       var invalidSpy = sinon.spy();
       store.addEventListener('textureInvalid', invalidSpy);
+
+      const loadPromise = wait.waitForEvent(store, 'textureLoad');
+
       store.startFrame();
       store.markTile(tile);
       store.endFrame();
-      store.addEventListener('textureLoad', function () {
-        store.addEventListener('textureInvalid', function (eventTile) {
-          assert.strictEqual(eventTile, tile);
-          done();
-        });
-        var asset = store.asset(tile);
-        asset.emit('change');
-      });
+
+      await loadPromise;
+
+      const invalidPromise = wait.waitForEvent(store, 'textureInvalid');
+
+      var asset = store.asset(tile);
+      asset.emit('change');
+
+      const [eventTile] = await invalidPromise;
+      assert.strictEqual(eventTile, tile);
     });
   });
 
@@ -399,45 +432,44 @@ describe('TextureStore', function () {
       assert.isFalse(store.query(tile).previouslyVisible);
     });
 
-    it('previously visible tile with a texture is kept', function (done) {
+    it('previously visible tile with a texture is kept', async function () {
       var store = makeTextureStore({
         previouslyVisibleCacheSize: 1,
       });
       var tile = new MockTile();
+
+      const loadPromise = wait.waitForEvent(store, 'textureLoad');
+
       store.startFrame();
       store.markTile(tile);
       store.endFrame();
-      store.addEventListener('textureLoad', function () {
-        store.startFrame();
-        store.endFrame();
-        assert.isTrue(store.query(tile).previouslyVisible);
-        done();
-      });
+
+      await loadPromise;
+
+      store.startFrame();
+      store.endFrame();
+      assert.isTrue(store.query(tile).previouslyVisible);
     });
 
-    it('older tile is displaced by newer tile', function (done) {
+    it('older tile is displaced by newer tile', async function () {
       var store = makeTextureStore({
         previouslyVisibleCacheSize: 1,
       });
       var tiles = [new MockTile(), new MockTile(), new MockTile()];
-      var markAndWaitForLoad = function (i) {
-        if (i === tiles.length) {
-          assert.isFalse(store.query(tiles[0]).previouslyVisible);
-          assert.isTrue(store.query(tiles[1]).previouslyVisible);
-          done();
-        } else {
-          var tile = tiles[i];
-          store.startFrame();
-          store.markTile(tile);
-          store.endFrame();
-          store.addEventListener('textureLoad', function (loadedTile) {
-            if (loadedTile === tile) {
-              markAndWaitForLoad(i + 1);
-            }
-          });
-        }
-      };
-      markAndWaitForLoad(0);
+
+      for (let i = 0; i < tiles.length; i++) {
+        const tile = tiles[i];
+        const loadPromise = wait.waitForEvent(store, 'textureLoad');
+
+        store.startFrame();
+        store.markTile(tile);
+        store.endFrame();
+
+        await loadPromise;
+      }
+
+      assert.isFalse(store.query(tiles[0]).previouslyVisible);
+      assert.isTrue(store.query(tiles[1]).previouslyVisible);
     });
   });
 
@@ -464,60 +496,73 @@ describe('TextureStore', function () {
       }
     });
 
-    it('pinning tile causes load', function (done) {
+    it('pinning tile causes load', async function () {
       var store = makeTextureStore();
       var tile = new MockTile();
-      store.addEventListener('textureLoad', function (eventTile) {
-        assert.strictEqual(eventTile, tile);
-        assert.isTrue(store.query(tile).pinned);
-        done();
-      });
+
+      const loadPromise = wait.waitForEvent(store, 'textureLoad');
+
       store.pin(tile);
+
+      const [eventTile] = await loadPromise;
+      assert.strictEqual(eventTile, tile);
+      assert.isTrue(store.query(tile).pinned);
     });
 
-    it('unpinning tile causes unload', function (done) {
+    it('unpinning tile causes unload', async function () {
       var store = makeTextureStore();
       var tile = new MockTile();
+
+      const loadPromise = wait.waitForEvent(store, 'textureLoad');
+
       store.pin(tile);
-      store.addEventListener('textureLoad', function () {
-        store.addEventListener('textureUnload', function (eventTile) {
-          assert.strictEqual(eventTile, tile);
-          assert.isFalse(store.query(tile).pinned);
-          done();
-        });
-        store.unpin(tile);
-      });
+
+      await loadPromise;
+
+      const unloadPromise = wait.waitForEvent(store, 'textureUnload');
+
+      store.unpin(tile);
+
+      const [eventTile] = await unloadPromise;
+      assert.strictEqual(eventTile, tile);
+      assert.isFalse(store.query(tile).pinned);
     });
 
-    it('pinned tile is not evicted when it becomes invisible', function (done) {
+    it('pinned tile is not evicted when it becomes invisible', async function () {
       var store = makeTextureStore({
         previouslyVisibleCacheSize: 0,
       });
       var tile = new MockTile();
+
+      const loadPromise = wait.waitForEvent(store, 'textureLoad');
+
       store.pin(tile);
-      store.addEventListener('textureLoad', function () {
-        store.startFrame();
-        store.endFrame();
-        assert.isTrue(store.query(tile).hasTexture);
-        done();
-      });
+
+      await loadPromise;
+
+      store.startFrame();
+      store.endFrame();
+      assert.isTrue(store.query(tile).hasTexture);
     });
 
-    it('unpinned tile is evicted when it becomes invisible', function (done) {
+    it('unpinned tile is evicted when it becomes invisible', async function () {
       var store = makeTextureStore({
         previouslyVisibleCacheSize: 0,
       });
       var tile = new MockTile();
       var unloadSpy = sinon.spy();
       store.addEventListener('textureUnload', unloadSpy);
+
+      const loadPromise = wait.waitForEvent(store, 'textureLoad');
+
       store.pin(tile);
-      store.addEventListener('textureLoad', function () {
-        store.unpin(tile);
-        store.startFrame();
-        store.endFrame();
-        assert.isFalse(store.query(tile).hasTexture);
-        done();
-      });
+
+      await loadPromise;
+
+      store.unpin(tile);
+      store.startFrame();
+      store.endFrame();
+      assert.isFalse(store.query(tile).hasTexture);
     });
   });
 });

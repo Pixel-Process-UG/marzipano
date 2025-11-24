@@ -18,22 +18,22 @@
 // than waiting with setTimeout, as it avoids the need for a large timeout to
 // prevent slower browsers from flaking out.
 
-// until(fn, done) repeatedly calls cond until it returns a truthy value,
-// and then calls done.
-function until(cond, done) {
-  const timer = setInterval(() => {
-    if (cond()) {
-      clearInterval(timer);
-      done();
-    }
-  }, 10);
+// until(fn) repeatedly calls cond until it returns a truthy value,
+// and returns a promise that resolves when the condition is met.
+function until(cond) {
+  return new Promise((resolve) => {
+    const timer = setInterval(() => {
+      if (cond()) {
+        clearInterval(timer);
+        resolve();
+      }
+    }, 10);
+  });
 }
 
-// untilSpyCalled(spy1, ..., spyN, done) repeatedly polls the spies until every
-// one has been called at least once, and then calls done.
-function untilSpyCalled(...args) {
-  const spies = args.slice(0, args.length - 1);
-  const done = args[args.length - 1];
+// untilSpyCalled(spy1, ..., spyN) repeatedly polls the spies until every
+// one has been called at least once, and returns a promise that resolves.
+function untilSpyCalled(...spies) {
   function cond() {
     for (let i = 0; i < spies.length; i++) {
       if (!spies[i].called) {
@@ -42,10 +42,21 @@ function untilSpyCalled(...args) {
     }
     return true;
   }
-  until(cond, done);
+  return until(cond);
+}
+
+// waitForEvent(emitter, eventName) returns a promise that resolves with
+// the event arguments when the specified event is emitted.
+function waitForEvent(emitter, eventName) {
+  return new Promise((resolve) => {
+    emitter.addEventListener(eventName, function handler(...args) {
+      resolve(args);
+    });
+  });
 }
 
 export default {
   until,
   untilSpyCalled,
+  waitForEvent,
 };

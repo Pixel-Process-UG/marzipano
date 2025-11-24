@@ -57,40 +57,56 @@ var bottomHalfImageData = createTestImageData(4, 2, [B, B, Y, Y, B, B, Y, Y]);
 var rightHalfImageData = createTestImageData(2, 4, [G, G, G, G, Y, Y, Y, Y]);
 var quarterImageData = createTestImageData(2, 2, [R, G, B, Y]);
 
-function testLoad(inputImageData, rect, outputImageData, done) {
-  var loader = new HtmlImageLoader();
+function testLoad(inputImageData, rect, outputImageData) {
+  return new Promise((resolve, reject) => {
+    var loader = new HtmlImageLoader();
 
-  loader.loadImage(imageDataToUrl(inputImageData), rect, function (err, asset) {
-    assert.isNull(err);
-    assert.deepEqual(assetToImageData(asset), outputImageData);
-    done();
+    loader.loadImage(imageDataToUrl(inputImageData), rect, function (err, asset) {
+      if (err) {
+        reject(err);
+      } else {
+        try {
+          assert.isNull(err);
+          assert.deepEqual(assetToImageData(asset), outputImageData);
+          resolve();
+        } catch (e) {
+          reject(e);
+        }
+      }
+    });
   });
 }
 
 describe('HtmlImageLoader', function () {
-  it('no rect', function (done) {
-    testLoad(fullImageData, null, fullImageData, done);
+  it('no rect', async function () {
+    await testLoad(fullImageData, null, fullImageData);
   });
 
-  it('bottom half rect', function (done) {
-    testLoad(fullImageData, { x: 0, y: 0.5, width: 1, height: 0.5 }, bottomHalfImageData, done);
+  it('bottom half rect', async function () {
+    await testLoad(fullImageData, { x: 0, y: 0.5, width: 1, height: 0.5 }, bottomHalfImageData);
   });
 
-  it('right half rect', function (done) {
-    testLoad(fullImageData, { x: 0.5, y: 0, width: 0.5, height: 1 }, rightHalfImageData, done);
+  it('right half rect', async function () {
+    await testLoad(fullImageData, { x: 0.5, y: 0, width: 0.5, height: 1 }, rightHalfImageData);
   });
 
-  it('quarter rect', function (done) {
-    testLoad(fullImageData, { x: 0.25, y: 0.25, width: 0.5, height: 0.5 }, quarterImageData, done);
+  it('quarter rect', async function () {
+    await testLoad(fullImageData, { x: 0.25, y: 0.25, width: 0.5, height: 0.5 }, quarterImageData);
   });
 
-  it('network error', function (done) {
+  it('network error', async function () {
     var loader = new HtmlImageLoader();
 
-    loader.loadImage('http://www.nosuchdomain/bad_image_url.jpg', null, function (err, asset) {
-      assert.instanceOf(err, NetworkError);
-      assert.isUndefined(asset);
-      done();
+    return new Promise((resolve, reject) => {
+      loader.loadImage('http://www.nosuchdomain/bad_image_url.jpg', null, function (err, asset) {
+        try {
+          assert.instanceOf(err, NetworkError);
+          assert.isUndefined(asset);
+          resolve();
+        } catch (e) {
+          reject(e);
+        }
+      });
     });
   });
 });

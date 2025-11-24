@@ -22,24 +22,21 @@ import defer from '../../src/util/defer.js';
 import wait from '../wait.js';
 
 describe('Timer', function () {
-  it('start', function () {
-    return new Promise((resolve) => {
-      const spy = sinon.spy();
-      const timer = new Timer({ duration: 50 });
-      timer.addEventListener('timeout', spy);
+  it('start', async function () {
+    const spy = sinon.spy();
+    const timer = new Timer({ duration: 50 });
+    timer.addEventListener('timeout', spy);
 
-      const timeBefore = now();
-      assert.isFalse(timer.started());
-      timer.start();
-      assert.isTrue(timer.started());
+    const timeBefore = now();
+    assert.isFalse(timer.started());
+    timer.start();
+    assert.isTrue(timer.started());
 
-      wait.untilSpyCalled(spy, function () {
-        const timeAfter = now();
-        assert.isFalse(timer.started());
-        assert.isAtLeast(timeAfter - timeBefore, 50);
-        resolve();
-      });
-    });
+    await wait.untilSpyCalled(spy);
+
+    const timeAfter = now();
+    assert.isFalse(timer.started());
+    assert.isAtLeast(timeAfter - timeBefore, 50);
   });
 
   it('stop', function () {
@@ -61,90 +58,78 @@ describe('Timer', function () {
     });
   });
 
-  it('reset', function () {
-    return new Promise((resolve) => {
-      const spy = sinon.spy();
-      const timer = new Timer({ duration: 100 });
-      timer.addEventListener('timeout', spy);
+  it('reset', async function () {
+    const spy = sinon.spy();
+    const timer = new Timer({ duration: 100 });
+    timer.addEventListener('timeout', spy);
 
-      const timeBefore = now();
+    const timeBefore = now();
+    timer.start();
+
+    setTimeout(() => {
+      assert.isTrue(spy.notCalled);
       timer.start();
+    }, 50);
 
-      setTimeout(() => {
-        assert.isTrue(spy.notCalled);
-        timer.start();
-      }, 50);
+    await wait.untilSpyCalled(spy);
 
-      wait.untilSpyCalled(spy, function () {
-        const timeAfter = now();
-        assert.isFalse(timer.started());
-        assert.isAtLeast(timeAfter - timeBefore, 150);
-        resolve();
-      });
-    });
+    const timeAfter = now();
+    assert.isFalse(timer.started());
+    assert.isAtLeast(timeAfter - timeBefore, 150);
   });
 
-  it('set duration after start with infinity', function () {
-    return new Promise((resolve) => {
-      const spy = sinon.spy();
-      const timer = new Timer();
-      timer.addEventListener('timeout', spy);
+  it('set duration after start with infinity', async function () {
+    const spy = sinon.spy();
+    const timer = new Timer();
+    timer.addEventListener('timeout', spy);
 
-      const timeBefore = now();
-      timer.start();
+    const timeBefore = now();
+    timer.start();
 
-      defer(() => {
-        timer.setDuration(50);
-      });
-
-      wait.untilSpyCalled(spy, function () {
-        const timeAfter = now();
-        assert.isAtLeast(timeAfter - timeBefore, 50);
-        resolve();
-      });
+    defer(() => {
+      timer.setDuration(50);
     });
+
+    await wait.untilSpyCalled(spy);
+
+    const timeAfter = now();
+    assert.isAtLeast(timeAfter - timeBefore, 50);
   });
 
-  it('set duration when stopped', function () {
-    return new Promise((resolve) => {
-      const spy = sinon.spy();
-      const timer = new Timer({ duration: 50 });
-      timer.addEventListener('timeout', spy);
+  it('set duration when stopped', async function () {
+    const spy = sinon.spy();
+    const timer = new Timer({ duration: 50 });
+    timer.addEventListener('timeout', spy);
 
-      assert.strictEqual(timer.duration(), 50);
+    assert.strictEqual(timer.duration(), 50);
+    timer.setDuration(100);
+    assert.strictEqual(timer.duration(), 100);
+
+    const timeBefore = now();
+    timer.start();
+
+    await wait.untilSpyCalled(spy);
+
+    const timeAfter = now();
+    assert.isAtLeast(timeAfter - timeBefore, 100);
+  });
+
+  it('increase duration when started', async function () {
+    const spy = sinon.spy();
+    const timer = new Timer({ duration: 50 });
+    timer.addEventListener('timeout', spy);
+
+    const timeBefore = now();
+    timer.start();
+
+    defer(() => {
       timer.setDuration(100);
-      assert.strictEqual(timer.duration(), 100);
-
-      const timeBefore = now();
-      timer.start();
-
-      wait.untilSpyCalled(spy, function () {
-        const timeAfter = now();
-        assert.isAtLeast(timeAfter - timeBefore, 100);
-        resolve();
-      });
     });
-  });
 
-  it('increase duration when started', function () {
-    return new Promise((resolve) => {
-      const spy = sinon.spy();
-      const timer = new Timer({ duration: 50 });
-      timer.addEventListener('timeout', spy);
+    await wait.untilSpyCalled(spy);
 
-      const timeBefore = now();
-      timer.start();
-
-      defer(() => {
-        timer.setDuration(100);
-      });
-
-      wait.untilSpyCalled(spy, function () {
-        const timeAfter = now();
-        assert.isAtLeast(timeAfter - timeBefore, 100);
-        resolve();
-      });
-    });
+    const timeAfter = now();
+    assert.isAtLeast(timeAfter - timeBefore, 100);
   });
 
   it('decrease duration when started', function () {

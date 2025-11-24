@@ -34,98 +34,80 @@ MockStage.prototype.loadImage = function (url, rect, done) {
 };
 
 describe('ImageUrlSource', function () {
-  it('template url', function () {
-    return new Promise((resolve) => {
-      const source = ImageUrlSource.fromString('http://localhost/img?f={f}&z={z}&x={x}&y={y}');
+  it('template url', async function () {
+    const source = ImageUrlSource.fromString('http://localhost/img?f={f}&z={z}&x={x}&y={y}');
 
-      var spy = sinon.stub().returns(function () {});
-      var stage = { loadImage: spy };
+    var spy = sinon.stub().returns(function () {});
+    var stage = { loadImage: spy };
 
-      source.loadAsset(stage, { face: 'l', z: 0, x: 1, y: 2 });
-      source.loadAsset(stage, { face: 'r', z: 3, x: 4, y: 5 });
+    source.loadAsset(stage, { face: 'l', z: 0, x: 1, y: 2 });
+    source.loadAsset(stage, { face: 'r', z: 3, x: 4, y: 5 });
 
-      wait.until(
-        function () {
-          return spy.callCount === 2;
-        },
-        function () {
-          assert.strictEqual(spy.getCall(0).args[0], 'http://localhost/img?f=l&z=0&x=1&y=2');
-          assert.strictEqual(spy.getCall(0).args[1], undefined);
-          assert.strictEqual(spy.getCall(1).args[0], 'http://localhost/img?f=r&z=3&x=4&y=5');
-          assert.strictEqual(spy.getCall(1).args[1], undefined);
-          resolve();
-        }
-      );
+    await wait.until(function () {
+      return spy.callCount === 2;
     });
+
+    assert.strictEqual(spy.getCall(0).args[0], 'http://localhost/img?f=l&z=0&x=1&y=2');
+    assert.strictEqual(spy.getCall(0).args[1], undefined);
+    assert.strictEqual(spy.getCall(1).args[0], 'http://localhost/img?f=r&z=3&x=4&y=5');
+    assert.strictEqual(spy.getCall(1).args[1], undefined);
   });
 
-  it('template url with preview', function () {
-    return new Promise((resolve) => {
-      var defaultOrder = 'bdflru';
+  it('template url with preview', async function () {
+    var defaultOrder = 'bdflru';
 
-      const source = ImageUrlSource.fromString('http://localhost/img?f={f}&z={z}&x={x}&y={y}', {
-        cubeMapPreviewUrl: 'http://localhost/preview',
-        concurrency: 10,
-      });
-
-      var spy = sinon.stub().returns(function () {});
-      var stage = { loadImage: spy };
-
-      for (var i = 0; i < 6; i++) {
-        source.loadAsset(stage, { face: defaultOrder[i], z: 0, x: 0, y: 0 });
-      }
-      source.loadAsset(stage, { face: 'l', z: 1, x: 2, y: 3 });
-
-      wait.until(
-        function () {
-          return stage.loadImage.callCount === 7;
-        },
-        function () {
-          for (var i = 0; i < 6; i++) {
-            assert.strictEqual(spy.getCall(i).args[0], 'http://localhost/preview');
-            assert.deepEqual(spy.getCall(i).args[1], { x: 0, y: i / 6, width: 1, height: 1 / 6 });
-          }
-          assert.strictEqual(spy.getCall(6).args[0], 'http://localhost/img?f=l&z=1&x=2&y=3');
-          assert.strictEqual(spy.getCall(6).args[1], undefined);
-          resolve();
-        }
-      );
+    const source = ImageUrlSource.fromString('http://localhost/img?f={f}&z={z}&x={x}&y={y}', {
+      cubeMapPreviewUrl: 'http://localhost/preview',
+      concurrency: 10,
     });
+
+    var spy = sinon.stub().returns(function () {});
+    var stage = { loadImage: spy };
+
+    for (var i = 0; i < 6; i++) {
+      source.loadAsset(stage, { face: defaultOrder[i], z: 0, x: 0, y: 0 });
+    }
+    source.loadAsset(stage, { face: 'l', z: 1, x: 2, y: 3 });
+
+    await wait.until(function () {
+      return stage.loadImage.callCount === 7;
+    });
+
+    for (var i = 0; i < 6; i++) {
+      assert.strictEqual(spy.getCall(i).args[0], 'http://localhost/preview');
+      assert.deepEqual(spy.getCall(i).args[1], { x: 0, y: i / 6, width: 1, height: 1 / 6 });
+    }
+    assert.strictEqual(spy.getCall(6).args[0], 'http://localhost/img?f=l&z=1&x=2&y=3');
+    assert.strictEqual(spy.getCall(6).args[1], undefined);
   });
 
-  it('template url with preview in custom order', function () {
-    return new Promise((resolve) => {
-      var customOrder = 'udtblr';
+  it('template url with preview in custom order', async function () {
+    var customOrder = 'udtblr';
 
-      const source = ImageUrlSource.fromString('http://localhost/img?f={f}&z={z}&x={x}&y={y}', {
-        cubeMapPreviewUrl: 'http://localhost/preview',
-        cubeMapPreviewFaceOrder: customOrder,
-        concurrency: 10,
-      });
-
-      var spy = sinon.stub().returns(function () {});
-      var stage = { loadImage: spy };
-
-      for (var i = 0; i < 6; i++) {
-        source.loadAsset(stage, { face: customOrder[i], z: 0, x: 0, y: 0 });
-      }
-      source.loadAsset(stage, { face: 'l', z: 1, x: 2, y: 3 });
-
-      wait.until(
-        function () {
-          return stage.loadImage.callCount === 7;
-        },
-        function () {
-          for (var i = 0; i < 6; i++) {
-            assert.strictEqual(spy.getCall(i).args[0], 'http://localhost/preview');
-            assert.deepEqual(spy.getCall(i).args[1], { x: 0, y: i / 6, width: 1, height: 1 / 6 });
-          }
-          assert.strictEqual(spy.getCall(6).args[0], 'http://localhost/img?f=l&z=1&x=2&y=3');
-          assert.strictEqual(spy.getCall(6).args[1], undefined);
-          resolve();
-        }
-      );
+    const source = ImageUrlSource.fromString('http://localhost/img?f={f}&z={z}&x={x}&y={y}', {
+      cubeMapPreviewUrl: 'http://localhost/preview',
+      cubeMapPreviewFaceOrder: customOrder,
+      concurrency: 10,
     });
+
+    var spy = sinon.stub().returns(function () {});
+    var stage = { loadImage: spy };
+
+    for (var i = 0; i < 6; i++) {
+      source.loadAsset(stage, { face: customOrder[i], z: 0, x: 0, y: 0 });
+    }
+    source.loadAsset(stage, { face: 'l', z: 1, x: 2, y: 3 });
+
+    await wait.until(function () {
+      return stage.loadImage.callCount === 7;
+    });
+
+    for (var i = 0; i < 6; i++) {
+      assert.strictEqual(spy.getCall(i).args[0], 'http://localhost/preview');
+      assert.deepEqual(spy.getCall(i).args[1], { x: 0, y: i / 6, width: 1, height: 1 / 6 });
+    }
+    assert.strictEqual(spy.getCall(6).args[0], 'http://localhost/img?f=l&z=1&x=2&y=3');
+    assert.strictEqual(spy.getCall(6).args[1], undefined);
   });
 
   it('full rect', function () {
