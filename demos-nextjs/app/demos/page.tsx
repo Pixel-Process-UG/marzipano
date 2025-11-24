@@ -51,48 +51,68 @@ const demos = [
 
 export default function DemosPage() {
   return (
-    <div className="min-h-screen bg-white text-gray-900">
-      <div className="container mx-auto px-4 py-12">
+    <div className="min-h-screen bg-white">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
         {/* Breadcrumb */}
         <nav className="mb-8">
           <Link
             href="/"
-            className="text-gray-600 hover:text-black transition-colors text-sm"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-black transition-colors text-sm font-medium"
           >
-            ← Back to Home
+            <span>←</span>
+            <span>Back to Home</span>
           </Link>
         </nav>
 
-        <header className="text-center mb-12">
-          <h1 className="text-5xl font-bold mb-4 text-black">
+        {/* Header */}
+        <header className="text-center mb-16">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 text-black tracking-tight">
             Marzipano Demos
           </h1>
-          <p className="text-xl text-gray-700 max-w-2xl mx-auto">
-            A collection of 360° media viewer demos powered by Marzipano, built with Next.js and Tailwind CSS
+          <div className="w-24 h-1 bg-black mx-auto mb-6" />
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            A collection of 360° media viewer demos powered by Marzipano
           </p>
         </header>
 
-        <div className="space-y-12">
+        {/* Demo Categories */}
+        <div className="space-y-16">
           {demos.map((category, categoryIndex) => (
             <section key={categoryIndex} className="mb-12">
-              <h2 className="text-2xl font-semibold mb-6 text-black border-b border-gray-300 pb-2">
-                {category.category}
-              </h2>
+              <div className="flex items-center gap-4 mb-8">
+                <h2 className="text-3xl font-bold text-black">
+                  {category.category}
+                </h2>
+                <div className="flex-1 h-px bg-gray-200" />
+                <span className="text-sm text-gray-500 font-medium">
+                  {category.items.length} {category.items.length === 1 ? 'demo' : 'demos'}
+                </span>
+              </div>
+              
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {category.items.map((demo, index) => (
                   <Link
                     key={index}
                     href={demo.path}
-                    className="group block bg-white rounded-lg p-6 hover:bg-gray-50 transition-all duration-200 hover:scale-105 hover:shadow-lg border border-gray-200 hover:border-gray-400"
+                    className="group relative bg-white rounded-xl p-6 border-2 border-gray-200 hover:border-gray-400 transition-all duration-300 hover:shadow-xl hover:scale-[1.02]"
                   >
-                    <h3 className="text-xl font-semibold mb-2 group-hover:text-black transition-colors text-black">
+                    <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center">
+                        <span className="text-white text-sm">→</span>
+                      </div>
+                    </div>
+                    
+                    <h3 className="text-xl font-semibold mb-3 text-black group-hover:text-gray-700 transition-colors pr-12">
                       {demo.name}
                     </h3>
-                    <p className="text-gray-600 text-sm group-hover:text-gray-700 transition-colors">
+                    <p className="text-gray-600 text-sm leading-relaxed group-hover:text-gray-700 transition-colors">
                       {demo.description}
                     </p>
-                    <div className="mt-4 text-gray-900 opacity-0 group-hover:opacity-100 transition-opacity">
-                      View Demo →
+                    
+                    <div className="mt-4 pt-4 border-t border-gray-100">
+                      <span className="text-xs text-gray-500 font-medium group-hover:text-gray-700 transition-colors">
+                        View Demo →
+                      </span>
                     </div>
                   </Link>
                 ))}
@@ -101,11 +121,20 @@ export default function DemosPage() {
           ))}
         </div>
 
-        <footer className="mt-16 text-center text-gray-500 text-sm">
-          <p>Powered by <a href="https://nextjs.org" target="_blank" rel="noopener noreferrer" className="text-gray-900 hover:text-black underline">Next.js</a> and <a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer" className="text-gray-900 hover:text-black underline">Tailwind CSS</a></p>
+        {/* Footer */}
+        <footer className="mt-24 pt-12 border-t border-gray-200 text-center">
+          <p className="text-gray-500 text-sm">
+            Powered by{' '}
+            <a href="https://nextjs.org" target="_blank" rel="noopener noreferrer" className="text-gray-900 hover:text-black underline underline-offset-2 font-medium">
+              Next.js
+            </a>
+            {' '}and{' '}
+            <a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer" className="text-gray-900 hover:text-black underline underline-offset-2 font-medium">
+              Tailwind CSS
+            </a>
+          </p>
         </footer>
       </div>
     </div>
   );
 }
-

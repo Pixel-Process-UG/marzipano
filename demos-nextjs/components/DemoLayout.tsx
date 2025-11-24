@@ -10,23 +10,23 @@ export default function DemoLayout({ title, description, children }: DemoLayoutP
   return (
     <div className="flex flex-col h-screen w-screen">
       {/* Header */}
-      <header className="bg-gray-900 text-white p-4 flex items-center justify-between shadow-lg z-10">
+      <header className="bg-white border-b border-gray-200 text-gray-900 p-4 flex items-center justify-between shadow-sm z-10">
         <div>
           <Link 
-            href="/" 
-            className="text-blue-400 hover:text-blue-300 mr-4 transition-colors"
+            href="/demos" 
+            className="text-gray-700 hover:text-black mr-4 transition-colors"
           >
             ← Back to Demos
           </Link>
-          <h1 className="text-xl font-bold inline-block ml-4">{title}</h1>
+          <h1 className="text-xl font-bold inline-block ml-4 text-black">{title}</h1>
           {description && (
-            <p className="text-sm text-gray-400 mt-1">{description}</p>
+            <p className="text-sm text-gray-600 mt-1">{description}</p>
           )}
         </div>
       </header>
 
       {/* Main content */}
-      <main className="flex-1 overflow-hidden">
+      <main className="flex-1 overflow-hidden bg-white">
         {children}
       </main>
     </div>

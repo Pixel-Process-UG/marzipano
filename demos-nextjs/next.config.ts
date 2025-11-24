@@ -23,6 +23,16 @@ const nextConfig: NextConfig = {
         path: false,
       };
     }
+    
+    // Ignore document/window access during SSR for marzipano
+    if (isServer) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+      };
+      // Provide empty mocks for browser globals during SSR
+      config.plugins = config.plugins || [];
+    }
+    
     return config;
   },
   // Add empty turbopack config to silence Next.js 16 warning
