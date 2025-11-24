@@ -34,7 +34,7 @@ export default function SideBySidePage() {
     const urlPrefix = "/media/music-room";
     
     // Left layer
-    const sourceLeft = Marzipano.ImageUrlSource.fromString(
+    const sourceLeft = (Marzipano.ImageUrlSource.fromString as any)(
       urlPrefix + "/left/{z}/{f}/{y}/{x}.jpg",
       { cubeMapPreviewUrl: urlPrefix + "/left/preview.jpg" }
     );
@@ -45,7 +45,7 @@ export default function SideBySidePage() {
     );
 
     // Right layer
-    const sourceRight = Marzipano.ImageUrlSource.fromString(
+    const sourceRight = (Marzipano.ImageUrlSource.fromString as any)(
       urlPrefix + "/right/{z}/{f}/{y}/{x}.jpg",
       { cubeMapPreviewUrl: urlPrefix + "/right/preview.jpg" }
     );

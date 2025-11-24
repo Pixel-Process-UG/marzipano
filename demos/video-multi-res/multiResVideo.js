@@ -18,9 +18,6 @@
 // Marzipano does not have a high-level API for 360° video with multiple levels yet.
 // This code manages the currently playing video using the low-level API.
 
-// Use canvas hack for IE10.
-var useCanvasHack = Marzipano.dependencies.bowser.msie;
-
 // Create viewer.
 var viewer = new Marzipano.Viewer(document.querySelector('#pano'));
 
@@ -78,8 +75,8 @@ function setResolutionIndex(index, cb) {
       previousVideo.removeAttribute('src');
     }
 
-    var VideoElementWrapper = useCanvasHack ? CanvasHackVideoElementWrapper : NullVideoElementWrapper;
-    var wrappedVideo = new VideoElementWrapper(element);
+    // Modern browsers support WebGL video textures directly
+    var wrappedVideo = new NullVideoElementWrapper(element);
     asset.setVideo(wrappedVideo);
 
     currentState.resolutionIndex = index;

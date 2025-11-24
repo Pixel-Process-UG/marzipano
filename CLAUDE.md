@@ -84,8 +84,6 @@ npm run format:check           # Check formatting without changes
 ```bash
 npm run build                  # Build production bundle with Vite
 npm run preview                # Preview production build
-npm run release                # Build production bundle (legacy script)
-npm run deploy                 # Deploy to website
 npm publish                    # Publish to npm registry
 ```
 
@@ -93,8 +91,7 @@ npm publish                    # Publish to npm registry
 - Vite builds ES modules for modern browsers (ES + UMD formats)
 - Production builds are optimized and minified
 - TypeScript definitions generated from `.d.ts` files
-- Legacy `scripts/release` still available for backward compatibility
-- Output: `dist/marzipano.es.js` (ESM), `dist/marzipano.umd.js` (CommonJS)
+- Output: `dist/marzipano.es.js` (ESM), `dist/marzipano.umd.js` (UMD)
 
 ## Core Architecture
 
@@ -255,7 +252,7 @@ Tiles identified by face (cube), level, x, y coordinates. Each geometry implemen
 - **Math Library**: Uses gl-matrix for matrix/vector operations
 - **Touch Support**: Hammer.js for multi-touch gestures
 - **WebXR Support**: Optional WebXR integration for VR/AR (dynamically imported)
-- **WebGPU**: Experimental WebGpu stage available (not production-ready)
+- **WebGPU**: Experimental WebGPU stage available (incomplete implementation, not production-ready)
 - **ES6 Modules**: Native ESM with dual CommonJS/ESM exports
 
 ## Key Architecture Insights

@@ -62,14 +62,7 @@ npm test             # Run all tests with Vitest
 npm run coverage     # Generate test coverage report
 ```
 
-**Legacy Commands (still available):**
-```bash
-npm run dev:old      # Legacy dev server (Browserify)
-npm run test:old     # Legacy test runner (Testem)
-npm run livetest:old # Legacy live test server
-```
-
-The modern build system uses Vite for faster development and ES module support. Tests use Vitest with a Mocha-compatible API.
+The build system uses Vite for fast development and ES module support. Tests use Vitest with a Mocha-compatible API.
 
 ### Maintainer guide
 
@@ -92,6 +85,5 @@ This project uses GitHub Actions for continuous integration and automated releas
    - Publish to npm (if `NPM_TOKEN` secret is configured)
 
 **Manual Release (if needed):**
-- `npm run release` - Build production bundle
-- `npm run deploy` - Deploy to website
+- `npm run build` - Build production bundle
 - `npm publish` - Publish to npm registry

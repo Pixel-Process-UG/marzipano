@@ -87,9 +87,9 @@ If you're using a bundler:
 - Works out of the box with ES modules
 - No configuration needed
 
-**Browserify:**
-- May require additional plugins for ES modules
-- Consider migrating to a modern bundler
+**Other Bundlers:**
+- Most modern bundlers (Webpack 5+, Rollup, esbuild) support ES modules out of the box
+- Ensure your bundler is configured for ES module support
 
 ### 3. Update Test Files
 

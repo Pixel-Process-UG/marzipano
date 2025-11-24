@@ -56,7 +56,7 @@ export default function FallbackTilesPage() {
     (stage as any).addLayer(layerAbove);
 
     // Pin level 0 so it serves as the last-resort fallback.
-    layerAbove.pinLevel(0);
+    (layerAbove as any).pinLevel(0);
   };
 
   return (

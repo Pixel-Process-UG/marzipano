@@ -32,7 +32,6 @@ const demos = [
   {
     category: 'XR/VR',
     items: [
-      { name: 'WebVR', path: '/demos/webvr', description: 'WebVR integration' },
       { name: 'WebXR Immersive', path: '/demos/webxr-immersive', description: 'WebXR immersive mode' },
     ]
   },

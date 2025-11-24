@@ -1,8 +1,8 @@
 {
-  "name": "marzipano",
+  "name": "marzipano-ts",
   "version": "1.0.0",
   "description": "A 360° media viewer for the modern web",
-  "author": "Google Inc.",
+  "author": "Google Inc & Pixel & Process UG (haftungsbeschränkt)",
   "license": "Apache-2.0",
   "type": "module",
   "main": "src/index.js",
@@ -18,10 +18,10 @@
   "homepage": "http://www.marzipano.net",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Pixel-Process-UG/marzipano.git"
+    "url": "https://github.com/Pixel-Process-UG/marzipano-ts.git"
   },
   "bugs": {
-    "url": "https://github.com/Pixel-Process-UG/marzipano/issues"
+    "url": "https://github.com/Pixel-Process-UG/marzipano-ts/issues"
   },
   "scripts": {
     "dev": "vite",
@@ -37,11 +37,6 @@
     "lint:fix": "eslint src/**/*.js --fix",
     "format": "prettier --write \"src/**/*.js\" \"test/**/*.js\"",
     "format:check": "prettier --check \"src/**/*.js\" \"test/**/*.js\"",
-    "dev:old": "scripts/dev",
-    "test:old": "testem ci",
-    "livetest:old": "testem",
-    "release": "scripts/release",
-    "deploy": "scripts/deploy",
     "prepublishOnly": "scripts/prepublish",
     "prepare": "husky"
   },
@@ -64,18 +59,14 @@
     "jsdoc": "^4.0.5",
     "jsdom": "^25.0.1",
     "lint-staged": "^15.2.10",
-    "lr-http-server": "^0.1.5",
     "mocha": "^10.7.0",
     "prettier": "^3.3.3",
     "sinon": "^19.0.0",
     "terser": "^5.44.1",
-    "testem": "^3.2.0",
     "typescript": "^5.9.3",
-    "uglify-js": "^3.12.3",
     "vite": "^5.4.11",
     "vite-plugin-node-polyfills": "^0.22.0",
-    "vitest": "^2.1.5",
-    "watchify": "^3.11.1"
+    "vitest": "^2.1.5"
   },
   "lint-staged": {
     "*.js": [

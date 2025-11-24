@@ -17,9 +17,8 @@ export default function HotspotRectPage() {
     stageRef.current = stage;
 
     // Create source.
-    const source = Marzipano.ImageUrlSource.fromString(
-      "/media/cubemap/{f}.jpg",
-      {}
+    const source = (Marzipano.ImageUrlSource.fromString as any)(
+      "/media/cubemap/{f}.jpg"
     );
 
     // Create geometry.
@@ -42,7 +41,7 @@ export default function HotspotRectPage() {
       const layer = new Marzipano.Layer(source, geometry, view, textureStore, { effects: { rect: rect } });
 
       // Add hotspot.
-      const hotspotContainer = new Marzipano.HotspotContainer(viewer.domElement(), stage, view, viewer.renderLoop(), { rect: rect });
+      const hotspotContainer = new (Marzipano.HotspotContainer as any)(viewer.domElement(), stage, view, viewer.renderLoop(), { rect: rect || undefined });
       const hotspotElement = document.createElement('div');
       hotspotElement.className = 'hotspot';
       hotspotContainer.createHotspot(hotspotElement, { yaw: 0.1, pitch: -0.3 });

@@ -42,7 +42,7 @@ export default function DeviceOrientationPage() {
     (controls as any).registerMethod('deviceOrientation', deviceOrientationControlMethod);
 
     // Create source.
-    const source = Marzipano.ImageUrlSource.fromString(
+    const source = (Marzipano.ImageUrlSource.fromString as any)(
       "/media/cubemap/{f}.jpg"
     );
 

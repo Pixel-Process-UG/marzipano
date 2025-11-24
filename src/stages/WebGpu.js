@@ -11,11 +11,16 @@ import { setAbsolute, setFullSize } from '../util/dom.js';
  * @extends Stage
  * @classdesc
  *
- * NEW M4.2: EXPERIMENTAL WebGPU implementation of Stage.
- * This is an experimental backend and requires WebGPU support.
+ * EXPERIMENTAL WebGPU implementation of Stage.
+ * 
+ * **WARNING**: This is an incomplete/placeholder implementation and is NOT production-ready.
+ * Most rendering methods are stubs and do not actually render content.
+ * This exists only as a foundation for future WebGPU development.
+ * 
+ * This experimental backend requires WebGPU support and explicit opt-in via the experimental flag.
  *
  * @param {Object} opts
- * @param {boolean} [opts.experimental=false] - Must be true to enable
+ * @param {boolean} [opts.experimental=false] - Must be true to enable (required for safety)
  */
 class WebGpuStage extends Stage {
   constructor(opts) {

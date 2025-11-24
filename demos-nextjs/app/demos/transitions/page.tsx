@@ -83,7 +83,7 @@ export default function TransitionsPage() {
 
     // Set up the second scene.
     const view2 = new Marzipano.RectilinearView(null, limiter);
-    const source2 = Marzipano.ImageUrlSource.fromString(
+    const source2 = (Marzipano.ImageUrlSource.fromString as any)(
       urlPrefix + "/jeronimos/{z}/{f}/{y}/{x}.jpg",
       { cubeMapPreviewUrl: urlPrefix + "/jeronimos/preview.jpg" }
     );

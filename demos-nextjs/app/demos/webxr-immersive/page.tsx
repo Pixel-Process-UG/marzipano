@@ -15,7 +15,7 @@ export default function WebXRImmersivePage() {
     viewerRef.current = viewer;
 
     // Create scene
-    const source = Marzipano.ImageUrlSource.fromString(
+    const source = (Marzipano.ImageUrlSource.fromString as any)(
       '/media/equirect/{z}.jpg'
     );
     const geometry = new Marzipano.EquirectGeometry([

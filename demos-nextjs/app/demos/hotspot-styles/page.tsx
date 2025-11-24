@@ -10,7 +10,7 @@ export default function HotspotStylesPage() {
 
   const handleViewerReady = (viewer: Marzipano.Viewer) => {
     // Create source.
-    const source = Marzipano.ImageUrlSource.fromString(
+    const source = (Marzipano.ImageUrlSource.fromString as any)(
       "/media/furnace/{z}/{f}/{y}/{x}.jpg",
       { cubeMapPreviewUrl: "/media/furnace/preview.jpg" }
     );

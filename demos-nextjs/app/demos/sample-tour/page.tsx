@@ -10,7 +10,7 @@ export default function SampleTourPage() {
 
   const handleViewerReady = (viewer: Marzipano.Viewer) => {
     // Create source.
-    const source = Marzipano.ImageUrlSource.fromString(
+    const source = (Marzipano.ImageUrlSource.fromString as any)(
       "/media/equirect/{z}.jpg"
     );
 
