@@ -8,20 +8,23 @@ interface DemoLayoutProps {
 
 export default function DemoLayout({ title, description, children }: DemoLayoutProps) {
   return (
-    <div className="flex flex-col h-screen w-screen">
+    <div className="flex flex-col h-screen w-screen bg-white">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 text-gray-900 p-4 flex items-center justify-between shadow-sm z-10">
-        <div>
+      <header className="bg-white border-b border-gray-200 text-gray-900 p-4 sm:p-6 flex items-center justify-between shadow-sm z-10">
+        <div className="flex-1 min-w-0">
           <Link 
             href="/demos" 
-            className="text-gray-700 hover:text-black mr-4 transition-colors"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-black transition-colors text-sm font-medium mb-2 sm:mb-0 sm:mr-4"
           >
-            ← Back to Demos
+            <span>←</span>
+            <span>Back to Demos</span>
           </Link>
-          <h1 className="text-xl font-bold inline-block ml-4 text-black">{title}</h1>
-          {description && (
-            <p className="text-sm text-gray-600 mt-1">{description}</p>
-          )}
+          <div className="inline-block sm:ml-4">
+            <h1 className="text-xl sm:text-2xl font-bold text-black">{title}</h1>
+            {description && (
+              <p className="text-sm text-gray-600 mt-1">{description}</p>
+            )}
+          </div>
         </div>
       </header>
 
@@ -32,4 +35,3 @@ export default function DemoLayout({ title, description, children }: DemoLayoutP
     </div>
   );
 }
-

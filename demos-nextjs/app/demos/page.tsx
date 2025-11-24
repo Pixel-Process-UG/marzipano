@@ -67,11 +67,11 @@ export default function DemosPage() {
         {/* Header */}
         <header className="text-center mb-16">
           <h1 className="text-5xl md:text-6xl font-bold mb-6 text-black tracking-tight">
-            Marzipano Demos
+            Marzipano-TS Demos
           </h1>
           <div className="w-24 h-1 bg-black mx-auto mb-6" />
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            A collection of 360° media viewer demos powered by Marzipano
+            A collection of 360° media viewer demos powered by Marzipano-TS
           </p>
         </header>
 

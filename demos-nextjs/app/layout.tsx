@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Marzipano - 360° Media Viewer | Pixel & Process",
+  title: "Marzipano-TS - 360° Media Viewer | Pixel & Process",
   description: "A 360° media viewer for the modern web. Originally created by Google, now maintained by Pixel & Process from Lübeck, Germany.",
   metadataBase: new URL('https://marzipano-ts.pixelandprocess.de'),
 };
