@@ -3,6 +3,8 @@ import path from "path";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  // Allow cross-origin requests from local network during development
+  allowedDevOrigins: ['192.168.3.1'],
   // External packages for server components
   serverExternalPackages: ['marzipano'],
   // Use webpack instead of turbopack for better compatibility with local packages
