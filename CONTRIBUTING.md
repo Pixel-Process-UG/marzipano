@@ -6,7 +6,7 @@ This project is maintained by [Pixel & Process](https://github.com/Pixel-Process
 
 ### Before you contribute
 
-Before you start working on a larger contribution, please get in touch with us first through the [issue tracker](https://github.com/Pixel-Process-UG/marzipano/issues) with your idea so that we can help out and possibly guide you. Coordinating up front makes it much easier to avoid frustration later on.
+Before you start working on a larger contribution, please get in touch with us first through the [issue tracker](https://github.com/Pixel-Process-UG/marzipano-ts/issues) with your idea so that we can help out and possibly guide you. Coordinating up front makes it much easier to avoid frustration later on.
 
 Please ensure your contributions:
 - Follow the existing code style and conventions

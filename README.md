@@ -10,7 +10,7 @@ Check out our website at http://www.marzipano.net/,
 including the [demos](http://www.marzipano.net/demos.html)
 and the [documentation](http://www.marzipano.net/docs.html).
 
-Please report bugs using the [issue tracker](https://github.com/Pixel-Process-UG/marzipano/issues). If you have any questions, head over to our [discussion forum](https://groups.google.com/forum/#!forum/marzipano).
+Please report bugs using the [issue tracker](https://github.com/Pixel-Process-UG/marzipano-ts/issues). If you have any questions, head over to our [discussion forum](https://groups.google.com/forum/#!forum/marzipano).
 
 ### User guide
 
@@ -21,7 +21,7 @@ You can include Marzipano in your project in several ways:
 
 * Install Marzipano as a dependency using the `npm` package manager:
   ```bash
-  npm install marzipano
+  npm install marzipano-ts
   ```
 
 * **ES Modules (Recommended):**
