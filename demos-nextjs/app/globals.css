@@ -14,8 +14,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #fafafa;
+    --foreground: #171717;
   }
 }
 
@@ -43,14 +43,6 @@ body {
   overflow-y: auto;
 }
 
-/* Utility classes for gradient text effects */
-.gradient-text {
-  background: linear-gradient(to right, #60a5fa, #a78bfa, #f472b6);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
 /* Card hover effects */
 .card-hover {
   transition: all 0.2s ease-in-out;
@@ -58,7 +50,7 @@ body {
 
 .card-hover:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
 /* Code block styling */

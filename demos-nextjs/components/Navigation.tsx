@@ -7,15 +7,15 @@ export default function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <nav className="sticky top-0 z-50 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800">
+    <nav className="sticky top-0 z-50 bg-white backdrop-blur-sm border-b border-gray-200">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo/Brand */}
           <Link href="/" className="flex items-center space-x-2 group">
-            <span className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            <span className="text-2xl font-bold text-black">
               Marzipano
             </span>
-            <span className="text-xs text-gray-400 group-hover:text-gray-300 transition-colors">
+            <span className="text-xs text-gray-600 group-hover:text-gray-900 transition-colors">
               by Pixel & Process
             </span>
           </Link>
@@ -24,13 +24,13 @@ export default function Navigation() {
           <div className="hidden md:flex items-center space-x-6">
             <Link
               href="/"
-              className="text-gray-300 hover:text-white transition-colors"
+              className="text-gray-700 hover:text-black transition-colors"
             >
               Home
             </Link>
             <Link
               href="/demos"
-              className="text-gray-300 hover:text-white transition-colors"
+              className="text-gray-700 hover:text-black transition-colors"
             >
               Demos
             </Link>
@@ -38,7 +38,7 @@ export default function Navigation() {
               href="https://github.com/Pixel-Process-UG/marzipano-ts"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-300 hover:text-white transition-colors"
+              className="text-gray-700 hover:text-black transition-colors"
             >
               GitHub
             </a>
@@ -46,7 +46,7 @@ export default function Navigation() {
               href="https://pixelandprocess.de/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-400 hover:text-gray-300 transition-colors text-sm"
+              className="text-gray-600 hover:text-gray-900 transition-colors text-sm"
             >
               Pixel & Process
             </a>
@@ -54,7 +54,7 @@ export default function Navigation() {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden text-gray-300 hover:text-white"
+            className="md:hidden text-gray-700 hover:text-black"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
           >
@@ -78,17 +78,17 @@ export default function Navigation() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 space-y-3 border-t border-gray-800">
+          <div className="md:hidden py-4 space-y-3 border-t border-gray-200">
             <Link
               href="/"
-              className="block text-gray-300 hover:text-white transition-colors"
+              className="block text-gray-700 hover:text-black transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
               Home
             </Link>
             <Link
               href="/demos"
-              className="block text-gray-300 hover:text-white transition-colors"
+              className="block text-gray-700 hover:text-black transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
               Demos
@@ -97,7 +97,7 @@ export default function Navigation() {
               href="https://github.com/Pixel-Process-UG/marzipano-ts"
               target="_blank"
               rel="noopener noreferrer"
-              className="block text-gray-300 hover:text-white transition-colors"
+              className="block text-gray-700 hover:text-black transition-colors"
             >
               GitHub
             </a>
@@ -105,7 +105,7 @@ export default function Navigation() {
               href="https://pixelandprocess.de/"
               target="_blank"
               rel="noopener noreferrer"
-              className="block text-gray-400 hover:text-gray-300 transition-colors text-sm"
+              className="block text-gray-600 hover:text-gray-900 transition-colors text-sm"
             >
               Pixel & Process
             </a>

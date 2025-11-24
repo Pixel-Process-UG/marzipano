@@ -51,23 +51,23 @@ const demos = [
 
 export default function DemosPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
+    <div className="min-h-screen bg-white text-gray-900">
       <div className="container mx-auto px-4 py-12">
         {/* Breadcrumb */}
         <nav className="mb-8">
           <Link
             href="/"
-            className="text-gray-400 hover:text-white transition-colors text-sm"
+            className="text-gray-600 hover:text-black transition-colors text-sm"
           >
             ← Back to Home
           </Link>
         </nav>
 
         <header className="text-center mb-12">
-          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+          <h1 className="text-5xl font-bold mb-4 text-black">
             Marzipano Demos
           </h1>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-700 max-w-2xl mx-auto">
             A collection of 360° media viewer demos powered by Marzipano, built with Next.js and Tailwind CSS
           </p>
         </header>
@@ -75,7 +75,7 @@ export default function DemosPage() {
         <div className="space-y-12">
           {demos.map((category, categoryIndex) => (
             <section key={categoryIndex} className="mb-12">
-              <h2 className="text-2xl font-semibold mb-6 text-blue-400 border-b border-gray-700 pb-2">
+              <h2 className="text-2xl font-semibold mb-6 text-black border-b border-gray-300 pb-2">
                 {category.category}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -83,15 +83,15 @@ export default function DemosPage() {
                   <Link
                     key={index}
                     href={demo.path}
-                    className="group block bg-gray-800 rounded-lg p-6 hover:bg-gray-700 transition-all duration-200 hover:scale-105 hover:shadow-xl border border-gray-700 hover:border-blue-500"
+                    className="group block bg-white rounded-lg p-6 hover:bg-gray-50 transition-all duration-200 hover:scale-105 hover:shadow-lg border border-gray-200 hover:border-gray-400"
                   >
-                    <h3 className="text-xl font-semibold mb-2 group-hover:text-blue-400 transition-colors">
+                    <h3 className="text-xl font-semibold mb-2 group-hover:text-black transition-colors text-black">
                       {demo.name}
                     </h3>
-                    <p className="text-gray-400 text-sm group-hover:text-gray-300 transition-colors">
+                    <p className="text-gray-600 text-sm group-hover:text-gray-700 transition-colors">
                       {demo.description}
                     </p>
-                    <div className="mt-4 text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="mt-4 text-gray-900 opacity-0 group-hover:opacity-100 transition-opacity">
                       View Demo →
                     </div>
                   </Link>
@@ -101,8 +101,8 @@ export default function DemosPage() {
           ))}
         </div>
 
-        <footer className="mt-16 text-center text-gray-400 text-sm">
-          <p>Powered by <a href="https://www.marzipano.net" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300">Marzipano</a>, <a href="https://nextjs.org" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300">Next.js</a>, and <a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300">Tailwind CSS</a></p>
+        <footer className="mt-16 text-center text-gray-500 text-sm">
+          <p>Powered by <a href="https://nextjs.org" target="_blank" rel="noopener noreferrer" className="text-gray-900 hover:text-black underline">Next.js</a> and <a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer" className="text-gray-900 hover:text-black underline">Tailwind CSS</a></p>
         </footer>
       </div>
     </div>
